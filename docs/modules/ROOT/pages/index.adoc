@@ -1,0 +1,26 @@
+= Quarkus Artemis JMS
+
+include::./includes/attributes.adoc[]
+
+This extension enables the use of the Apache ActiveMQ Artemis JMS client in Quarkus.
+
+It provides configuration properties to configure the JMS client and native executable support.
+
+== Installation
+
+If you want to use this extension, you need to add the `io.quarkiverse.artemis:quarkus-artemis-jms` extension first.
+In your `pom.xml` file, add:
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+    <groupId>io.quarkiverse.artemis</groupId>
+    <artifactId>quarkus-artemis-jms</artifactId>
+    <version>{quarkus-artemis-version}</version>
+</dependency>
+----
+
+[[extension-configuration-reference]]
+== Configuration Reference
+
+include::includes/quarkus-artemis-core.adoc[]
