@@ -19,13 +19,11 @@ import org.jboss.logging.Logger;
 
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.runtime.ArtemisCoreRecorder;
-import io.quarkus.deployment.Feature;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
-import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.smallrye.health.deployment.spi.HealthBuildItem;
@@ -90,15 +88,6 @@ public class ArtemisCoreProcessor {
         return new HealthBuildItem(
                 "io.quarkus.artemis.core.runtime.health.ServerLocatorHealthCheck",
                 buildConfig.healthEnabled);
-    }
-
-    @BuildStep
-    void load(BuildProducer<FeatureBuildItem> feature, Optional<ArtemisJmsBuildItem> artemisJms) {
-
-        if (artemisJms.isPresent()) {
-            return;
-        }
-        feature.produce(new FeatureBuildItem(Feature.ARTEMIS_CORE));
     }
 
     @Record(ExecutionTime.RUNTIME_INIT)
