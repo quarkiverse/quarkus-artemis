@@ -20,12 +20,14 @@
 
         <!-- Artemis -->
         <dependency>
-            <groupId>io.quarkus</groupId>
+            <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-artemis-jms</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
+            <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-test-artemis</artifactId>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
