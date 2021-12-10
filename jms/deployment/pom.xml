@@ -14,13 +14,11 @@
         <dependency>
             <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-artemis-core-deployment</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-artemis-jms</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

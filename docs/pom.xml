@@ -31,7 +31,6 @@
             <plugin>
                 <groupId>it.ozimov</groupId>
                 <artifactId>yaml-properties-maven-plugin</artifactId>
-                <version>${yaml-properties-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>initialize</phase>
@@ -92,7 +91,6 @@
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>${asciidoctor-maven-plugin.version}</version>
                 <configuration>
                     <skip>${skipDocs}</skip>
                     <enableVerbose>true</enableVerbose>

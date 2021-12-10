@@ -12,6 +12,8 @@
     <packaging>pom</packaging>
     <name>Quarkus - Artemis - Parent</name>
     <modules>
+        <module>bom</module>
+        <module>build-parent</module>
         <module>core</module>
         <module>jms</module>
         <module>docs</module>
@@ -25,64 +27,10 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus.version>2.5.1.Final</quarkus.version>
+        <quarkus.version>2.6.0.CR1</quarkus.version>
 
         <artemis.version>2.19.0</artemis.version>
     </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-bom</artifactId>
-                <version>${quarkus.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-core-client</artifactId>
-                <version>${artemis.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-json_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.johnzon</groupId>
-                        <artifactId>johnzon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-jms-client</artifactId>
-                <version>${artemis.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-json_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.johnzon</groupId>
-                        <artifactId>johnzon-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-commons</artifactId>
-                <version>${artemis.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <build>
         <pluginManagement>
             <plugins>
@@ -115,7 +63,4 @@
         </pluginManagement>
     </build>
 
-  <scm>
-    <tag>1.0.0</tag>
-  </scm>
 </project>
