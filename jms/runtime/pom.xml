@@ -15,7 +15,6 @@
         <dependency>
             <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-artemis-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -27,12 +26,6 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>artemis-jms-client</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>jakarta.json</groupId>
-                    <artifactId>jakarta.json-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 

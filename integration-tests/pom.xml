@@ -3,8 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.quarkiverse.artemis</groupId>
-        <artifactId>quarkus-artemis-parent</artifactId>
+        <artifactId>quarkus-artemis-build-parent</artifactId>
         <version>1.0.2-SNAPSHOT</version>
+        <relativePath>../build-parent/pom.xml</relativePath>
     </parent>
     <artifactId>quarkus-artemis-integration-tests-parent</artifactId>
     <name>Quarkus - Artemis - Integration Tests - Parent</name>
