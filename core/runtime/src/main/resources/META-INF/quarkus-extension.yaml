@@ -7,7 +7,6 @@ metadata:
   - "artemis"
   categories:
   - "messaging"
-  status: "preview"
   unlisted: true
   config:
   - "quarkus.artemis."
