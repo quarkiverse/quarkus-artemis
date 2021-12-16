@@ -7,7 +7,6 @@ metadata:
   - "artemis"
   categories:
   - "messaging"
-  guide: "https://quarkus.io/guides/jms"
-  status: "preview"
+  guide: https://quarkiverse.github.io/quarkiverse-docs/quarkus-artemis/dev/index.html
   config:
   - "quarkus.artemis."
