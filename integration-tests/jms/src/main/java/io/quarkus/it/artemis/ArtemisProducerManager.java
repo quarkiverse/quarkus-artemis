@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSProducer;
-import javax.jms.Session;
 
 @ApplicationScoped
 public class ArtemisProducerManager {
@@ -14,7 +13,7 @@ public class ArtemisProducerManager {
     ConnectionFactory connectionFactory;
 
     public void send(String body) {
-        try (JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE)) {
+        try (JMSContext context = connectionFactory.createContext(JMSContext.AUTO_ACKNOWLEDGE)) {
             JMSProducer producer = context.createProducer();
             producer.send(context.createQueue("test-jms"), body);
         }
