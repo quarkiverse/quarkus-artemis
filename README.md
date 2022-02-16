@@ -13,6 +13,9 @@ It provides configuration properties to configure the JMS client and native exec
 
 It is a replacement for the `quarkus-artemis-jms` extension originally part of the Quarkus core distribution.
 
+Next to the JMS client, it also enables the use of the Apache ActiveMQ Artemis Core client (used by the JMS client).
+It is automatically enabled if `quarkus-artemis-core` is added as dependency without `quarkus-artemis-jms`.
+
 ## Documentation
 
 The documentation for this extension can be found [here](https://quarkiverse.github.io/quarkiverse-docs/quarkus-artemis/dev/index.html).
