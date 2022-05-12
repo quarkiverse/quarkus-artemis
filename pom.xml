@@ -29,7 +29,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.version>2.8.2.Final</quarkus.version>
 
-        <artemis.version>2.21.0</artemis.version>
+        <artemis.version>2.22.0</artemis.version>
     </properties>
     <build>
         <pluginManagement>
