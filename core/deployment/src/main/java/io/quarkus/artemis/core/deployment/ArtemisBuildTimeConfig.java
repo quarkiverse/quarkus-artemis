@@ -17,5 +17,5 @@ public class ArtemisBuildTimeConfig {
      * XA support
      */
     @ConfigItem(name = "xa.enabled", defaultValue = "false")
-    public boolean xa = false;
+    public boolean xaEnabled;
 }
