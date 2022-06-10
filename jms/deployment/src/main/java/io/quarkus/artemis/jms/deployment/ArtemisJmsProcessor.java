@@ -54,7 +54,7 @@ public class ArtemisJmsProcessor {
                 .done();
         syntheticBeanProducer.produce(connectionFactory);
 
-        if (config.xa) {
+        if (config.xaEnabled) {
             SyntheticBeanBuildItem xaConnectionFactory = SyntheticBeanBuildItem
                     .configure(ActiveMQXAConnectionFactory.class)
                     .addType(XAConnectionFactory.class)
