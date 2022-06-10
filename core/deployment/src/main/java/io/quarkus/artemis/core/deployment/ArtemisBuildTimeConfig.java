@@ -12,4 +12,10 @@ public class ArtemisBuildTimeConfig {
      */
     @ConfigItem(name = "health.enabled", defaultValue = "true")
     public boolean healthEnabled;
+
+    /**
+     * XA support
+     */
+    @ConfigItem(name = "xa.enabled", defaultValue = "false")
+    public boolean xa = false;
 }

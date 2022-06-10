@@ -2,6 +2,10 @@ package io.quarkus.artemis.jms.deployment;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.jms.ConnectionFactory;
+import javax.jms.XAConnectionFactory;
+
+import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
+import org.apache.activemq.artemis.jms.client.ActiveMQXAConnectionFactory;
 
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBuildTimeConfig;
@@ -37,10 +41,11 @@ public class ArtemisJmsProcessor {
 
     @Record(ExecutionTime.RUNTIME_INIT)
     @BuildStep
-    ArtemisJmsConfiguredBuildItem configure(ArtemisJmsRecorder recorder,
+    ArtemisJmsConfiguredBuildItem configure(ArtemisJmsRecorder recorder, ArtemisBuildTimeConfig config,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer) {
-
-        SyntheticBeanBuildItem connectionFactory = SyntheticBeanBuildItem.configure(ConnectionFactory.class)
+        SyntheticBeanBuildItem connectionFactory = SyntheticBeanBuildItem
+                .configure(ActiveMQJMSConnectionFactory.class)
+                .addType(ConnectionFactory.class)
                 .supplier(recorder.getConnectionFactorySupplier())
                 .scope(ApplicationScoped.class)
                 .defaultBean()
@@ -48,6 +53,19 @@ public class ArtemisJmsProcessor {
                 .setRuntimeInit()
                 .done();
         syntheticBeanProducer.produce(connectionFactory);
+
+        if (config.xa) {
+            SyntheticBeanBuildItem xaConnectionFactory = SyntheticBeanBuildItem
+                    .configure(ActiveMQXAConnectionFactory.class)
+                    .addType(XAConnectionFactory.class)
+                    .supplier(recorder.getXAConnectionFactorySupplier())
+                    .scope(ApplicationScoped.class)
+                    .defaultBean()
+                    .unremovable()
+                    .setRuntimeInit()
+                    .done();
+            syntheticBeanProducer.produce(xaConnectionFactory);
+        }
 
         return new ArtemisJmsConfiguredBuildItem();
     }

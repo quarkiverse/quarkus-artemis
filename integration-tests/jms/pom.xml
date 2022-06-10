@@ -18,6 +18,12 @@
             <artifactId>quarkus-resteasy</artifactId>
         </dependency>
 
+        <!-- Narayana Transaction Manager -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-narayana-jta</artifactId>
+        </dependency>
+
         <!-- Artemis -->
         <dependency>
             <groupId>io.quarkiverse.artemis</groupId>
