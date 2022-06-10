@@ -21,7 +21,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.xa
 
 [.description]
 --
-Enables XA support which means it provides a XAConnectionFactory
+XA support
 --|boolean 
 |`false`
 
