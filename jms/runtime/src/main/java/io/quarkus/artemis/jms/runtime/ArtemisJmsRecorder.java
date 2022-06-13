@@ -21,7 +21,12 @@ public class ArtemisJmsRecorder {
     }
 
     public ArtemisJmsWrapper getDefaultWrapper() {
-        return (cf, tm) -> cf;
+        return new ArtemisJmsWrapper() {
+            @Override
+            public ConnectionFactory wrapConnectionFactory(ActiveMQConnectionFactory cf, TransactionManager tm) {
+                return cf;
+            }
+        };
     }
 
     public Supplier<ConnectionFactory> getConnectionFactorySupplier(ArtemisJmsWrapper wrapper, boolean transaction) {
