@@ -3,11 +3,11 @@ package io.quarkus.artemis.jms.runtime;
 import java.util.function.Supplier;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.XAConnectionFactory;
+import javax.transaction.TransactionManager;
 
-import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
-import org.apache.activemq.artemis.jms.client.ActiveMQXAConnectionFactory;
+import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 
+import io.quarkus.arc.Arc;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfig;
 import io.quarkus.runtime.annotations.Recorder;
 
@@ -20,22 +20,19 @@ public class ArtemisJmsRecorder {
         this.config = config;
     }
 
-    public Supplier<ConnectionFactory> getConnectionFactorySupplier() {
+    public ArtemisJmsWrapper getDefaultWrapper() {
+        return (cf, tm) -> cf;
+    }
+
+    public Supplier<ConnectionFactory> getConnectionFactorySupplier(ArtemisJmsWrapper wrapper, boolean transaction) {
         return new Supplier<ConnectionFactory>() {
             @Override
             public ConnectionFactory get() {
-                return new ActiveMQJMSConnectionFactory(config.url, config.username.orElse(null),
+                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(config.url,
+                        config.username.orElse(null),
                         config.password.orElse(null));
-            }
-        };
-    }
-
-    public Supplier<XAConnectionFactory> getXAConnectionFactorySupplier() {
-        return new Supplier<XAConnectionFactory>() {
-            @Override
-            public XAConnectionFactory get() {
-                return new ActiveMQXAConnectionFactory(config.url, config.username.orElse(null),
-                        config.password.orElse(null));
+                return wrapper.wrapConnectionFactory(connectionFactory,
+                        transaction ? Arc.container().instance(TransactionManager.class).get() : null);
             }
         };
     }

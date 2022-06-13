@@ -14,7 +14,7 @@ public class ArtemisBuildTimeConfig {
     public boolean healthEnabled;
 
     /**
-     * XA support
+     * Support to expose {@link javax.jms.XAConnectionFactory}
      */
     @ConfigItem(name = "xa.enabled", defaultValue = "false")
     public boolean xaEnabled;
