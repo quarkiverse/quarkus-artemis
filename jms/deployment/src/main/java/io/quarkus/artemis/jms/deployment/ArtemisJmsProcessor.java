@@ -1,16 +1,19 @@
 package io.quarkus.artemis.jms.deployment;
 
+import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.jms.ConnectionFactory;
 import javax.jms.XAConnectionFactory;
 
-import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
-import org.apache.activemq.artemis.jms.client.ActiveMQXAConnectionFactory;
+import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBuildTimeConfig;
 import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsRecorder;
+import io.quarkus.deployment.Capabilities;
+import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -42,30 +45,35 @@ public class ArtemisJmsProcessor {
     @Record(ExecutionTime.RUNTIME_INIT)
     @BuildStep
     ArtemisJmsConfiguredBuildItem configure(ArtemisJmsRecorder recorder, ArtemisBuildTimeConfig config,
+            Optional<ArtemisJmsWrapperBuildItem> wrapper,
+            Capabilities capabilities,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer) {
-        SyntheticBeanBuildItem connectionFactory = SyntheticBeanBuildItem
-                .configure(ActiveMQJMSConnectionFactory.class)
-                .addType(ConnectionFactory.class)
-                .supplier(recorder.getConnectionFactorySupplier())
+
+        SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator;
+        if (config.xaEnabled) {
+            configurator = SyntheticBeanBuildItem.configure(ActiveMQConnectionFactory.class);
+            /**
+             * Since {@link ActiveMQConnectionFactory} implements both {@link ConnectionFactory} and
+             * {@link XAConnectionFactory},
+             * even with "quarkus.artemis.xa.enabled=true" we still need to export ConnectionFactory which is used by
+             * {@link io.quarkus.artemis.jms.runtime.health.ConnectionFactoryHealthCheck} for health checking.
+             */
+            configurator.addType(XAConnectionFactory.class);
+            configurator.addType(ConnectionFactory.class);
+        } else {
+            configurator = SyntheticBeanBuildItem.configure(ConnectionFactory.class);
+        }
+
+        configurator.supplier(recorder.getConnectionFactorySupplier(
+                wrapper.orElseGet(() -> new ArtemisJmsWrapperBuildItem(recorder.getDefaultWrapper()))
+                        .getWrapper(),
+                capabilities.isPresent(Capability.TRANSACTIONS)))
                 .scope(ApplicationScoped.class)
                 .defaultBean()
                 .unremovable()
-                .setRuntimeInit()
-                .done();
-        syntheticBeanProducer.produce(connectionFactory);
+                .setRuntimeInit();
 
-        if (config.xaEnabled) {
-            SyntheticBeanBuildItem xaConnectionFactory = SyntheticBeanBuildItem
-                    .configure(ActiveMQXAConnectionFactory.class)
-                    .addType(XAConnectionFactory.class)
-                    .supplier(recorder.getXAConnectionFactorySupplier())
-                    .scope(ApplicationScoped.class)
-                    .defaultBean()
-                    .unremovable()
-                    .setRuntimeInit()
-                    .done();
-            syntheticBeanProducer.produce(xaConnectionFactory);
-        }
+        syntheticBeanProducer.produce(configurator.done());
 
         return new ArtemisJmsConfiguredBuildItem();
     }

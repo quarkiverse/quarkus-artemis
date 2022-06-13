@@ -21,7 +21,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.xa
 
 [.description]
 --
-XA support
+Support to expose `javax.jms.XAConnectionFactory`
 --|boolean 
 |`false`
 

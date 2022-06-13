@@ -3,11 +3,11 @@ package io.quarkus.artemis.jms.runtime;
 import java.util.function.Supplier;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.XAConnectionFactory;
+import javax.transaction.TransactionManager;
 
-import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
-import org.apache.activemq.artemis.jms.client.ActiveMQXAConnectionFactory;
+import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 
+import io.quarkus.arc.Arc;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfig;
 import io.quarkus.runtime.annotations.Recorder;
 
@@ -20,22 +20,24 @@ public class ArtemisJmsRecorder {
         this.config = config;
     }
 
-    public Supplier<ConnectionFactory> getConnectionFactorySupplier() {
-        return new Supplier<ConnectionFactory>() {
+    public ArtemisJmsWrapper getDefaultWrapper() {
+        return new ArtemisJmsWrapper() {
             @Override
-            public ConnectionFactory get() {
-                return new ActiveMQJMSConnectionFactory(config.url, config.username.orElse(null),
-                        config.password.orElse(null));
+            public ConnectionFactory wrapConnectionFactory(ActiveMQConnectionFactory cf, TransactionManager tm) {
+                return cf;
             }
         };
     }
 
-    public Supplier<XAConnectionFactory> getXAConnectionFactorySupplier() {
-        return new Supplier<XAConnectionFactory>() {
+    public Supplier<ConnectionFactory> getConnectionFactorySupplier(ArtemisJmsWrapper wrapper, boolean transaction) {
+        return new Supplier<ConnectionFactory>() {
             @Override
-            public XAConnectionFactory get() {
-                return new ActiveMQXAConnectionFactory(config.url, config.username.orElse(null),
+            public ConnectionFactory get() {
+                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(config.url,
+                        config.username.orElse(null),
                         config.password.orElse(null));
+                return wrapper.wrapConnectionFactory(connectionFactory,
+                        transaction ? Arc.container().instance(TransactionManager.class).get() : null);
             }
         };
     }
