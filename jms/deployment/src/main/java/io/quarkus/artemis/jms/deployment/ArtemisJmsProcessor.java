@@ -52,16 +52,22 @@ public class ArtemisJmsProcessor {
         SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator;
         if (config.xaEnabled) {
             configurator = SyntheticBeanBuildItem.configure(ActiveMQConnectionFactory.class);
+            /**
+             * Since {@link ActiveMQConnectionFactory} implements both {@link ConnectionFactory} and
+             * {@link XAConnectionFactory},
+             * even with "quarkus.artemis.xa.enabled=true" we still need to export ConnectionFactory which is used by
+             * {@link io.quarkus.artemis.jms.runtime.health.ConnectionFactoryHealthCheck} for health checking.
+             */
             configurator.addType(XAConnectionFactory.class);
+            configurator.addType(ConnectionFactory.class);
         } else {
             configurator = SyntheticBeanBuildItem.configure(ConnectionFactory.class);
         }
 
-        configurator.addType(ConnectionFactory.class)
-                .supplier(recorder.getConnectionFactorySupplier(
-                        wrapper.orElseGet(() -> new ArtemisJmsWrapperBuildItem(recorder.getDefaultWrapper()))
-                                .getWrapper(),
-                        capabilities.isPresent(Capability.TRANSACTIONS)))
+        configurator.supplier(recorder.getConnectionFactorySupplier(
+                wrapper.orElseGet(() -> new ArtemisJmsWrapperBuildItem(recorder.getDefaultWrapper()))
+                        .getWrapper(),
+                capabilities.isPresent(Capability.TRANSACTIONS)))
                 .scope(ApplicationScoped.class)
                 .defaultBean()
                 .unremovable()
