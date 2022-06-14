@@ -3,11 +3,9 @@ package io.quarkus.artemis.jms.runtime;
 import java.util.function.Supplier;
 
 import javax.jms.ConnectionFactory;
-import javax.transaction.TransactionManager;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 
-import io.quarkus.arc.Arc;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfig;
 import io.quarkus.runtime.annotations.Recorder;
 
@@ -23,21 +21,20 @@ public class ArtemisJmsRecorder {
     public ArtemisJmsWrapper getDefaultWrapper() {
         return new ArtemisJmsWrapper() {
             @Override
-            public ConnectionFactory wrapConnectionFactory(ActiveMQConnectionFactory cf, TransactionManager tm) {
+            public ConnectionFactory wrapConnectionFactory(ActiveMQConnectionFactory cf) {
                 return cf;
             }
         };
     }
 
-    public Supplier<ConnectionFactory> getConnectionFactorySupplier(ArtemisJmsWrapper wrapper, boolean transaction) {
+    public Supplier<ConnectionFactory> getConnectionFactorySupplier(ArtemisJmsWrapper wrapper) {
         return new Supplier<ConnectionFactory>() {
             @Override
             public ConnectionFactory get() {
                 ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(config.url,
                         config.username.orElse(null),
                         config.password.orElse(null));
-                return wrapper.wrapConnectionFactory(connectionFactory,
-                        transaction ? Arc.container().instance(TransactionManager.class).get() : null);
+                return wrapper.wrapConnectionFactory(connectionFactory);
             }
         };
     }

@@ -12,8 +12,6 @@ import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBuildTimeConfig;
 import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsRecorder;
-import io.quarkus.deployment.Capabilities;
-import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -46,7 +44,6 @@ public class ArtemisJmsProcessor {
     @BuildStep
     ArtemisJmsConfiguredBuildItem configure(ArtemisJmsRecorder recorder, ArtemisBuildTimeConfig config,
             Optional<ArtemisJmsWrapperBuildItem> wrapper,
-            Capabilities capabilities,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer) {
 
         SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator;
@@ -65,9 +62,7 @@ public class ArtemisJmsProcessor {
         }
 
         configurator.supplier(recorder.getConnectionFactorySupplier(
-                wrapper.orElseGet(() -> new ArtemisJmsWrapperBuildItem(recorder.getDefaultWrapper()))
-                        .getWrapper(),
-                capabilities.isPresent(Capability.TRANSACTIONS)))
+                wrapper.orElseGet(() -> new ArtemisJmsWrapperBuildItem(recorder.getDefaultWrapper())).getWrapper()))
                 .scope(ApplicationScoped.class)
                 .defaultBean()
                 .unremovable()
