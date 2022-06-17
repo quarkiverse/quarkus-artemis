@@ -3,7 +3,7 @@
     <parent>
         <artifactId>quarkus-artemis-build-parent</artifactId>
         <groupId>io.quarkiverse.artemis</groupId>
-        <version>1.1.1-SNAPSHOT</version>
+        <version>1.1.1</version>
         <relativePath>../build-parent/pom.xml</relativePath>
     </parent>
 
