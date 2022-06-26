@@ -15,7 +15,11 @@ import io.restassured.response.Response;
 
 @QuarkusTest
 @QuarkusTestResource(ArtemisTestResource.class)
-public class ArtemisProducerXATest implements ArtemisHelper {
+public class ArtemisProducerXATest extends BaseArtemisProducerTest {
+    @Test
+    public void test() throws Exception {
+        super.test();
+    }
 
     @Test
     public void testXA() throws Exception {

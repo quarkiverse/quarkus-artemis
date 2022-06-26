@@ -6,6 +6,7 @@ import javax.jms.JMSContext;
 import javax.jms.JMSException;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 public interface ArtemisHelper {
 
@@ -14,6 +15,7 @@ public interface ArtemisHelper {
     }
 
     default JMSContext createContext() throws JMSException {
-        return new ActiveMQJMSConnectionFactory("tcp://localhost:61616").createContext(JMSContext.AUTO_ACKNOWLEDGE);
+        String url = ConfigProvider.getConfig().getValue("quarkus.artemis.url", String.class);
+        return new ActiveMQJMSConnectionFactory(url).createContext(JMSContext.AUTO_ACKNOWLEDGE);
     }
 }

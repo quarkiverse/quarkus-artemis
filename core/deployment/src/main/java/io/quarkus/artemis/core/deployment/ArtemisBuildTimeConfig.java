@@ -18,4 +18,10 @@ public class ArtemisBuildTimeConfig {
      */
     @ConfigItem(name = "xa.enabled", defaultValue = "false")
     public boolean xaEnabled;
+
+    /**
+     * Configuration for DevServices. DevServices allows Quarkus to automatically start ActiveMQ Artemis in dev and test mode.
+     */
+    @ConfigItem
+    public ArtemisDevServicesBuildTimeConfig devservices;
 }
