@@ -1,4 +1,4 @@
-package io.quarkus.artemis.jms.deployment;
+package io.quarkus.artemis.core.deployment;
 
 import java.time.Duration;
 import java.util.List;
@@ -10,8 +10,6 @@ import org.jboss.logging.Logger;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
-import io.quarkus.artemis.core.deployment.ArtemisBuildTimeConfig;
-import io.quarkus.artemis.core.deployment.ArtemisDevServicesBuildTimeConfig;
 import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.CuratedApplicationShutdownBuildItem;
@@ -32,8 +30,8 @@ import io.quarkus.runtime.configuration.ConfigUtils;
 /**
  * Start a ActiveMQ Artemis broker if needed
  */
-public class DevServicesArtemisJmsProcessor {
-    private static final Logger LOGGER = Logger.getLogger(DevServicesArtemisJmsProcessor.class);
+public class DevServicesArtemisProcessor {
+    private static final Logger LOGGER = Logger.getLogger(DevServicesArtemisProcessor.class);
     private static final String QUARKUS_ARTEMIS_URL = "quarkus.artemis.url";
 
     /**
@@ -164,7 +162,7 @@ public class DevServicesArtemisJmsProcessor {
             ConfigureUtil.configureSharedNetwork(container, "artemis");
 
             if (config.serviceName != null) {
-                container.withLabel(DevServicesArtemisJmsProcessor.DEV_SERVICE_LABEL, config.serviceName);
+                container.withLabel(DevServicesArtemisProcessor.DEV_SERVICE_LABEL, config.serviceName);
             }
 
             timeout.ifPresent(container::withStartupTimeout);
