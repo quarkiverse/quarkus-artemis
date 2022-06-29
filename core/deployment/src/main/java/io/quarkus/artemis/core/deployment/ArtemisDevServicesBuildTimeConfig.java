@@ -9,9 +9,7 @@ import io.quarkus.runtime.annotations.ConfigItem;
 public class ArtemisDevServicesBuildTimeConfig {
 
     /**
-     * If Dev Services for ActiveMQ Artemis has been explicitly enabled or disabled. Dev Services are generally enabled
-     * by default, unless there is an existing configuration present. For Artemis, Dev Services starts a broker unless
-     * {@code quarkus.artemis.url} is set.
+     * Enable or disable Dev Services explicitly. Dev Services are automatically enabled unless {@code quarkus.artemis.url} is set.
      */
     @ConfigItem
     public Optional<Boolean> enabled = Optional.empty();

@@ -82,7 +82,7 @@ public class DevServicesArtemisProcessor {
             }
         } catch (Throwable t) {
             compressor.closeAndDumpCaptured();
-            throw new RuntimeException(t);
+            throw t instanceof RuntimeException ? (RuntimeException) t : new RuntimeException(t);
         }
 
         if (devService == null) {
@@ -171,7 +171,7 @@ public class DevServicesArtemisProcessor {
             return new RunningDevService("ActiveMQ-Artemis",
                     container.getContainerId(),
                     container::close,
-                    QUARKUS_ARTEMIS_URL, String.format("tcp://localhost:%d", container.getMappedPort(ARTEMIS_PORT)));
+                    QUARKUS_ARTEMIS_URL, String.format("tcp://%s:%d", container.getHost(), container.getMappedPort(ARTEMIS_PORT)));
         };
 
         return maybeContainerAddress
