@@ -4,11 +4,13 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.activemq.artemis.api.core.TransportConfiguration;
 import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ;
 import org.apache.commons.io.FileUtils;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
+@Deprecated
 public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager {
 
     private EmbeddedActiveMQ embedded;
@@ -22,6 +24,14 @@ public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager 
         } catch (Exception e) {
             throw new RuntimeException("Could not start embedded ActiveMQ server", e);
         }
+
+        for (TransportConfiguration config : embedded.getConfiguration().getAcceptorConfigurations()) {
+            if (config.getName().equals("activemq")) {
+                return Collections.singletonMap("quarkus.artemis.url",
+                        String.format("tcp://%s:%s", config.getParams().get("host"), config.getParams().get("port")));
+            }
+        }
+
         return Collections.emptyMap();
     }
 

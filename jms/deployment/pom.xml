@@ -15,7 +15,6 @@
             <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-artemis-core-deployment</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-artemis-jms</artifactId>

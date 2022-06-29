@@ -45,6 +45,9 @@ Once the BOM is added, simply add the `io.quarkiverse.artemis:quarkus-artemis-jm
 </dependency>
 ----
 
+== Artemis DevServices
+Artemis DevServices are automatically enabled unless `quarkus.artemis.url` is set or `quarkus.artemis.devservices.enabled` is *false* explicitly. And if you still want to use `ArtemisTestResource` in the test, you need to disable artemis devservices.
+
 [[extension-configuration-reference]]
 == Configuration Reference
 
