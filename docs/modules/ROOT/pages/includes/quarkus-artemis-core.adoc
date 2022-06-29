@@ -30,7 +30,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 
 [.description]
 --
-If Dev Services for ActiveMQ Artemis has been explicitly enabled or disabled. Dev Services are generally enabled by default, unless there is an existing configuration present. For Artemis, Dev Services starts a broker unless `quarkus.artemis.url` is set.
+Enable or disable Dev Services explicitly. Dev Services are automatically enabled unless `quarkus.artemis.url` is set.
 --|boolean 
 |
 
@@ -91,6 +91,15 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 Password to start artemis broker
 --|string 
 |`admin`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.devservices.queues]]`link:#quarkus-artemis-core_quarkus.artemis.devservices.queues[quarkus.artemis.devservices.queues]`
+
+[.description]
+--
+Queues to create on starting
+--|list of string 
+|`[]`
 
 
 a| [[quarkus-artemis-core_quarkus.artemis.url]]`link:#quarkus-artemis-core_quarkus.artemis.url[quarkus.artemis.url]`

@@ -1,5 +1,7 @@
 package io.quarkus.artemis.core.deployment;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
@@ -9,7 +11,8 @@ import io.quarkus.runtime.annotations.ConfigItem;
 public class ArtemisDevServicesBuildTimeConfig {
 
     /**
-     * Enable or disable Dev Services explicitly. Dev Services are automatically enabled unless {@code quarkus.artemis.url} is set.
+     * Enable or disable Dev Services explicitly. Dev Services are automatically enabled unless {@code quarkus.artemis.url} is
+     * set.
      */
     @ConfigItem
     public Optional<Boolean> enabled = Optional.empty();
@@ -66,4 +69,10 @@ public class ArtemisDevServicesBuildTimeConfig {
      */
     @ConfigItem(defaultValue = "admin")
     public String password;
+
+    /**
+     * Queues to create on starting
+     */
+    @ConfigItem(defaultValue = "[]")
+    public List<String> queues = Collections.emptyList();
 }

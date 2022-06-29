@@ -157,6 +157,7 @@ public class DevServicesArtemisProcessor {
                     .withExposedPorts(ARTEMIS_PORT)
                     .withEnv("AMQ_USER", config.user)
                     .withEnv("AMQ_PASSWORD", config.password)
+                    .withEnv("AMQ_EXTRA_ARGS", "--queues " + String.join(", ", config.queues))
                     .waitingFor(Wait.forLogMessage(".* Apache ActiveMQ Artemis Message Broker .*", 1));
 
             ConfigureUtil.configureSharedNetwork(container, "artemis");
@@ -171,7 +172,8 @@ public class DevServicesArtemisProcessor {
             return new RunningDevService("ActiveMQ-Artemis",
                     container.getContainerId(),
                     container::close,
-                    QUARKUS_ARTEMIS_URL, String.format("tcp://%s:%d", container.getHost(), container.getMappedPort(ARTEMIS_PORT)));
+                    QUARKUS_ARTEMIS_URL,
+                    String.format("tcp://%s:%d", container.getHost(), container.getMappedPort(ARTEMIS_PORT)));
         };
 
         return maybeContainerAddress
@@ -193,10 +195,9 @@ public class DevServicesArtemisProcessor {
         private final Integer fixedExposedPort;
         private final boolean shared;
         private final String serviceName;
-
         private final String user;
-
         private final String password;
+        private final List<String> queues;
 
         public ArtemisDevServiceCfg(ArtemisDevServicesBuildTimeConfig config) {
             this.devServicesEnabled = config.enabled.orElse(true);
@@ -206,6 +207,7 @@ public class DevServicesArtemisProcessor {
             this.serviceName = config.serviceName;
             this.user = config.user;
             this.password = config.password;
+            this.queues = config.queues;
         }
 
         @Override
