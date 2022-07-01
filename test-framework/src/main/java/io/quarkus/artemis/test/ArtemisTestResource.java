@@ -10,7 +10,6 @@ import org.apache.commons.io.FileUtils;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
-@Deprecated
 public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager {
 
     private EmbeddedActiveMQ embedded;
