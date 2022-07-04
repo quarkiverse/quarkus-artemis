@@ -1,7 +1,5 @@
 package io.quarkus.artemis.core.deployment;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
@@ -71,8 +69,8 @@ public class ArtemisDevServicesBuildTimeConfig {
     public String password;
 
     /**
-     * Queues to create on starting
+     * The value of the {@code AMQ_EXTRA_ARGS} environment variable to pass to the container.
      */
-    @ConfigItem(defaultValue = "[]")
-    public List<String> queues = Collections.emptyList();
+    @ConfigItem(defaultValue = "--no-autotune --mapped --no-fsync")
+    public String extraArgs;
 }

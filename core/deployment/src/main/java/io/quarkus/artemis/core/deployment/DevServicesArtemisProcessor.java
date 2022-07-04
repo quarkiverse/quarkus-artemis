@@ -8,7 +8,9 @@ import java.util.function.Supplier;
 
 import org.jboss.logging.Logger;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.utility.DockerImageName;
 
 import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -153,12 +155,12 @@ public class DevServicesArtemisProcessor {
 
         // Starting the broker
         final Supplier<RunningDevService> defaultArtemisBrokerSupplier = () -> {
-            GenericContainer<?> container = new GenericContainer<>(config.imageName)
-                    .withExposedPorts(ARTEMIS_PORT)
-                    .withEnv("AMQ_USER", config.user)
-                    .withEnv("AMQ_PASSWORD", config.password)
-                    .withEnv("AMQ_EXTRA_ARGS", "--queues " + String.join(", ", config.queues))
-                    .waitingFor(Wait.forLogMessage(".* Apache ActiveMQ Artemis Message Broker .*", 1));
+            ArtemisContainer container = new ArtemisContainer(
+                    DockerImageName.parse(config.imageName),
+                    config.fixedExposedPort,
+                    config.user,
+                    config.password,
+                    config.extraArgs);
 
             ConfigureUtil.configureSharedNetwork(container, "artemis");
 
@@ -173,7 +175,7 @@ public class DevServicesArtemisProcessor {
                     container.getContainerId(),
                     container::close,
                     QUARKUS_ARTEMIS_URL,
-                    String.format("tcp://%s:%d", container.getHost(), container.getMappedPort(ARTEMIS_PORT)));
+                    String.format("tcp://%s:%d", container.getHost(), container.getPort()));
         };
 
         return maybeContainerAddress
@@ -197,7 +199,7 @@ public class DevServicesArtemisProcessor {
         private final String serviceName;
         private final String user;
         private final String password;
-        private final List<String> queues;
+        private final String extraArgs;
 
         public ArtemisDevServiceCfg(ArtemisDevServicesBuildTimeConfig config) {
             this.devServicesEnabled = config.enabled.orElse(true);
@@ -207,7 +209,7 @@ public class DevServicesArtemisProcessor {
             this.serviceName = config.serviceName;
             this.user = config.user;
             this.password = config.password;
-            this.queues = config.queues;
+            this.extraArgs = config.extraArgs;
         }
 
         @Override
@@ -226,6 +228,38 @@ public class DevServicesArtemisProcessor {
         @Override
         public int hashCode() {
             return Objects.hash(devServicesEnabled, imageName, fixedExposedPort);
+        }
+    }
+
+    /**
+     * Container configuring and starting the Artemis broker.
+     */
+    private static final class ArtemisContainer extends GenericContainer<ArtemisContainer> {
+
+        private final int port;
+
+        private ArtemisContainer(DockerImageName dockerImageName, int fixedExposedPort, String user, String password,
+                String extra) {
+            super(dockerImageName);
+            this.port = fixedExposedPort;
+            withNetwork(Network.SHARED);
+            withExposedPorts(ARTEMIS_PORT);
+            withEnv("AMQ_USER", user);
+            withEnv("AMQ_PASSWORD", password);
+            withEnv("AMQ_EXTRA_ARGS", extra);
+            waitingFor(Wait.forLogMessage(".*AMQ241004.*", 1)); // Artemis console available.
+        }
+
+        @Override
+        protected void configure() {
+            super.configure();
+            if (port > 0) {
+                addFixedExposedPort(port, ARTEMIS_PORT);
+            }
+        }
+
+        public int getPort() {
+            return getMappedPort(ARTEMIS_PORT);
         }
     }
 }
