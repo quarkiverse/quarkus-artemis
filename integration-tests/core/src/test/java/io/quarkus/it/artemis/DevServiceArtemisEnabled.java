@@ -13,7 +13,7 @@ public class DevServiceArtemisEnabled implements QuarkusTestProfile {
     public Map<String, String> getConfigOverrides() {
         Map<String, String> props = new HashMap<>();
         props.put("quarkus.artemis.devservices.enabled", "true");
-        props.put("quarkus.artemis.devservices.queues", "test-core");
+        props.put("quarkus.artemis.devservices.extra-args", "--no-autotune --queues test-core");
 
         return props;
     }

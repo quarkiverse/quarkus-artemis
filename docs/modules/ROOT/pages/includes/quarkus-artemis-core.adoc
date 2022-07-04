@@ -93,13 +93,13 @@ Password to start artemis broker
 |`admin`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.devservices.queues]]`link:#quarkus-artemis-core_quarkus.artemis.devservices.queues[quarkus.artemis.devservices.queues]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.devservices.extra-args]]`link:#quarkus-artemis-core_quarkus.artemis.devservices.extra-args[quarkus.artemis.devservices.extra-args]`
 
 [.description]
 --
-Queues to create on starting
---|list of string 
-|`[]`
+The value of the `AMQ_EXTRA_ARGS` environment variable to pass to the container.
+--|string 
+|`--no-autotune --mapped --no-fsync`
 
 
 a| [[quarkus-artemis-core_quarkus.artemis.url]]`link:#quarkus-artemis-core_quarkus.artemis.url[quarkus.artemis.url]`
