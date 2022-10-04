@@ -1,3 +1,5 @@
+
+:summaryTableId: quarkus-artemis-core
 [.configuration-legend]
 icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
 [.configuration-reference.searchable, cols="80,.^10,.^10"]
@@ -13,6 +15,13 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.he
 [.description]
 --
 Whether or not an health check is published in case the smallrye-health extension is present
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_HEALTH_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_HEALTH_ENABLED+++`
+endif::add-copy-button-to-env-var[]
 --|boolean 
 |`true`
 
@@ -22,6 +31,13 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.xa
 [.description]
 --
 Support to expose `javax.jms.XAConnectionFactory`
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_XA_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_XA_ENABLED+++`
+endif::add-copy-button-to-env-var[]
 --|boolean 
 |`false`
 
@@ -31,6 +47,13 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 [.description]
 --
 Enable or disable Dev Services explicitly. Dev Services are automatically enabled unless `quarkus.artemis.url` is set.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_ENABLED+++`
+endif::add-copy-button-to-env-var[]
 --|boolean 
 |
 
@@ -40,7 +63,14 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 [.description]
 --
 Optional fixed port the dev service will listen to. 
- If not defined, the port will be chosen randomly.
+If not defined, the port will be chosen randomly.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_PORT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_PORT+++`
+endif::add-copy-button-to-env-var[]
 --|int 
 |
 
@@ -50,6 +80,13 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 [.description]
 --
 The ActiveMQ Artemis container image to use.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_IMAGE_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_IMAGE_NAME+++`
+endif::add-copy-button-to-env-var[]
 --|string 
 |`quay.io/artemiscloud/activemq-artemis-broker:1.0.5`
 
@@ -59,8 +96,15 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 [.description]
 --
 Indicates if the ActiveMQ Artemis broker managed by Quarkus Dev Services is shared. When shared, Quarkus looks for running containers using label-based service discovery. If a matching container is found, it is used, and so a second one is not started. Otherwise, Dev Services for ActiveMQ Artemis starts a new container. 
- The discovery uses the `quarkus-dev-service-artemis` label. The value is configured using the `service-name` property. 
- Container sharing is only used in dev mode.
+The discovery uses the `quarkus-dev-service-artemis` label. The value is configured using the `service-name` property. 
+Container sharing is only used in dev mode.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_SHARED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_SHARED+++`
+endif::add-copy-button-to-env-var[]
 --|boolean 
 |`true`
 
@@ -70,7 +114,14 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 [.description]
 --
 The value of the `quarkus-dev-service-artemis` label attached to the started container. This property is used when `shared` is set to `true`. In this case, before starting a container, Dev Services for ActiveMQ Artemis looks for a container with the `quarkus-dev-service-artemis` label set to the configured value. If found, it will use this container instead of starting a new one. Otherwise it starts a new container with the `quarkus-dev-service-artemis` label set to the specified value. 
- This property is used when you need multiple shared ActiveMQ Artemis brokers.
+This property is used when you need multiple shared ActiveMQ Artemis brokers.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_SERVICE_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_SERVICE_NAME+++`
+endif::add-copy-button-to-env-var[]
 --|string 
 |`artemis`
 
@@ -80,6 +131,13 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 [.description]
 --
 User to start artemis broker
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_USER+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_USER+++`
+endif::add-copy-button-to-env-var[]
 --|string 
 |`admin`
 
@@ -89,6 +147,13 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 [.description]
 --
 Password to start artemis broker
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_PASSWORD+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_PASSWORD+++`
+endif::add-copy-button-to-env-var[]
 --|string 
 |`admin`
 
@@ -98,6 +163,13 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 [.description]
 --
 The value of the `AMQ_EXTRA_ARGS` environment variable to pass to the container.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_EXTRA_ARGS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_EXTRA_ARGS+++`
+endif::add-copy-button-to-env-var[]
 --|string 
 |`--no-autotune --mapped --no-fsync`
 
@@ -107,6 +179,13 @@ a| [[quarkus-artemis-core_quarkus.artemis.url]]`link:#quarkus-artemis-core_quark
 [.description]
 --
 Artemis connection url
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_URL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_URL+++`
+endif::add-copy-button-to-env-var[]
 --|string 
 |required icon:exclamation-circle[title=Configuration property is required]
 
@@ -116,6 +195,13 @@ a| [[quarkus-artemis-core_quarkus.artemis.username]]`link:#quarkus-artemis-core_
 [.description]
 --
 Username for authentication, only used with JMS
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_USERNAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_USERNAME+++`
+endif::add-copy-button-to-env-var[]
 --|string 
 |
 
@@ -125,6 +211,13 @@ a| [[quarkus-artemis-core_quarkus.artemis.password]]`link:#quarkus-artemis-core_
 [.description]
 --
 Password for authentication, only used with JMS
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_PASSWORD+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_PASSWORD+++`
+endif::add-copy-button-to-env-var[]
 --|string 
 |
 
