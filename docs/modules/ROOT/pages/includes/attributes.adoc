@@ -1,5 +1,5 @@
-:quarkus-version: 2.10.1.Final
-:quarkus-artemis-version: 1.2.0
+:quarkus-version: 2.13.0.Final
+:quarkus-artemis-version: 1.3.0
 
 :quarkus-org-url: https://github.com/quarkusio
 :quarkus-base-url: {quarkus-org-url}/quarkus
