@@ -14,6 +14,15 @@
         "code",
         "maintenance"
       ]
+    },
+    {
+      "login": "turing85",
+      "name": "Marco Bungart",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32584495?v=4",
+      "profile": "https://github.com/turing85",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

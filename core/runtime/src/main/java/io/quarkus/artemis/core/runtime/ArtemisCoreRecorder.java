@@ -9,23 +9,24 @@ import io.quarkus.runtime.annotations.Recorder;
 
 @Recorder
 public class ArtemisCoreRecorder {
-
-    final ArtemisRuntimeConfig config;
-
-    public ArtemisCoreRecorder(ArtemisRuntimeConfig config) {
-        this.config = config;
-    }
-
-    public Supplier<ServerLocator> getServerLocatorSupplier() {
-        return new Supplier<ServerLocator>() {
+    public Supplier<ServerLocator> getServerLocatorSupplier(
+            String name,
+            ArtemisRuntimeConfigs runtimeConfigs,
+            ArtemisBuildTimeConfigs buildTimeConfigs) {
+        ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisRuntimeConfig());
+        ArtemisBuildTimeConfig buildTimeConfig = buildTimeConfigs.getAllConfigs().getOrDefault(name,
+                new ArtemisBuildTimeConfig());
+        ArtemisUtil.validateIntegrity(runtimeConfig, buildTimeConfig, name);
+        return new Supplier<>() {
             @Override
             public ServerLocator get() {
                 try {
-                    return ActiveMQClient.createServerLocator(config.url);
+                    return ActiveMQClient.createServerLocator(runtimeConfig.getUrl());
                 } catch (Exception e) {
-                    throw new RuntimeException("Could not create ServerLocator", e);
+                    throw new RuntimeException(e);
                 }
             }
         };
     }
+
 }
