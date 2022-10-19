@@ -12,30 +12,30 @@ import org.apache.commons.io.FileUtils;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager {
-    private static final String DEFAULT_CONNECTION_NAME = "<default>";
+    private static final String DEFAULT_CONFIGURATION_NAME = "<default>";
 
-    private final String connectionName;
+    private final String configurationName;
     private EmbeddedActiveMQ embedded;
 
     @SuppressWarnings("unused")
     public ArtemisTestResource() {
-        this(DEFAULT_CONNECTION_NAME);
+        this(DEFAULT_CONFIGURATION_NAME);
     }
 
-    protected ArtemisTestResource(String connectionName) {
-        this.connectionName = Objects.requireNonNull(connectionName);
+    protected ArtemisTestResource(String configurationName) {
+        this.configurationName = Objects.requireNonNull(configurationName);
     }
 
     @Override
     public Map<String, String> start() {
         try {
-            final String artemisPath = String.format("./target/artemis/%s", connectionName);
+            final String artemisPath = String.format("./target/artemis/%s", configurationName);
             FileUtils.deleteDirectory(Paths.get(artemisPath).toFile());
             embedded = new EmbeddedActiveMQ()
                     .setConfigResourcePath(getConfigurationFileName());
             embedded.start();
         } catch (Exception e) {
-            throw new RuntimeException("Could not start embedded ActiveMQ server for connection " + connectionName, e);
+            throw new RuntimeException("Could not start embedded ActiveMQ server for configuration " + configurationName, e);
         }
 
         for (TransportConfiguration config : embedded.getConfiguration().getAcceptorConfigurations()) {
@@ -50,17 +50,17 @@ public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager 
     }
 
     private String getConfigurationFileName() {
-        if (connectionName.equals(DEFAULT_CONNECTION_NAME)) {
+        if (configurationName.equals(DEFAULT_CONFIGURATION_NAME)) {
             return "broker.xml";
         }
-        return String.format("broker-%s.xml", connectionName);
+        return String.format("broker-%s.xml", configurationName);
     }
 
     private String getUrlConfigKey() {
-        if (connectionName.equals(DEFAULT_CONNECTION_NAME)) {
+        if (configurationName.equals(DEFAULT_CONFIGURATION_NAME)) {
             return "quarkus.artemis.url";
         }
-        return String.format("quarkus.artemis.%s.url", connectionName);
+        return String.format("quarkus.artemis.\"%s\".url", configurationName);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager 
             try {
                 embedded.stop();
             } catch (Exception e) {
-                throw new RuntimeException("Could not stop embedded ActiveMQ server for connection" + connectionName, e);
+                throw new RuntimeException("Could not stop embedded ActiveMQ server for configuration " + configurationName, e);
             }
         }
     }

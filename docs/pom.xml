@@ -11,15 +11,6 @@
     <artifactId>quarkus-artemis-docs</artifactId>
     <name>Quarkus - Artemis - Documentation</name>
 
-    <dependencies>
-        <!-- Make sure the doc is built after the other artifacts -->
-        <dependency>
-            <groupId>io.quarkiverse.artemis</groupId>
-            <artifactId>quarkus-artemis-jms-deployment</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -88,4 +79,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <!-- Make sure the doc is built after the other artifacts -->
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-artemis-jms-deployment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>
