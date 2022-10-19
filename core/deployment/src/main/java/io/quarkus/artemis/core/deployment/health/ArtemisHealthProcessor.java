@@ -8,6 +8,7 @@ import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
+import io.quarkus.artemis.core.runtime.ShadowRunTimeConfigs;
 import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupport;
 import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupportRecorder;
 import io.quarkus.artemis.core.runtime.health.ServerLocatorHealthCheck;
@@ -19,6 +20,7 @@ import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.smallrye.health.deployment.spi.HealthBuildItem;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ArtemisHealthProcessor {
     @SuppressWarnings("unused")
     @Record(ExecutionTime.RUNTIME_INIT)
@@ -26,33 +28,42 @@ public class ArtemisHealthProcessor {
     ArtemisHealthSupportBuildItem healthSupport(
             Capabilities capabilities,
             ArtemisBootstrappedBuildItem bootstrap,
+            ShadowRunTimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer,
             ArtemisHealthSupportRecorder recorder) {
-        if (capabilities.isPresent(Capability.SMALLRYE_HEALTH) && buildTimeConfigs.isHealthEnabled()) {
-            syntheticBeanProducer.produce(SyntheticBeanBuildItem
-                    .configure(ArtemisHealthSupport.class)
-                    .supplier(recorder.getArtemisSupportBuilder(bootstrap.getConnectionNames(), buildTimeConfigs))
-                    .scope(ApplicationScoped.class)
-                    .defaultBean()
-                    .setRuntimeInit()
-                    .done());
-            return new ArtemisHealthSupportBuildItem();
+        if (!capabilities.isPresent(Capability.SMALLRYE_HEALTH)) {
+            return null;
         }
-        return null;
+        if (shadowRunTimeConfigs.isEmpty() && buildTimeConfigs.isEmpty()) {
+            return null;
+        }
+        if (!buildTimeConfigs.isHealthEnabled()) {
+            return null;
+        }
+        syntheticBeanProducer.produce(SyntheticBeanBuildItem
+                .configure(ArtemisHealthSupport.class)
+                .supplier(recorder.getArtemisSupportBuilder(bootstrap.getConfigurationNames(), shadowRunTimeConfigs,
+                        buildTimeConfigs))
+                .scope(ApplicationScoped.class)
+                .defaultBean()
+                .setRuntimeInit()
+                .done());
+        return new ArtemisHealthSupportBuildItem();
     }
 
     @SuppressWarnings("unused")
     @BuildStep
     HealthBuildItem healthChecks(
             Capabilities capabilities,
-            @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ArtemisJmsBuildItem> artemisJms,
-            @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ArtemisHealthSupportBuildItem> artemisHealthSupportBuildItem) {
-        if (artemisJms.isEmpty()
-                && capabilities.isPresent(Capability.SMALLRYE_HEALTH)
-                && artemisHealthSupportBuildItem.isPresent()) {
-            return new HealthBuildItem(ServerLocatorHealthCheck.class.getCanonicalName(), true);
+            Optional<ArtemisJmsBuildItem> artemisJms,
+            Optional<ArtemisHealthSupportBuildItem> artemisHealthSupportBuildItem) {
+        if (artemisJms.isPresent()) {
+            return null;
         }
-        return null;
+        if (artemisHealthSupportBuildItem.isEmpty()) {
+            return null;
+        }
+        return new HealthBuildItem(ServerLocatorHealthCheck.class.getCanonicalName(), true);
     }
 }

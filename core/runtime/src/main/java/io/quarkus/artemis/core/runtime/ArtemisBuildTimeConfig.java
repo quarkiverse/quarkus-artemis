@@ -5,8 +5,16 @@ import java.util.Optional;
 import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @ConfigGroup
 public class ArtemisBuildTimeConfig {
+    /**
+     * Whether to enable this configuration.
+     * <p>
+     * Is enabled by default.
+     */
+    @ConfigItem
+    public Optional<Boolean> enabled = Optional.empty();
 
     /**
      * Configuration for DevServices. DevServices allows Quarkus to automatically start ActiveMQ Artemis in dev and test mode.
@@ -20,15 +28,22 @@ public class ArtemisBuildTimeConfig {
      * <p>
      * By default, the health check includes all configured data sources (if it is enabled).
      */
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @ConfigItem
     public Optional<Boolean> healthExclude = Optional.empty();
 
     /**
-     * Support to expose {@link javax.jms.XAConnectionFactory}
+     * Support to expose {@link javax.jms.XAConnectionFactory}. Is not activated by default.
      */
-    @ConfigItem(defaultValue = "false")
-    public boolean xaEnabled;
+    @ConfigItem
+    public Optional<Boolean> xaEnabled = Optional.empty();
+
+    public boolean isEnabled() {
+        return enabled.orElse(true);
+    }
+
+    public boolean isDisabled() {
+        return !isEnabled();
+    }
 
     public ArtemisDevServicesBuildTimeConfig getDevservices() {
         return devservices;
@@ -39,6 +54,14 @@ public class ArtemisBuildTimeConfig {
     }
 
     public boolean isXaEnabled() {
-        return xaEnabled;
+        return xaEnabled.orElse(false);
+    }
+
+    public boolean isEmpty() {
+        return enabled.isEmpty() && devservices.isEmpty() && healthExclude.isEmpty() && xaEnabled.isEmpty();
+    }
+
+    public boolean isPresent() {
+        return !isEmpty();
     }
 }

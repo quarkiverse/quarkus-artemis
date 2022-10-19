@@ -3,16 +3,16 @@ package io.quarkus.artemis.core.runtime.health;
 import java.util.*;
 import java.util.function.Supplier;
 
-import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
-import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
+import io.quarkus.artemis.core.runtime.*;
 import io.quarkus.runtime.annotations.Recorder;
 
 @Recorder
 public class ArtemisHealthSupportRecorder {
     public Supplier<ArtemisHealthSupport> getArtemisSupportBuilder(
             Set<String> names,
+            ShadowRunTimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs) {
-        Set<String> excludedNames = processConfigs(names, buildTimeConfigs);
+        Set<String> excludedNames = processConfigs(names, shadowRunTimeConfigs, buildTimeConfigs);
         return new Supplier<>() {
             @Override
             public ArtemisHealthSupport get() {
@@ -23,13 +23,17 @@ public class ArtemisHealthSupportRecorder {
 
     private static Set<String> processConfigs(
             Set<String> names,
+            ShadowRunTimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs) {
         Set<String> excluded = new HashSet<>();
         Map<String, ArtemisBuildTimeConfig> allBuildTimeConfigs = Optional.ofNullable(buildTimeConfigs.getAllConfigs())
                 .orElse(Map.of());
         for (String name : names) {
             ArtemisBuildTimeConfig buildTimeConfig = allBuildTimeConfigs.getOrDefault(name, new ArtemisBuildTimeConfig());
-            if (buildTimeConfig.isHealthExclude()) {
+            ArtemisRuntimeConfig runtimeConfig = shadowRunTimeConfigs.getNamedConfigs().getOrDefault(name,
+                    new ArtemisRuntimeConfig());
+            if ((ArtemisUtil.isDefault(name) && runtimeConfig.isEmpty() && buildTimeConfig.isEmpty())
+                    || buildTimeConfig.isHealthExclude()) {
                 excluded.add(name);
             }
         }

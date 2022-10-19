@@ -8,7 +8,6 @@ import io.quarkus.runtime.annotations.*;
 @ConfigGroup
 @ConfigRoot(name = "artemis", phase = ConfigPhase.RUN_TIME)
 public class ArtemisRuntimeConfigs {
-
     /**
      * The default configuration
      */
@@ -37,5 +36,10 @@ public class ArtemisRuntimeConfigs {
             allConfigs.put(ArtemisUtil.DEFAULT_CONFIG_NAME, getDefaultConfig());
         }
         return allConfigs;
+    }
+
+    public boolean isEmpty() {
+        return defaultConfig.isEmpty()
+                && namedConfigs.isEmpty();
     }
 }

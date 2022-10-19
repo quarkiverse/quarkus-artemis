@@ -28,6 +28,7 @@ import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.smallrye.common.annotation.Identifier;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ArtemisCoreProcessor {
     private static final Logger LOGGER = Logger.getLogger(ArtemisCoreProcessor.class);
     private static final String FEATURE = "artemis-core";
@@ -45,8 +46,11 @@ public class ArtemisCoreProcessor {
 
     @SuppressWarnings("unused")
     @BuildStep
-    FeatureBuildItem feature() {
-        return new FeatureBuildItem(FEATURE);
+    FeatureBuildItem feature(Optional<ArtemisJmsBuildItem> artemisJms) {
+        if (artemisJms.isEmpty()) {
+            return new FeatureBuildItem(FEATURE);
+        }
+        return null;
     }
 
     @SuppressWarnings("unused")
@@ -63,20 +67,20 @@ public class ArtemisCoreProcessor {
     ArtemisBootstrappedBuildItem build(
             CombinedIndexBuildItem indexBuildItem,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-            ShadowRunTimeConfig shadowRunTimeConfig,
+            ShadowRunTimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs) {
         Collection<ClassInfo> connectorFactories = indexBuildItem.getIndex()
                 .getAllKnownImplementors(DotName.createSimple(ConnectorFactory.class.getName()));
         addDynamicReflectiveBuildItems(reflectiveClass, connectorFactories);
-        addBuiltinReflectiveBuiltitems(reflectiveClass, BUILTIN_CONNECTOR_FACTORIES);
+        addBuiltinReflectiveBuildItems(reflectiveClass, BUILTIN_CONNECTOR_FACTORIES);
 
         Collection<ClassInfo> loadBalancers = indexBuildItem.getIndex()
                 .getAllKnownImplementors(DotName.createSimple(ConnectionLoadBalancingPolicy.class.getName()));
         addDynamicReflectiveBuildItems(reflectiveClass, loadBalancers);
-        addBuiltinReflectiveBuiltitems(reflectiveClass, BUILTIN_LOADBALANCING_POLICIES);
-        HashSet<String> names = new HashSet<>(shadowRunTimeConfig.getNames());
+        addBuiltinReflectiveBuildItems(reflectiveClass, BUILTIN_LOADBALANCING_POLICIES);
+        HashSet<String> names = new HashSet<>(shadowRunTimeConfigs.getNames());
         HashSet<String> disabled = new HashSet<>();
-        for (var entry : shadowRunTimeConfig.getAllConfigs().entrySet()) {
+        for (var entry : buildTimeConfigs.getAllConfigs().entrySet()) {
             if (entry.getValue().isDisabled()) {
                 disabled.add(entry.getKey());
             }
@@ -92,15 +96,23 @@ public class ArtemisCoreProcessor {
     ArtemisCoreConfiguredBuildItem configure(
             ArtemisCoreRecorder recorder,
             ArtemisRuntimeConfigs runtimeConfigs,
+            ShadowRunTimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             ArtemisBootstrappedBuildItem bootstrap,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer,
-            @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ArtemisJmsBuildItem> artemisJms) {
+            Optional<ArtemisJmsBuildItem> artemisJms) {
         if (artemisJms.isPresent()) {
             return null;
         }
+        if (shadowRunTimeConfigs.isEmpty() && buildTimeConfigs.isEmpty()) {
+            return null;
+        }
 
-        for (String name : bootstrap.getConnectionNames()) {
+        for (String name : bootstrap.getConfigurationNames()) {
+            if (shadowRunTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisRuntimeConfig()).isEmpty()
+                    && buildTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisBuildTimeConfig()).isEmpty()) {
+                continue;
+            }
             Supplier<ServerLocator> supplier = recorder.getServerLocatorSupplier(
                     name,
                     runtimeConfigs,
@@ -120,7 +132,7 @@ public class ArtemisCoreProcessor {
         }
     }
 
-    private static void addBuiltinReflectiveBuiltitems(
+    private static void addBuiltinReflectiveBuildItems(
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
             Class<?>[] builtinConnectorFactories) {
         for (Class<?> c : builtinConnectorFactories) {
@@ -145,6 +157,7 @@ public class ArtemisCoreProcessor {
             String name) {
         if (ArtemisUtil.isDefault(name)) {
             configurator
+                    .unremovable()
                     .addQualifier().annotation(Default.class).done();
         }
         return configurator

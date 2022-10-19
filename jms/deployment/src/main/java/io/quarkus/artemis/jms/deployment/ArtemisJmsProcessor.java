@@ -1,6 +1,5 @@
 package io.quarkus.artemis.jms.deployment;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -15,9 +14,7 @@ import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisCoreProcessor;
 import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
-import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
-import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
-import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
+import io.quarkus.artemis.core.runtime.*;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsRecorder;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsWrapper;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -26,6 +23,7 @@ import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ArtemisJmsProcessor {
 
     private static final String FEATURE = "artemis-jms";
@@ -48,26 +46,35 @@ public class ArtemisJmsProcessor {
     ArtemisJmsConfiguredBuildItem configure(
             ArtemisJmsRecorder recorder,
             ArtemisRuntimeConfigs runtimeConfigs,
+            ShadowRunTimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             ArtemisBootstrappedBuildItem bootstrap,
-            @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ArtemisJmsWrapperBuildItem> wrapperItem,
+            Optional<ArtemisJmsWrapperBuildItem> wrapperItem,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer) {
+        if (shadowRunTimeConfigs.isEmpty() && buildTimeConfigs.isEmpty()) {
+            return null;
+        }
         ArtemisJmsWrapper wrapper = getWrapper(recorder, wrapperItem);
-        final Set<String> connectionNames = bootstrap.getConnectionNames();
-        recorder.init(runtimeConfigs, buildTimeConfigs, new HashSet<>(connectionNames));
-        for (String name : connectionNames) {
-            Supplier<ConnectionFactory> connectionFactorySupplier = recorder.getConnectionFactoryProducer(name, wrapper);
+        final Set<String> configurationNames = bootstrap.getConfigurationNames();
+        for (String name : configurationNames) {
+            if (shadowRunTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisRuntimeConfig()).isEmpty()
+                    && buildTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisBuildTimeConfig()).isEmpty()) {
+                continue;
+            }
+            Supplier<ConnectionFactory> connectionFactorySupplier = recorder.getConnectionFactoryProducer(name, runtimeConfigs,
+                    buildTimeConfigs, wrapper);
             syntheticBeanProducer.produce(toSyntheticBeanBuildItem(
                     name,
                     connectionFactorySupplier,
-                    buildTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisBuildTimeConfig()).isXaEnabled()));
+                    buildTimeConfigs.getAllConfigs().getOrDefault(name,
+                            new ArtemisBuildTimeConfig()).isXaEnabled()));
         }
         return new ArtemisJmsConfiguredBuildItem();
     }
 
     private static ArtemisJmsWrapper getWrapper(
             ArtemisJmsRecorder recorder,
-            @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ArtemisJmsWrapperBuildItem> wrapperItem) {
+            Optional<ArtemisJmsWrapperBuildItem> wrapperItem) {
         ArtemisJmsWrapper wrapper;
         if (wrapperItem.isPresent()) {
             wrapper = wrapperItem.get().getWrapper();

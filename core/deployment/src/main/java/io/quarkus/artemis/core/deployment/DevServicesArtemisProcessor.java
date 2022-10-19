@@ -1,10 +1,7 @@
 package io.quarkus.artemis.core.deployment;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -14,10 +11,7 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
-import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
-import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
-import io.quarkus.artemis.core.runtime.ArtemisDevServicesBuildTimeConfig;
-import io.quarkus.artemis.core.runtime.ArtemisUtil;
+import io.quarkus.artemis.core.runtime.*;
 import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.CuratedApplicationShutdownBuildItem;
@@ -38,10 +32,11 @@ import io.quarkus.runtime.configuration.ConfigUtils;
 /**
  * Start a ActiveMQ Artemis broker if needed
  */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class DevServicesArtemisProcessor {
     private static final Logger LOGGER = Logger.getLogger(DevServicesArtemisProcessor.class);
     private static final String QUARKUS_ARTEMIS_URL = "quarkus.artemis.url";
-    private static final String QUARKUS_ARTEMIS_NAMED_URL_TEMPLATE = "quarkus.artemis.%s.url";
+    private static final String QUARKUS_ARTEMIS_NAMED_URL_TEMPLATE = "quarkus.artemis.\"%s\".url";
 
     /**
      * Label to add to shared Dev Service for ActiveMQ Artemis running in containers.
@@ -62,23 +57,33 @@ public class DevServicesArtemisProcessor {
             DockerStatusBuildItem dockerStatusBuildItem,
             LaunchModeBuildItem launchMode,
             ArtemisBootstrappedBuildItem bootstrap,
+            ShadowRunTimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildConfigs,
             List<DevServicesSharedNetworkBuildItem> devServicesSharedNetworkBuildItem,
-            @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
+            Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
             CuratedApplicationShutdownBuildItem closeBuildItem,
             LoggingSetupBuildItem loggingSetupBuildItem,
             GlobalDevServicesConfig devServicesConfig) {
         ArrayList<DevServicesResultBuildItem> results = new ArrayList<>();
-        for (String name : bootstrap.getConnectionNames()) {
+        for (String name : bootstrap.getConfigurationNames()) {
+            ArtemisRuntimeConfig runtimeConfig = shadowRunTimeConfigs.getNamedConfigs().getOrDefault(name,
+                    new ArtemisRuntimeConfig());
+            ArtemisBuildTimeConfig buildTimeConfig = buildConfigs.getAllConfigs().getOrDefault(name,
+                    new ArtemisBuildTimeConfig());
+            if (runtimeConfig.isEmpty() && buildTimeConfig.isEmpty()) {
+                LOGGER.debugf(
+                        "Not starting dev services for ActiveMQ Artemis and configuration %s, as its configuration is empty.",
+                        name);
+                continue;
+            }
             ArtemisDevServiceCfg configuration = getConfiguration(
-                    buildConfigs.getAllConfigs().getOrDefault(name, new ArtemisBuildTimeConfig()),
+                    buildTimeConfig,
                     name);
             DevServicesResultBuildItem result = start(
                     configuration,
                     name,
                     dockerStatusBuildItem,
                     launchMode,
-                    devServicesSharedNetworkBuildItem,
                     consoleInstalledBuildItem,
                     closeBuildItem,
                     loggingSetupBuildItem,
@@ -96,7 +101,6 @@ public class DevServicesArtemisProcessor {
             String name,
             DockerStatusBuildItem dockerStatusBuildItem,
             LaunchModeBuildItem launchMode,
-            List<DevServicesSharedNetworkBuildItem> devServicesSharedNetworkBuildItem,
             Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
             CuratedApplicationShutdownBuildItem closeBuildItem,
             LoggingSetupBuildItem loggingSetupBuildItem,
@@ -157,7 +161,7 @@ public class DevServicesArtemisProcessor {
 
         if (devServices.get(name).isOwner()) {
             LOGGER.infof(
-                    "Dev Services for ActiveMQ Artemis and named connection %s started on %s",
+                    "Dev Services for ActiveMQ Artemis and named configuration %s started on %s",
                     name,
                     getArtemisUrl(name));
         }
@@ -196,14 +200,18 @@ public class DevServicesArtemisProcessor {
             Optional<Duration> timeout) {
         if (!config.devServicesEnabled) {
             // explicitly disabled
-            LOGGER.debug("Not starting dev services for ActiveMQ Artemis, as it has been disabled in the config.");
+            LOGGER.debugf(
+                    "Not starting dev services for ActiveMQ Artemis and configuration %s, as it has been disabled in the config.",
+                    name);
             return null;
         }
 
         // Check if quarkus.artemis.url is set
         String urlPropertyName = getUrlPropertyName(name);
         if (ConfigUtils.isPropertyPresent(urlPropertyName)) {
-            LOGGER.debug("Not starting dev services for ActiveMQ Artemis, the quarkus.artemis.url is configured.");
+            LOGGER.debugf(
+                    "Not starting dev services for ActiveMQ Artemis and configuration %s, the quarkus.artemis.url is configured.",
+                    name);
             return null;
         }
 

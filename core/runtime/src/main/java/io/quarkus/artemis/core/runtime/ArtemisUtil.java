@@ -11,17 +11,19 @@ public class ArtemisUtil {
     }
 
     public static void validateIntegrity(
+            String name,
             ArtemisRuntimeConfig runtimeConfig,
-            ArtemisBuildTimeConfig buildTimeConfig,
-            String name) {
+            ArtemisBuildTimeConfig buildTimeConfig) {
         final boolean devServiceEnabled = buildTimeConfig.getDevservices().isEnabled();
         if (runtimeConfig.getUrl() == null && devServiceEnabled) {
-            throw new IllegalStateException(String.format("Connection %s: url is not set and devservices is " +
-                    "activated. This is a bug. Please report it.", name));
+            throw new IllegalStateException(String.format(
+                    "Configuration %s: url is not set and devservices is activated. This is a bug. Please report it.", name));
         }
-        if (runtimeConfig.getUrl() == null && !devServiceEnabled) {
-            throw new IllegalStateException(String.format("Connection %s: url is not set and devservices are not " +
-                    "activated. Please set either the url or activate devservices.", name));
+        if ((runtimeConfig.isPresent() || buildTimeConfig.isPresent()) && buildTimeConfig.isEnabled()
+                && runtimeConfig.getUrl() == null) {
+            throw new IllegalStateException(String.format(
+                    "Configuration %s: the configuration is enabled, but no URL is configured. Please either disable the configuration or set the URL.",
+                    name));
         }
     }
 }

@@ -6,11 +6,13 @@
         <artifactId>quarkiverse-parent</artifactId>
         <version>10</version>
     </parent>
+
     <groupId>io.quarkiverse.artemis</groupId>
     <artifactId>quarkus-artemis-parent</artifactId>
     <version>999-SNAPSHOT</version>
-    <packaging>pom</packaging>
     <name>Quarkus - Artemis - Parent</name>
+
+    <packaging>pom</packaging>
     <modules>
         <module>bom</module>
         <module>build-parent</module>
@@ -31,6 +33,7 @@
 
         <artemis.version>2.26.0</artemis.version>
     </properties>
+
     <build>
         <pluginManagement>
             <plugins>

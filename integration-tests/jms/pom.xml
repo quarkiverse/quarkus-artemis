@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.quarkiverse.artemis</groupId>
         <artifactId>quarkus-artemis-integration-tests-parent</artifactId>
         <version>999-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>quarkus-integration-test-artemis-jms</artifactId>
-    <name>Quarkus - Artemis - Integration Tests - JMS</name>
-    <description>The Apache ActiveMQ Artemis JMS integration tests module</description>
+    <artifactId>quarkus-integration-test-artemis-jms-parent</artifactId>
+    <name>Quarkus - Artemis - Integration Tests - JMS Parent</name>
+    <description>The Apache ActiveMQ Artemis JMS integration tests parent module</description>
+
+    <packaging>pom</packaging>
+    <modules>
+        <module>empty-config</module>
+        <module>with-default</module>
+        <module>without-default</module>
+    </modules>
 
     <dependencies>
-        <!-- JAX-RS -->
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy</artifactId>
-        </dependency>
-
         <!-- Narayana Transaction Manager -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -30,60 +31,5 @@
             <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-artemis-jms</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.quarkiverse.artemis</groupId>
-            <artifactId>quarkus-test-artemis</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Health check -->
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-smallrye-health</artifactId>
-        </dependency>
-
-        <!-- test dependencies -->
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-jackson</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-junit5</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>artemis-server</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>commons-logging-jboss-logging</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
