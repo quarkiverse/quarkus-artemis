@@ -13,8 +13,10 @@ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager {
     private static final String DEFAULT_CONFIGURATION_NAME = "<default>";
+    private static final String QUARKUS_ARTEMIS_CONFIG_PREFIX = "quarkus.artemis";
 
     private final String configurationName;
+    private final String configurationPrefix;
     private EmbeddedActiveMQ embedded;
 
     @SuppressWarnings("unused")
@@ -23,6 +25,11 @@ public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager 
     }
 
     protected ArtemisTestResource(String configurationName) {
+        this(QUARKUS_ARTEMIS_CONFIG_PREFIX, configurationName);
+    }
+
+    protected ArtemisTestResource(String configurationPrefix, String configurationName) {
+        this.configurationPrefix = configurationPrefix;
         this.configurationName = Objects.requireNonNull(configurationName);
     }
 
@@ -60,7 +67,10 @@ public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager 
         if (configurationName.equals(DEFAULT_CONFIGURATION_NAME)) {
             return "quarkus.artemis.url";
         }
-        return String.format("quarkus.artemis.\"%s\".url", configurationName);
+        if (configurationPrefix.equals(QUARKUS_ARTEMIS_CONFIG_PREFIX)) {
+            return String.format("%s.\"%s\".url", configurationPrefix, configurationName);
+        }
+        return String.format("%s.%s.url", configurationPrefix, configurationName);
     }
 
     @Override

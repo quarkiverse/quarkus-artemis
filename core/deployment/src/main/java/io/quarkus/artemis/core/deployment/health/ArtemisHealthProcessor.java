@@ -13,7 +13,6 @@ import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupport;
 import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupportRecorder;
 import io.quarkus.artemis.core.runtime.health.ServerLocatorHealthCheck;
 import io.quarkus.deployment.Capabilities;
-import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -32,12 +31,6 @@ public class ArtemisHealthProcessor {
             ArtemisBuildTimeConfigs buildTimeConfigs,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer,
             ArtemisHealthSupportRecorder recorder) {
-        if (!capabilities.isPresent(Capability.SMALLRYE_HEALTH)) {
-            return null;
-        }
-        if (shadowRunTimeConfigs.isEmpty() && buildTimeConfigs.isEmpty()) {
-            return null;
-        }
         if (!buildTimeConfigs.isHealthEnabled()) {
             return null;
         }

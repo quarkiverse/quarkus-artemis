@@ -31,6 +31,12 @@ public abstract class BaseArtemisHealthCheckTest {
 
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> checks = (List<Map<String, Object>>) body.get("checks");
-        Assertions.assertEquals(0, checks.size());
+        Assertions.assertEquals(1, checks.size());
+        Map<String, Object> check = checks.get(0);
+        Assertions.assertEquals("Artemis JMS health check", check.get("name"));
+
+        @SuppressWarnings("unchecked")
+        Map<String, String> data = (Map<String, String>) check.getOrDefault("data", Map.of());
+        Assertions.assertEquals(0, data.size());
     }
 }
