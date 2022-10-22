@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>quarkus-integration-test-artemis-core-parent</artifactId>
+        <groupId>io.quarkiverse.artemis</groupId>
+        <version>999-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>quarkus-integration-test-artemis-core-with-default-and-external</artifactId>
+    <name>Quarkus - Artemis - Integration Tests - Core - With default and external configuration</name>
+    <description>The Apache ActiveMQ Artemis Core integration with default and external configuration tests module</description>
+
+</project>

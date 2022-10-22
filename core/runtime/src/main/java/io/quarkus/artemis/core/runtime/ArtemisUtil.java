@@ -1,5 +1,14 @@
 package io.quarkus.artemis.core.runtime;
 
+import java.lang.annotation.Annotation;
+import java.util.*;
+
+import javax.enterprise.inject.Any;
+
+import io.quarkus.arc.Arc;
+import io.quarkus.arc.InstanceHandle;
+import io.smallrye.common.annotation.Identifier;
+
 public class ArtemisUtil {
     public static final String DEFAULT_CONFIG_NAME = "<default>";
 
@@ -25,5 +34,26 @@ public class ArtemisUtil {
                     "Configuration %s: the configuration is enabled, but no URL is configured. Please either disable the configuration or set the URL.",
                     name));
         }
+    }
+
+    public static <T> Map<String, T> extractIdentifiers(Class<T> clazz, Set<String> namesToIgnore) {
+        HashMap<String, T> connectionFactoryNamesFromArc = new HashMap<>();
+        for (InstanceHandle<T> handle : Arc.container().listAll(clazz, Any.Literal.INSTANCE)) {
+            String name = extractIdentifier(handle);
+            if (name != null && !namesToIgnore.contains(name)) {
+                connectionFactoryNamesFromArc.put(name, handle.get());
+            }
+        }
+        return connectionFactoryNamesFromArc;
+    }
+
+    private static String extractIdentifier(InstanceHandle<?> handle) {
+        for (Annotation qualifier : handle.getBean().getQualifiers()) {
+            if (qualifier instanceof Identifier) {
+                Identifier identifier = (Identifier) qualifier;
+                return identifier.value();
+            }
+        }
+        return null;
     }
 }
