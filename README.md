@@ -1,6 +1,6 @@
 # Quarkus Artemis
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Version](https://img.shields.io/maven-central/v/io.quarkiverse.artemis/quarkus-artemis-jms?logo=apache-maven&style=flat-square)](https://search.maven.org/artifact/io.quarkiverse.artemis/quarkus-artemis-jms)
@@ -28,9 +28,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
-  <tr>
-    <td align="center"><a href="https://github.com/middagj"><img src="https://avatars.githubusercontent.com/u/157566?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jacob Middag</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=middagj" title="Code">💻</a> <a href="#maintenance-middagj" title="Maintenance">🚧</a></td>
-  </tr>
+  <tbody>
+    <tr>
+      <td align="center"><a href="https://github.com/middagj"><img src="https://avatars.githubusercontent.com/u/157566?v=4?s=100" width="100px;" alt="Jacob Middag"/><br /><sub><b>Jacob Middag</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=middagj" title="Code">💻</a> <a href="#maintenance-middagj" title="Maintenance">🚧</a></td>
+      <td align="center"><a href="https://github.com/turing85"><img src="https://avatars.githubusercontent.com/u/32584495?v=4?s=100" width="100px;" alt="Marco Bungart"/><br /><sub><b>Marco Bungart</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=turing85" title="Code">💻</a> <a href="#maintenance-turing85" title="Maintenance">🚧</a></td>
+    </tr>
+  </tbody>
 </table>
 
 <!-- markdownlint-restore -->
