@@ -21,7 +21,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/32584495?v=4",
       "profile": "https://github.com/turing85",
       "contributions": [
-        "code"
+        "code",
+        "maintenance"
       ]
     }
   ],
@@ -30,5 +31,6 @@
   "projectOwner": "quarkiverse",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitConvention": "angular"
 }
