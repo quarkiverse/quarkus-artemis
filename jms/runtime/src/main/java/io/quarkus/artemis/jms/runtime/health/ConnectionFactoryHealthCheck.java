@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 
@@ -19,6 +18,7 @@ import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupport;
 import io.smallrye.common.annotation.Identifier;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @Readiness
 @ApplicationScoped

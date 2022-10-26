@@ -2,8 +2,6 @@ package io.quarkus.artemis.core.deployment.health;
 
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
@@ -18,6 +16,7 @@ import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.smallrye.health.deployment.spi.HealthBuildItem;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ArtemisHealthProcessor {

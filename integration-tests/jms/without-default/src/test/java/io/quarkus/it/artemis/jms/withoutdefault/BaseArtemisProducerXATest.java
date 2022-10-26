@@ -20,7 +20,7 @@ public abstract class BaseArtemisProducerXATest extends BaseArtemisProducerTest 
     private void testXA(JMSContext context, String endpoint, String queueName) throws JMSException {
         String body = createBody();
         Response response = RestAssured.with().body(body).post(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
 
         try (JMSContext autoClosedContext = context) {
             JMSConsumer consumer = autoClosedContext.createConsumer(autoClosedContext.createQueue(queueName));
@@ -36,7 +36,7 @@ public abstract class BaseArtemisProducerXATest extends BaseArtemisProducerTest 
 
     private void testRollback(JMSContext context, String endpoint, String queueName) {
         Response response = RestAssured.with().body("fail").post(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
 
         try (JMSContext autoClosedContext = context) {
             JMSConsumer consumer = autoClosedContext.createConsumer(autoClosedContext.createQueue(queueName));

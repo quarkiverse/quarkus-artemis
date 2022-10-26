@@ -1,7 +1,7 @@
 package io.quarkus.it.artemis.jms.empty;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 
 @Path("/artemis")
 @Consumes(MediaType.TEXT_PLAIN)
