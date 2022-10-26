@@ -24,7 +24,7 @@ public abstract class BaseArtemisConsumerTest implements ArtemisHelper {
         }
 
         Response response = RestAssured.with().get(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
         Assertions.assertEquals(body, response.getBody().asString());
     }
 }

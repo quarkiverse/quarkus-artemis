@@ -18,7 +18,7 @@ public abstract class BaseArtemisProducerTest implements ArtemisHelper {
     protected void test(ClientSession session, String endpoint, String queueName) throws ActiveMQException {
         String body = createBody();
         Response response = RestAssured.with().body(body).post(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
 
         try (ClientSession autoClosedSession = session) {
             session.start();

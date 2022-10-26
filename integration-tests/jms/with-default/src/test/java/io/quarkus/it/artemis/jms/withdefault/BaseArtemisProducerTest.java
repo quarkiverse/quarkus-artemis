@@ -25,7 +25,7 @@ abstract public class BaseArtemisProducerTest implements ArtemisHelper {
     private void test(JMSContext context, String endpoint, String queueName) throws JMSException {
         String body = createBody();
         Response response = RestAssured.with().body(body).post(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
 
         try (JMSContext autoClosedContext = context) {
             JMSConsumer consumer = autoClosedContext.createConsumer(autoClosedContext.createQueue(queueName));

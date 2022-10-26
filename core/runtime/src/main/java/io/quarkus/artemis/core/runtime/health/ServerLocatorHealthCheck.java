@@ -2,8 +2,6 @@ package io.quarkus.artemis.core.runtime.health;
 
 import java.util.*;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.apache.activemq.artemis.api.core.client.ClientSessionFactory;
 import org.apache.activemq.artemis.api.core.client.ServerLocator;
 import org.eclipse.microprofile.health.HealthCheck;
@@ -16,6 +14,7 @@ import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.smallrye.common.annotation.Identifier;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @Readiness
 @ApplicationScoped
