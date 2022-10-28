@@ -43,10 +43,241 @@ Once the BOM is added, simply add the `io.quarkiverse.artemis:quarkus-artemis-jm
     <groupId>io.quarkiverse.artemis</groupId>
     <artifactId>quarkus-artemis-jms</artifactId>
 </dependency>
+<dependency>
+    <groupId>io.quarkiverse.artemis</groupId>
+    <artifactId>quarkus-test-artemis</artifactId>
+    <scope>test</scope>
+</dependency>
 ----
 
+We recommend to set properties `quarkus.version` and `artemis.version` to the versions you are using/need to use. We also recommend to align `artemis.version` with the artemis server version used.
+
+== Named configurations
+As with `quarkus.datasource`, we can configure multiple, named configuration. If a configuration is configured under the root `quarkus.artemis`, then this is the default or unnamed configuration. This corresponding bean is registered as the `@Default` bean and can be injected without additional qualifiers.
+
+.Injection of default `ServerLocator` when using `quarkus-artemis-core`
+[source,java,subs=attributes+]
+----
+public class MyClass {
+    ...
+    private final ServerLocator serverLocator;
+    ...
+
+    public MyClass (
+            ...
+            ServerLocator serverLocator,
+            ...
+    ) {
+        ...
+        this.serverLocator = serverLocator;
+        ...
+    }
+}
+----
+
+.Injection of default `ConnectionFactory` when using `quarkus-artemis-jms`
+[source,java,subs=attributes+]
+----
+public class MyClass {
+    ...
+    private final ConnectionFactory connectionFactory;
+    ...
+
+    public MyClass (
+            ...
+            ConnectionFactory connectionFactory,
+            ...
+    ) {
+        ...
+        this.connectionFactory = connectionFactory;
+        ...
+    }
+}
+----
+
+It is also registered with `@Identifier("<default>")`, so we can inject it with
+
+.Injection of default `ServerLocator` by its explicit name when using `quarkus-artemis-core`
+[source,java,subs=attributes+]
+----
+public class MyClass {
+    ...
+    private final ServerLocator serverLocator;
+    ...
+
+    public MyClass (
+            ...
+            @Identifier("<default>") ServerLocator serverLocator,
+            ...
+    ) {
+        ...
+        this.serverLocator = serverLocator;
+        ...
+    }
+}
+----
+
+.Injection of default `ConnectionFactory` by its explicit name when using `quarkus-artemis-jms`
+[source,java,subs=attributes+]
+----
+public class MyClass {
+    ...
+    private final ConnectionFactory connectionFactory;
+    ...
+
+    public MyClass (
+            ...
+            @Identifier("<default>") ConnectionFactory connectionFactory,
+            ...
+    ) {
+        ...
+        this.connectionFactory = connectionFactory;
+        ...
+    }
+}
+----
+
+Named configurations, on the other hand, are not configured as `@Default` bean and must therefore be injected by name. The name of the bean is the name of the configuration, and `@Identifier(...)` is used to qualify the name. So for example, if we define a configuration "named-1":
+
+.Named configuration "named-1"
+[source,properties,subs=attributes+]
+----
+quarkus.artemis."named-1".url=...
+quarkus.artemis."named-1".username=...
+quarkus.artemis."named-1".password=...
+----
+
+we can inject it with:
+
+.Injection of named `ServerLocator` "named-1" when using extension `quarkus-artemis-core`
+[source,java,subs=attributes+]
+----
+public class MyClass {
+    ...
+    private final ServerLocator serverLocator;
+    ...
+
+    public MyClass (
+            ...
+            @Identifier("named-1") ServerLocator serverLocator,
+            ...
+    ) {
+        ...
+        this.serverLocator = serverLocator;
+        ...
+    }
+}
+----
+
+.Injection of named `ConnectionFactory` "named-1" when using extension `quarkus-artemis-jms`
+[source,java,subs=attributes+]
+----
+public class MyClass {
+    ...
+    private final ConnectionFactory connectionFactory;
+    ...
+
+    public MyClass (
+            ...
+            @Identifier("named-1") ConnectionFactory connectionFactory,
+            ...
+    ) {
+        ...
+        this.connectionFactory = connectionFactory;
+        ...
+    }
+}
+----
+
+IMPORTANT: We strongly recommend the usage of link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`@Identifier` annotation] instead of the link:https://www.javadoc.io/doc/javax/javaee-api/latest/javax/inject/Named.html[`@Named` annotation]. Some other feature rely on the usage of `@Identfier`. Please see section <<_health_checks>> for details.
+
+== Configuration detection at build-time
+We took special care so the configurations behave "as intuitively as possible". This means that if no connection-related configuration (`enabled`, `url`, `username`, `password`, `devservices...`, `health-exclude`, `xa-enabled`) is present at build-time, it is assumed that the  configuration is not used and disabled. Therefore, if we want to use any configuration, but not configure it, we should set `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true* to explicitly enable the configuration.
+
+NOTE: binding a property to an environment variable, like `quarkus.artemis.url=${ARTEMIS_URL}` is sufficient, so the extension can pick-up the configuration at build-time.
+
+TIP: If we want to configure a connection solely through the implicit environment variables `QUARKUS_ARTEMIS...`, we should enable the configuration by setting `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true*. For example, if we want to configure connection `quarkus.artemis."named-1"` through the implicit environment variables, we would set `quarkus.artemis."named-1".enabled=true` and then configure the connection through environment variables `QUARKUS_ARTEMIS__NAMED_1__...`.
+
+Please do not try to configure a configuration purely through environment variables, without having any indication of its present in the application's configuration file. We specifically rely on the present of some configuration fragment at build-time to detect configurations.
+
+== XA Transactions
+XA Transactions  must be activated on a per-configuration basis, they are not enabled by default.
+
+To activate XA transactions, we can set `quarkus.artemis.xa-enabled` / `quarkus.artemis."named-configuration".xa-enabled` to *true*.
+
+== URL as optional configuration
+The `url` configuration property is optional. But in general, without a `url` property, we cannot create a connection. In case of tests with embedded resources or devservices, the corresponding annotation/service injects a url. But if  the application starts up and no `url` property is found, the creation of the bean will throw a `RuntimeException` with a corresponding error message. Notice that this will happen when the bean is created. If the bean is never used (and thus never created), the exception will not occur.
+
+== Health checks
+By default, all configurations are added to the health check endpoint when extension `quarkus-smallrye-health` is loaded.
+
+We can disable health checks for all `ServerLocator` s (extension `quarkus-artemis-core`) or `ConnectionFactory` s (extension `quarkus-artemis-jms`) by setting `quarkus.artemis.health.enabled` to *false*.
+
+We can disable health checks for individual configurations by setting `quarkus.artemis.health-exclude` / `quarkus.artemis."named-configuration".health-exclude` to *true*
+
+IMPORTANT: Note that we can only enable health checks through the above configuration if `quarkus.artemis.health.enabled` is *true*. Otherwise, setting `quarkus.artemis.health-exclude` / `quarkus.artemis."named-connection".health-exclude` has no effect.
+
+If we create `ServerLocator`- (extension `quarkus-artemis-core`) or `ConnectionFactory`- (extension `quarkus-artemis-jms`) beans within our application (i.e. outside of this extension), we can include them in the health check by using the link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`Identifier` annotation], e.g.:
+
+.Defining a `ServerLocator`-bean that is picked up automatically by health checks
+[source,java,subs=attributes+]
+----
+public class MyBeanProvider {
+    @ApplicationScoped
+    @Identified("my-server-locator") // this annotation makes it so the bean is picked up by the health endpoint
+    public ServerLocator mySeverLocator(...) {
+        ServerLocator myServerLocator = ...;
+        ...
+        return myServerLocator;
+    }
+}
+----
+
+.Defining a `ConnectionFactory`-bean that is picked up automatically by health checks
+[source,java,subs=attributes+]
+----
+public class MyBeanProvider {
+    @ApplicationScoped
+    @Identified("my-connection-factory") // this annotation makes it so the bean is picked up by the health endpoint
+    public ConnectionFactory myConnectionFactory(...) {
+        ConnectionFactory myConnectionFactory = ...;
+        ...
+        return myConnectionFactory;
+    }
+}
+----
+
+If we do not want that beans created within our application is picked up by the health endpoint, we can set `quarkus.artemis.health.external.enabled` to *false*.
+
+IMPORTANT: Note that `ServerLocator` s / `ConnectionFactory` s are only picked up when `quarkus.artemis.health.enabled` is *true*.
+
 == Artemis DevServices
-Artemis DevServices are automatically enabled unless `quarkus.artemis.url` is set or `quarkus.artemis.devservices.enabled` is *false* explicitly. And if you still want to use `ArtemisTestResource` in the test, you need to disable artemis devservices.
+Artemis DevServices are automatically enabled unless `quarkus.artemis.url` / `quarkus.artemis."named-configuration".url` is set or `quarkus.artemis.devservices.enabled` / `quarkus.artemis."named-configuration".enabled` is *false* explicitly. And if you still want to use `ArtemisTestResource` in the test, you need to disable artemis devservices.
+
+== Test framework
+To facilitate testing, we provide a dedicated testing framework that can start an in-memory artemis instance  For the default configuration, we can start an in-memory instance of artemis by annotating our tests with `@QuarkusTestResource(ArtemisTestResource.class)`. The embedded artemis can be configured through a `broker.xml`, located under `src/test/resources`.
+
+To start an in-memory artemis for a named configuration, we can define our own test annotation by extending `ArtemisTestResource.class`:
+
+.Annotation to start an in-memory artemis instance for the named configuration "named-1"
+[source,java,subs=attributes+]
+----
+public class NamedOneArtemisTestResource extends ArtemisTestResource {
+    public NamedOneArtemisTestResource() {
+        super("named-1");
+    }
+}
+----
+
+We can then annotate our test with `@QuarkusTestResource(NamedOneArtemisTestResource.class)`.
+
+This instance can be configured by placing a `broker-named-1.xml` in `src/test/resources`. In general, for a configuration with name `<name>`, we can configure the corresponding in-memory artemis through file `src/test/resources/broker-<name>.xml`.
+
+For an in-depth explanation of what can be configured in a `broker.xml`, please see the link:https://activemq.apache.org/components/artemis/documentation/latest/configuration-index.html:[official Artemis documentation].
+
+== Examples
+Examples can be found in the `integration-tests` module, e.g
+file:///integration-tests/core/with-default/src/test[The Apache ActiveMQ Artemis Core integration with default configuration tests module]
 
 [[extension-configuration-reference]]
 == Configuration Reference
