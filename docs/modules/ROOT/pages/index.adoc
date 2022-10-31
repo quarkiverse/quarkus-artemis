@@ -277,7 +277,7 @@ For an in-depth explanation of what can be configured in a `broker.xml`, please 
 
 == Examples
 Examples can be found in the `integration-tests` module, e.g
-file:///integration-tests/core/with-default/src/test[The Apache ActiveMQ Artemis Core integration with default configuration tests module]
+https://github.com/quarkiverse/quarkus-artemis/tree/2.0.0/integration-tests/core/with-default[The Apache ActiveMQ Artemis Core integration with default configuration tests module]
 
 [[extension-configuration-reference]]
 == Configuration Reference
