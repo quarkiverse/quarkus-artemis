@@ -181,7 +181,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.xa
 
 [.description]
 --
-Support to expose `javax.jms.XAConnectionFactory`. Is not activated by default.
+Support to expose `jakarta.jms.XAConnectionFactory`. Is not activated by default.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_XA_ENABLED+++[]
@@ -450,7 +450,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.-c
 
 [.description]
 --
-Support to expose `javax.jms.XAConnectionFactory`. Is not activated by default.
+Support to expose `jakarta.jms.XAConnectionFactory`. Is not activated by default.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__XA_ENABLED+++[]

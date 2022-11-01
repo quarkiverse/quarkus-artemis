@@ -1,7 +1,5 @@
 package io.quarkus.it.artemis.jms.withdefaultandexternal.embedded;
 
-import javax.jms.JMSContext;
-
 import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.Test;
@@ -10,6 +8,7 @@ import io.quarkus.artemis.test.ArtemisTestResource;
 import io.quarkus.it.artemis.jms.withdefaultandexternal.BaseArtemisConsumerTest;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.jms.JMSContext;
 
 @QuarkusTest
 @QuarkusTestResource(ArtemisTestResource.class)

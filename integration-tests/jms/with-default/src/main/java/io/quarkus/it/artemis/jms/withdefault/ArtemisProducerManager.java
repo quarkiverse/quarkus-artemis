@@ -1,10 +1,9 @@
 package io.quarkus.it.artemis.jms.withdefault;
 
-import javax.jms.*;
-
 import io.smallrye.common.annotation.Identifier;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
+import jakarta.jms.*;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.Synchronization;
 import jakarta.transaction.SystemException;

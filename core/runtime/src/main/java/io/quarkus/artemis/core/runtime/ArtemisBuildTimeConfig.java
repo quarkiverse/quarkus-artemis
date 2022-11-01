@@ -32,7 +32,7 @@ public class ArtemisBuildTimeConfig {
     public Optional<Boolean> healthExclude = Optional.empty();
 
     /**
-     * Support to expose {@link javax.jms.XAConnectionFactory}. Is not activated by default.
+     * Support to expose {@link jakarta.jms.XAConnectionFactory}. Is not activated by default.
      */
     @ConfigItem
     public Optional<Boolean> xaEnabled = Optional.empty();

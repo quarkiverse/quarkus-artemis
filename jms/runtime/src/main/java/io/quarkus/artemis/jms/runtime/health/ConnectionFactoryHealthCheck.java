@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
@@ -19,6 +16,8 @@ import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupport;
 import io.smallrye.common.annotation.Identifier;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.jms.Connection;
+import jakarta.jms.ConnectionFactory;
 
 @Readiness
 @ApplicationScoped
