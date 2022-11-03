@@ -109,7 +109,7 @@ public class ArtemisCoreProcessor {
         }
 
         for (String name : bootstrap.getConfigurationNames()) {
-            if (shadowRunTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisRuntimeConfig()).isEmpty()
+            if (shadowRunTimeConfigs.getAllConfigs().getOrDefault(name, new ShadowRuntimeConfig()).isEmpty()
                     && buildTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisBuildTimeConfig()).isEmpty()) {
                 continue;
             }

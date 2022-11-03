@@ -66,8 +66,8 @@ public class DevServicesArtemisProcessor {
             GlobalDevServicesConfig devServicesConfig) {
         ArrayList<DevServicesResultBuildItem> results = new ArrayList<>();
         for (String name : bootstrap.getConfigurationNames()) {
-            ArtemisRuntimeConfig runtimeConfig = shadowRunTimeConfigs.getNamedConfigs().getOrDefault(name,
-                    new ArtemisRuntimeConfig());
+            ShadowRuntimeConfig runtimeConfig = shadowRunTimeConfigs.getAllConfigs().getOrDefault(name,
+                    new ShadowRuntimeConfig());
             ArtemisBuildTimeConfig buildTimeConfig = buildConfigs.getAllConfigs().getOrDefault(name,
                     new ArtemisBuildTimeConfig());
             if (runtimeConfig.isEmpty() && buildTimeConfig.isEmpty()) {
@@ -78,6 +78,7 @@ public class DevServicesArtemisProcessor {
             }
             ArtemisDevServiceCfg configuration = getConfiguration(
                     buildTimeConfig,
+                    runtimeConfig,
                     name);
             DevServicesResultBuildItem result = start(
                     configuration,
@@ -262,9 +263,10 @@ public class DevServicesArtemisProcessor {
                 .orElseGet(defaultArtemisBrokerSupplier);
     }
 
-    private ArtemisDevServiceCfg getConfiguration(ArtemisBuildTimeConfig config, String name) {
+    private ArtemisDevServiceCfg getConfiguration(ArtemisBuildTimeConfig config, ShadowRuntimeConfig shadowRuntimeConfig,
+            String name) {
         if (config.getDevservices() != null) {
-            return new ArtemisDevServiceCfg(config.getDevservices(), name);
+            return new ArtemisDevServiceCfg(config, shadowRuntimeConfig, name);
         }
         return null;
     }
@@ -279,15 +281,17 @@ public class DevServicesArtemisProcessor {
         private final String password;
         private final String extraArgs;
 
-        public ArtemisDevServiceCfg(ArtemisDevServicesBuildTimeConfig config, String name) {
-            this.devServicesEnabled = config.isEnabled();
-            this.imageName = config.getImageName();
-            this.fixedExposedPort = config.getPort();
-            this.shared = config.isShared();
-            this.serviceName = config.getServiceName() + "-" + name;
-            this.user = config.getUser();
-            this.password = config.getPassword();
-            this.extraArgs = config.getExtraArgs();
+        public ArtemisDevServiceCfg(ArtemisBuildTimeConfig config, ShadowRuntimeConfig shadowRuntimeConfig, String name) {
+            ArtemisDevServicesBuildTimeConfig devServicesConfig = config.getDevservices();
+            this.devServicesEnabled = devServicesConfig.enabled
+                    .orElseGet(() -> shadowRuntimeConfig.url.isEmpty() ? true : false);
+            this.imageName = devServicesConfig.getImageName();
+            this.fixedExposedPort = devServicesConfig.getPort();
+            this.shared = devServicesConfig.isShared();
+            this.serviceName = devServicesConfig.getServiceName() + "-" + name;
+            this.user = devServicesConfig.getUser();
+            this.password = devServicesConfig.getPassword();
+            this.extraArgs = devServicesConfig.getExtraArgs();
         }
 
         @Override

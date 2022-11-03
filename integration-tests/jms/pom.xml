@@ -15,6 +15,7 @@
     <modules>
         <module>empty-config</module>
         <module>with-default</module>
+        <module>with-default-change-url</module>
         <module>with-default-and-external</module>
         <module>with-external</module>
         <module>without-default</module>
