@@ -12,7 +12,7 @@ import io.quarkus.runtime.annotations.*;
  * <p>
  * We use this configuration to access the configuration structure, and to extract the names of configurations
  * present at build-time, so we can create the {@link org.apache.activemq.artemis.api.core.client.ServerLocator} /
- * {@link javax.jms.ConnectionFactory} beans. Most importantly, we only query the presence of keys and/or values, we do
+ * {@link jakarta.jms.ConnectionFactory} beans. Most importantly, we only query the presence of keys and/or values, we do
  * * not access values, since they could change at runtime.
  */
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

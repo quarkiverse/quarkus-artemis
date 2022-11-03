@@ -1,12 +1,11 @@
 package io.quarkus.it.artemis.jms.withdefault.changeurl;
 
-import javax.jms.JMSContext;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import jakarta.jms.JMSContext;
 
 public abstract class BaseArtemisConsumerTest implements ArtemisHelper {
     @Test
@@ -26,7 +25,7 @@ public abstract class BaseArtemisConsumerTest implements ArtemisHelper {
         }
 
         Response response = RestAssured.with().get(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
         Assertions.assertEquals(body, response.getBody().asString());
     }
 }

@@ -24,7 +24,7 @@ public abstract class BaseArtemisHealthCheckTest {
 
     private static void test(String endpoint, Set<String> expectedConfigurations) {
         Response response = RestAssured.with().get(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
 
         Map<String, Object> body = response.as(new TypeRef<>() {
         });
