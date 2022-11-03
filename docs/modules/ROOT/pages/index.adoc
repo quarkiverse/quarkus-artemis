@@ -53,7 +53,17 @@ Once the BOM is added, simply add the `io.quarkiverse.artemis:quarkus-artemis-jm
 We recommend to set properties `quarkus.version` and `artemis.version` to the versions you are using/need to use. We also recommend to align `artemis.version` with the artemis server version used.
 
 == Named configurations
-As with `quarkus.datasource`, we can configure multiple, named configuration. If a configuration is configured under the root `quarkus.artemis`, then this is the default or unnamed configuration. This corresponding bean is registered as the `@Default` bean and can be injected without additional qualifiers.
+As with `quarkus.datasource`, we can configure multiple, named configuration. If a configuration is configured under the root `quarkus.artemis`, then this is the default or unnamed configuration.
+
+.Default configuration
+[source,properties,subs=attributes+]
+----
+quarkus.artemis.url=...
+quarkus.artemis.username=...
+quarkus.artemis.password=...
+----
+
+This corresponding bean is registered as the `@Default` bean and can be injected without additional qualifiers.
 
 .Injection of default `ServerLocator` when using `quarkus-artemis-core`
 [source,java,subs=attributes+]
@@ -137,7 +147,7 @@ public class MyClass {
 }
 ----
 
-Named configurations, on the other hand, are not configured as `@Default` bean and must therefore be injected by name. The name of the bean is the name of the configuration, and `@Identifier(...)` is used to qualify the name. So for example, if we define a configuration "named-1":
+Named configurations, on the other hand, are not configured as `@Default` beans and must therefore be injected by name. The name of the bean is the name of the configuration, and `@Identifier(...)` is used to qualify the name. So for example, if we define a configuration "named-1":
 
 .Named configuration "named-1"
 [source,properties,subs=attributes+]
@@ -189,10 +199,10 @@ public class MyClass {
 }
 ----
 
-IMPORTANT: We strongly recommend the usage of link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`@Identifier` annotation] instead of the link:https://www.javadoc.io/doc/javax/javaee-api/latest/javax/inject/Named.html[`@Named` annotation]. Some other feature rely on the usage of `@Identfier`. Please see section <<_health_checks>> for details.
+IMPORTANT: We strongly recommend the usage of link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`@Identifier` annotation] instead of the link:https://www.javadoc.io/doc/javax/javaee-api/latest/javax/inject/Named.html[`@Named` annotation]. Some other feature rely on the usage of `@Identfier`. Please see section <<health_checks>> for details.
 
 == Setting properties at runtime results in a warning
-When we override the properties `url`, `username` or `password` of a configuration at runtime - either through the implicit environment variable ('QUARKUS_ARTEMIS_URL`, `QUARKUS_ARTEMIS__CONNECTION_NAME__URL`), a custom environment variable (`quarkus.artemis.url=${ARTEMIS_URL:tcp://dummy:12345}) or a runtime-providded `.properties` files, we will see a warning at startup similar to this one:
+When we override the properties `url`, `username` or `password` of a configuration at runtime - either through the implicit environment variable (`QUARKUS_ARTEMIS_URL`, `QUARKUS_ARTEMIS\__CONNECTION_NAME__URL`), a custom environment variable (`quarkus.artemis.url=${ARTEMIS_URL:tcp://dummy:12345}`) or a runtime-provided `.properties` files, we will see a warning at startup similar to this one:
 
 .Warning at startup
 [source,subs=attributes+]
@@ -206,9 +216,9 @@ This is expected. We bind some properties twice: once as build-time property, on
 == Configuration detection at build-time
 We took special care so the configurations behave "as intuitively as possible". This means that if no connection-related configuration (`enabled`, `url`, `username`, `password`, `devservices...`, `health-exclude`, `xa-enabled`) is present at build-time, it is assumed that the  configuration is not used and disabled. Therefore, if we want to use any configuration, but not configure it, we should set `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true* to explicitly enable the configuration.
 
-NOTE: binding a property to an environment variable, like `quarkus.artemis.url=${ARTEMIS_URL}` is sufficient, so the extension can pick-up the configuration at build-time.
+NOTE: binding a property to an environment variable, like `quarkus.artemis.url=$\{ARTEMIS_URL}` is sufficient, so the extension can pick up the configuration at build-time.
 
-TIP: If we want to configure a connection solely through the implicit environment variables `QUARKUS_ARTEMIS...`, we should enable the configuration by setting `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true*. For example, if we want to configure connection `quarkus.artemis."named-1"` through the implicit environment variables, we would set `quarkus.artemis."named-1".enabled=true` and then configure the connection through environment variables `QUARKUS_ARTEMIS__NAMED_1__...`.
+TIP: If we want to configure a connection solely through the implicit environment variables `QUARKUS_ARTEMIS_...`, we should enable the configuration by setting `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true*. For example, if we want to configure connection `quarkus.artemis."named-1"` through the implicit environment variables, we would set `quarkus.artemis."named-1".enabled=true` and then configure the connection through environment variables `QUARKUS_ARTEMIS\__NAMED_1__...`.
 
 Please do not try to configure a configuration purely through environment variables, without having any indication of its present in the application's configuration file. We specifically rely on the present of some configuration fragment at build-time to detect configurations.
 
@@ -220,7 +230,7 @@ To activate XA transactions, we can set `quarkus.artemis.xa-enabled` / `quarkus.
 == URL as optional configuration
 The `url` configuration property is optional. But in general, without a `url` property, we cannot create a connection. In case of tests with embedded resources or devservices, the corresponding annotation/service injects a url. But if  the application starts up and no `url` property is found, the creation of the bean will throw a `RuntimeException` with a corresponding error message. Notice that this will happen when the bean is created. If the bean is never used (and thus never created), the exception will not occur.
 
-== Health checks
+== Health checks [[health_checks]]
 By default, all configurations are added to the health check endpoint when extension `quarkus-smallrye-health` is loaded.
 
 We can disable health checks for all `ServerLocator` s (extension `quarkus-artemis-core`) or `ConnectionFactory` s (extension `quarkus-artemis-jms`) by setting `quarkus.artemis.health.enabled` to *false*.
