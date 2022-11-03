@@ -26,7 +26,7 @@ public class ArtemisRuntimeConfigs {
 
     /**
      * Whether configurations ({@link org.apache.activemq.artemis.api.core.client.ServerLocator}s in case of the
-     * {@code artemis-core} extension, {@link org.gradle.tooling.internal.consumer.ConnectionFactory}s in case of the
+     * {@code artemis-core} extension, {@link javax.jms.ConnectionFactory}s in case of the
      * {@code artemis-jms} extension) should be included in the health check. Defaults to {@code true} if not set.
      */
     @ConfigItem(name = "health.external.enabled")
@@ -36,7 +36,7 @@ public class ArtemisRuntimeConfigs {
         return defaultConfig;
     }
 
-    public Map<String, ArtemisRuntimeConfig> getNamedConfigs() {
+    private Map<String, ArtemisRuntimeConfig> getNamedConfigs() {
         return namedConfigs;
     }
 
@@ -46,7 +46,7 @@ public class ArtemisRuntimeConfigs {
 
     public Map<String, ArtemisRuntimeConfig> getAllConfigs() {
         HashMap<String, ArtemisRuntimeConfig> allConfigs = new HashMap<>(getNamedConfigs());
-        if (getDefaultConfig() != null) {
+        if (getDefaultConfig() != null && !getDefaultConfig().isEmpty()) {
             allConfigs.put(ArtemisUtil.DEFAULT_CONFIG_NAME, getDefaultConfig());
         }
         return allConfigs;

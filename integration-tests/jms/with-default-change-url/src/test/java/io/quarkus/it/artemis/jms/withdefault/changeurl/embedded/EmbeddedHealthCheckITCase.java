@@ -1,4 +1,4 @@
-package io.quarkus.it.artemis.jms.empty.embedded;
+package io.quarkus.it.artemis.jms.withdefault.changeurl.embedded;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
