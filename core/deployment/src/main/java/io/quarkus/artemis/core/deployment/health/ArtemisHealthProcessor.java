@@ -11,7 +11,6 @@ import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
 import io.quarkus.artemis.core.deployment.ShadowRunTimeConfigs;
-import io.quarkus.artemis.core.deployment.ShadowRuntimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
@@ -60,9 +59,7 @@ public class ArtemisHealthProcessor {
                 .orElse(Map.of());
         for (String name : names) {
             ArtemisBuildTimeConfig buildTimeConfig = allBuildTimeConfigs.getOrDefault(name, new ArtemisBuildTimeConfig());
-            ShadowRuntimeConfig runtimeConfig = shadowRunTimeConfigs.getAllConfigs().getOrDefault(name,
-                    new ShadowRuntimeConfig());
-            if ((ArtemisUtil.isDefault(name) && runtimeConfig.isEmpty() && buildTimeConfig.isEmpty())
+            if ((ArtemisUtil.isDefault(name) && !shadowRunTimeConfigs.getNames().contains(name) && buildTimeConfig.isEmpty())
                     || buildTimeConfig.isHealthExclude()) {
                 excluded.add(name);
             }

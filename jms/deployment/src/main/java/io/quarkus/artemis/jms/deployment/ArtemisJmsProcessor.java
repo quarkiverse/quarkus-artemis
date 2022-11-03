@@ -55,7 +55,7 @@ public class ArtemisJmsProcessor {
         ArtemisJmsWrapper wrapper = getWrapper(recorder, wrapperItem);
         final Set<String> configurationNames = bootstrap.getConfigurationNames();
         for (String name : configurationNames) {
-            if (shadowRunTimeConfigs.getAllConfigs().getOrDefault(name, new ShadowRuntimeConfig()).isEmpty()
+            if (!shadowRunTimeConfigs.getNames().contains(name)
                     && buildTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisBuildTimeConfig()).isEmpty()) {
                 continue;
             }
