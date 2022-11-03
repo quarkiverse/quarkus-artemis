@@ -7,9 +7,7 @@ import java.util.function.Supplier;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
-import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
-import io.quarkus.artemis.core.deployment.ArtemisCoreProcessor;
-import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
+import io.quarkus.artemis.core.deployment.*;
 import io.quarkus.artemis.core.runtime.*;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsRecorder;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsWrapper;
@@ -56,7 +54,7 @@ public class ArtemisJmsProcessor {
         ArtemisJmsWrapper wrapper = getWrapper(recorder, wrapperItem);
         final Set<String> configurationNames = bootstrap.getConfigurationNames();
         for (String name : configurationNames) {
-            if (shadowRunTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisRuntimeConfig()).isEmpty()
+            if (!shadowRunTimeConfigs.getNames().contains(name)
                     && buildTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisBuildTimeConfig()).isEmpty()) {
                 continue;
             }

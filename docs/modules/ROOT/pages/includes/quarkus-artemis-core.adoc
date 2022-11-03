@@ -262,7 +262,7 @@ a| [[quarkus-artemis-core_quarkus.artemis.health.external.enabled]]`link:#quarku
 
 [.description]
 --
-Whether configurations (`org.apache.activemq.artemis.api.core.client.ServerLocator`s in case of the `artemis-core` extension, `org.gradle.tooling.internal.consumer.ConnectionFactory`s in case of the `artemis-jms` extension) should be included in the health check. Defaults to `true` if not set.
+Whether configurations (`org.apache.activemq.artemis.api.core.client.ServerLocator`s in case of the `artemis-core` extension, `javax.jms.ConnectionFactory`s in case of the `artemis-jms` extension) should be included in the health check. Defaults to `true` if not set.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_HEALTH_EXTERNAL_ENABLED+++[]

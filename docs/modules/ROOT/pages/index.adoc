@@ -191,6 +191,18 @@ public class MyClass {
 
 IMPORTANT: We strongly recommend the usage of link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`@Identifier` annotation] instead of the link:https://www.javadoc.io/doc/javax/javaee-api/latest/javax/inject/Named.html[`@Named` annotation]. Some other feature rely on the usage of `@Identfier`. Please see section <<_health_checks>> for details.
 
+== Setting properties at runtime results in a warning
+When we override the properties `url`, `username` or `password` of a configuration at runtime - either through the implicit environment variable ('QUARKUS_ARTEMIS_URL`, `QUARKUS_ARTEMIS__CONNECTION_NAME__URL`), a custom environment variable (`quarkus.artemis.url=${ARTEMIS_URL:tcp://dummy:12345}) or a runtime-providded `.properties` files, we will see a warning at startup similar to this one:
+
+.Warning at startup
+[source,subs=attributes+]
+----
+2022-11-03 00:53:17,060 WARN  [io.qua.run.con.ConfigRecorder] (main) Build time property cannot be changed at runtime:
+ - quarkus.artemis.url is set to 'tcp://localhost:61616' but it is build time fixed to 'tcp://dummy:12345'. Did you change the property quarkus.artemis.url after building the application?
+----
+
+This is expected. We bind some properties twice: once as build-time property, once as run time property. We do so to analyze the (run time-)configuration at build time to get a list of named connections. The overwritten configuration will take effect. The correct behaviour enforced by https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/core/with-default-change-url[two] different https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/jms/with-default-change-url[tests]. The above example is taken from the logs of our tests.
+
 == Configuration detection at build-time
 We took special care so the configurations behave "as intuitively as possible". This means that if no connection-related configuration (`enabled`, `url`, `username`, `password`, `devservices...`, `health-exclude`, `xa-enabled`) is present at build-time, it is assumed that the  configuration is not used and disabled. Therefore, if we want to use any configuration, but not configure it, we should set `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true* to explicitly enable the configuration.
 

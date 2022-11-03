@@ -66,11 +66,10 @@ public class DevServicesArtemisProcessor {
             GlobalDevServicesConfig devServicesConfig) {
         ArrayList<DevServicesResultBuildItem> results = new ArrayList<>();
         for (String name : bootstrap.getConfigurationNames()) {
-            ArtemisRuntimeConfig runtimeConfig = shadowRunTimeConfigs.getNamedConfigs().getOrDefault(name,
-                    new ArtemisRuntimeConfig());
             ArtemisBuildTimeConfig buildTimeConfig = buildConfigs.getAllConfigs().getOrDefault(name,
                     new ArtemisBuildTimeConfig());
-            if (runtimeConfig.isEmpty() && buildTimeConfig.isEmpty()) {
+            boolean isUrlEmpty = shadowRunTimeConfigs.isUrlEmpty(name);
+            if (!shadowRunTimeConfigs.getNames().contains(name) && buildTimeConfig.isEmpty()) {
                 LOGGER.debugf(
                         "Not starting dev services for ActiveMQ Artemis and configuration %s, as its configuration is empty.",
                         name);
@@ -78,7 +77,8 @@ public class DevServicesArtemisProcessor {
             }
             ArtemisDevServiceCfg configuration = getConfiguration(
                     buildTimeConfig,
-                    name);
+                    name,
+                    isUrlEmpty);
             DevServicesResultBuildItem result = start(
                     configuration,
                     name,
@@ -157,7 +157,7 @@ public class DevServicesArtemisProcessor {
             };
             closeBuildItem.addCloseTask(closeTask, true);
         }
-        cfgs.put(name, configuration);
+        cfgs.put(name, Objects.requireNonNull(configuration));
 
         if (devServices.get(name).isOwner()) {
             LOGGER.infof(
@@ -262,9 +262,9 @@ public class DevServicesArtemisProcessor {
                 .orElseGet(defaultArtemisBrokerSupplier);
     }
 
-    private ArtemisDevServiceCfg getConfiguration(ArtemisBuildTimeConfig config, String name) {
+    private ArtemisDevServiceCfg getConfiguration(ArtemisBuildTimeConfig config, String name, boolean isUrlEmpty) {
         if (config.getDevservices() != null) {
-            return new ArtemisDevServiceCfg(config.getDevservices(), name);
+            return new ArtemisDevServiceCfg(config, name, isUrlEmpty);
         }
         return null;
     }
@@ -279,15 +279,16 @@ public class DevServicesArtemisProcessor {
         private final String password;
         private final String extraArgs;
 
-        public ArtemisDevServiceCfg(ArtemisDevServicesBuildTimeConfig config, String name) {
-            this.devServicesEnabled = config.isEnabled();
-            this.imageName = config.getImageName();
-            this.fixedExposedPort = config.getPort();
-            this.shared = config.isShared();
-            this.serviceName = config.getServiceName() + "-" + name;
-            this.user = config.getUser();
-            this.password = config.getPassword();
-            this.extraArgs = config.getExtraArgs();
+        public ArtemisDevServiceCfg(ArtemisBuildTimeConfig config, String name, boolean isUrlEmpty) {
+            ArtemisDevServicesBuildTimeConfig devServicesConfig = config.getDevservices();
+            this.devServicesEnabled = devServicesConfig.enabled.orElse(isUrlEmpty);
+            this.imageName = devServicesConfig.getImageName();
+            this.fixedExposedPort = devServicesConfig.getPort();
+            this.shared = devServicesConfig.isShared();
+            this.serviceName = devServicesConfig.getServiceName() + "-" + name;
+            this.user = devServicesConfig.getUser();
+            this.password = devServicesConfig.getPassword();
+            this.extraArgs = devServicesConfig.getExtraArgs();
         }
 
         @Override
@@ -320,12 +321,12 @@ public class DevServicesArtemisProcessor {
                 String extra) {
             super(dockerImageName);
             this.port = fixedExposedPort;
-            withNetwork(Network.SHARED);
-            withExposedPorts(ARTEMIS_PORT);
-            withEnv("AMQ_USER", user);
-            withEnv("AMQ_PASSWORD", password);
-            withEnv("AMQ_EXTRA_ARGS", extra);
-            waitingFor(Wait.forLogMessage(".*AMQ241004.*", 1)); // Artemis console available.
+            withNetwork(Network.SHARED)
+                    .withExposedPorts(ARTEMIS_PORT)
+                    .withEnv("AMQ_USER", user)
+                    .withEnv("AMQ_PASSWORD", password)
+                    .withEnv("AMQ_EXTRA_ARGS", extra)
+                    .waitingFor(Wait.forLogMessage(".*AMQ241004.*", 1)); // Artemis console available.
         }
 
         @Override

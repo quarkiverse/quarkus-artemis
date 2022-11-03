@@ -35,13 +35,13 @@ public class ArtemisBuildTimeConfigs {
         return defaultConfig;
     }
 
-    public Map<String, ArtemisBuildTimeConfig> getNamedConfigs() {
+    private Map<String, ArtemisBuildTimeConfig> getNamedConfigs() {
         return namedConfigs;
     }
 
     public Map<String, ArtemisBuildTimeConfig> getAllConfigs() {
         HashMap<String, ArtemisBuildTimeConfig> allConfigs = new HashMap<>(getNamedConfigs());
-        if (getDefaultConfig() != null) {
+        if (getDefaultConfig() != null && !getDefaultConfig().isEmpty()) {
             allConfigs.put(ArtemisUtil.DEFAULT_CONFIG_NAME, getDefaultConfig());
         }
         return allConfigs;
