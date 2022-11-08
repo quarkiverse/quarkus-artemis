@@ -1,6 +1,6 @@
 package io.quarkus.artemis.test;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -36,8 +36,8 @@ public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager 
     @Override
     public Map<String, String> start() {
         try {
-            final String artemisPath = String.format("./target/artemis/%s", configurationName);
-            FileUtils.deleteDirectory(Paths.get(artemisPath).toFile());
+            var artemisPath = Path.of(".", "target", "artemis", getFileSystemSafeName(configurationName));
+            FileUtils.deleteDirectory(artemisPath.toFile());
             embedded = new EmbeddedActiveMQ()
                     .setConfigResourcePath(getConfigurationFileName());
             embedded.start();
@@ -60,7 +60,11 @@ public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager 
         if (configurationName.equals(DEFAULT_CONFIGURATION_NAME)) {
             return "broker.xml";
         }
-        return String.format("broker-%s.xml", configurationName);
+        return String.format("broker-%s.xml", getFileSystemSafeName(configurationName));
+    }
+
+    private static String getFileSystemSafeName(String name) {
+        return name.replaceAll("[^A-Za-z0-9_.-]", "_");
     }
 
     private String getUrlConfigKey() {
