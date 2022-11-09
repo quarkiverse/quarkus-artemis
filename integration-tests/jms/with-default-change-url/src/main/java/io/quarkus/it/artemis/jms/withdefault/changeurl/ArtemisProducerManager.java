@@ -1,6 +1,5 @@
 package io.quarkus.it.artemis.jms.withdefault.changeurl;
 
-import io.smallrye.common.annotation.Identifier;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.jms.*;
@@ -8,6 +7,8 @@ import jakarta.transaction.RollbackException;
 import jakarta.transaction.Synchronization;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.TransactionManager;
+
+import io.smallrye.common.annotation.Identifier;
 
 public class ArtemisProducerManager {
     static class Producer {

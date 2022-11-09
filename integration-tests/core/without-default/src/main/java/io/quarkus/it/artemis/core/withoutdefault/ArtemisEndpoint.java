@@ -1,8 +1,9 @@
 package io.quarkus.it.artemis.core.withoutdefault;
 
-import io.smallrye.common.annotation.Identifier;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+
+import io.smallrye.common.annotation.Identifier;
 
 @Path("/artemis")
 @Consumes(MediaType.TEXT_PLAIN)

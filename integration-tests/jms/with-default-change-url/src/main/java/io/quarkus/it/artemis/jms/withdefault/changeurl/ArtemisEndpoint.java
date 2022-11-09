@@ -1,9 +1,10 @@
 package io.quarkus.it.artemis.jms.withdefault.changeurl;
 
-import io.smallrye.common.annotation.Identifier;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+
+import io.smallrye.common.annotation.Identifier;
 
 @Path("/artemis")
 @Consumes(MediaType.TEXT_PLAIN)

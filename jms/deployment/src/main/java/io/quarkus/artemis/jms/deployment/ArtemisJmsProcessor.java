@@ -4,6 +4,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.XAConnectionFactory;
+
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
@@ -16,9 +20,6 @@ import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.XAConnectionFactory;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ArtemisJmsProcessor {

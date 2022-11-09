@@ -2,10 +2,10 @@ package io.quarkus.it.artemis.jms.withdefault;
 
 import java.util.Random;
 
+import jakarta.jms.JMSContext;
+
 import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
 import org.eclipse.microprofile.config.ConfigProvider;
-
-import jakarta.jms.JMSContext;
 
 public interface ArtemisHelper {
 

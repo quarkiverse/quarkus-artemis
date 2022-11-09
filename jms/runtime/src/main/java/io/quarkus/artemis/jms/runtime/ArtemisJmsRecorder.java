@@ -3,11 +3,12 @@ package io.quarkus.artemis.jms.runtime;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import jakarta.jms.ConnectionFactory;
+
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 
 import io.quarkus.artemis.core.runtime.*;
 import io.quarkus.runtime.annotations.Recorder;
-import jakarta.jms.ConnectionFactory;
 
 @Recorder
 public class ArtemisJmsRecorder {

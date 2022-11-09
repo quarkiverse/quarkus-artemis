@@ -3,10 +3,11 @@ package io.quarkus.artemis.core.runtime;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
+import jakarta.enterprise.inject.Any;
+
 import io.quarkus.arc.Arc;
 import io.quarkus.arc.InstanceHandle;
 import io.smallrye.common.annotation.Identifier;
-import jakarta.enterprise.inject.Any;
 
 public class ArtemisUtil {
     public static final String DEFAULT_CONFIG_NAME = "<default>";

@@ -1,12 +1,13 @@
 package io.quarkus.it.artemis.jms.withdefaultandexternal;
 
-import io.smallrye.common.annotation.Identifier;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
+
+import io.smallrye.common.annotation.Identifier;
 
 public class ArtemisConsumerManager {
     static class Producer {

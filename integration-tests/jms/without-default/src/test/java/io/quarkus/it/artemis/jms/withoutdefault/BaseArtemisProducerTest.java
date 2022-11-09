@@ -1,14 +1,15 @@
 package io.quarkus.it.artemis.jms.withoutdefault;
 
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import jakarta.jms.JMSConsumer;
-import jakarta.jms.JMSContext;
-import jakarta.jms.JMSException;
-import jakarta.jms.Message;
 
 abstract public class BaseArtemisProducerTest implements ArtemisHelper {
     @Test
