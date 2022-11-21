@@ -199,7 +199,7 @@ public class MyClass {
 }
 ----
 
-IMPORTANT: We strongly recommend the usage of link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`@Identifier` annotation] instead of the link:https://www.javadoc.io/doc/javax/javaee-api/latest/javax/inject/Named.html[`@Named` annotation]. Some other feature rely on the usage of `@Identfier`. Please see section <<health_checks>> for details.
+IMPORTANT: We strongly recommend the usage of link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`@Identifier` annotation] instead of the link:https://www.javadoc.io/doc/javax/javaee-api/latest/javax/inject/Named.html[`@Named` annotation]. Some other feature rely on the usage of `@Identifier`. Please see section <<health_checks>> for details.
 
 == Setting properties at runtime results in a warning
 When we override the properties `url`, `username` or `password` of a configuration at runtime - either through the implicit environment variable (`QUARKUS_ARTEMIS_URL`, `QUARKUS_ARTEMIS\__CONNECTION_NAME__URL`), a custom environment variable (`quarkus.artemis.url=${ARTEMIS_URL:tcp://dummy:12345}`) or a runtime-provided `.properties` files, we will see a warning at startup similar to this one:
