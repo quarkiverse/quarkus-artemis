@@ -1,10 +1,12 @@
 package io.quarkus.artemis.jms.runtime.health;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 
@@ -38,8 +40,13 @@ public class ConnectionFactoryHealthCheck implements HealthCheck {
     private void processKnownBeans(ArtemisRuntimeConfigs runtimeConfigs, HashSet<String> includedNames) {
         for (String name : includedNames) {
             if (runtimeConfigs.getAllConfigs().get(name) != null) {
-                ConnectionFactory connectionFactory = Arc.container()
-                        .instance(ConnectionFactory.class, Identifier.Literal.of(name)).get();
+                Annotation identifier;
+                if (ArtemisUtil.isDefault(name)) {
+                    identifier = Default.Literal.INSTANCE;
+                } else {
+                    identifier = Identifier.Literal.of(name);
+                }
+                ConnectionFactory connectionFactory = Arc.container().instance(ConnectionFactory.class, identifier).get();
                 if (connectionFactory != null) {
                     connectionFactories.put(name, connectionFactory);
                 }

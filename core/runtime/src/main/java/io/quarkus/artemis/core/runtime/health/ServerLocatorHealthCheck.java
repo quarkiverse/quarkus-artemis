@@ -1,8 +1,10 @@
 package io.quarkus.artemis.core.runtime.health;
 
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 
 import org.apache.activemq.artemis.api.core.client.ClientSessionFactory;
 import org.apache.activemq.artemis.api.core.client.ServerLocator;
@@ -35,7 +37,13 @@ public class ServerLocatorHealthCheck implements HealthCheck {
     private void processKnownBeans(ArtemisRuntimeConfigs runtimeConfigs, HashSet<String> includedNames) {
         for (String name : includedNames) {
             if (runtimeConfigs.getAllConfigs().get(name) != null) {
-                ServerLocator locator = Arc.container().instance(ServerLocator.class, Identifier.Literal.of(name)).get();
+                Annotation identifier;
+                if (ArtemisUtil.isDefault(name)) {
+                    identifier = Default.Literal.INSTANCE;
+                } else {
+                    identifier = Identifier.Literal.of(name);
+                }
+                ServerLocator locator = Arc.container().instance(ServerLocator.class, identifier).get();
                 if (locator != null) {
                     serverLocators.put(name, locator);
                 }
