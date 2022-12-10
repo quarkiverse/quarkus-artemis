@@ -1,5 +1,6 @@
 package io.quarkus.it.artemis.camel.jms.withexternal;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +28,7 @@ public abstract class ArtemisHealthCheckHelper {
         Assertions.assertEquals("Artemis JMS health check", check.get("name"));
 
         @SuppressWarnings("unchecked")
-        Map<String, String> data = (Map<String, String>) check.get("data");
+        Map<String, String> data = (Map<String, String>) check.getOrDefault("data", new HashMap<>());
         Assertions.assertEquals(expectedConfigurations.size(), data.size());
         Assertions.assertEquals(expectedConfigurations, data.keySet());
         for (String namedConfiguration : expectedConfigurations) {

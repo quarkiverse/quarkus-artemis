@@ -1,6 +1,6 @@
 package io.quarkus.it.artemis.camel.jms.withexternal.embedded;
 
-import java.util.Set;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,11 +13,11 @@ import io.quarkus.test.junit.QuarkusTest;
 class EmbeddedHealthCheckTest extends ArtemisHealthCheckHelper {
     @Test
     void testHealth() {
-        ArtemisHealthCheckHelper.test("/q/health", Set.of("externally-defined"));
+        ArtemisHealthCheckHelper.test("/q/health", Collections.emptySet());
     }
 
     @Test
     void testReady() {
-        ArtemisHealthCheckHelper.test("/q/health/ready", Set.of("externally-defined"));
+        ArtemisHealthCheckHelper.test("/q/health/ready", Collections.emptySet());
     }
 }
