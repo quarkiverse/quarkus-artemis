@@ -105,7 +105,7 @@ public class MyClass {
 }
 ----
 
-It is also registered with `@Identifier("<default>")`, so we can inject it with
+It is also registered with link:https://github.com/smallrye/smallrye-common/blob/main/annotation/src/main/java/io/smallrye/common/annotation/Identifier.java[`@Identifier("<default>")`], so we can inject it with
 
 .Injection of default `ServerLocator` by its explicit name when using `quarkus-artemis-core`
 [source,java,subs=attributes+]
@@ -201,8 +201,11 @@ public class MyClass {
 
 IMPORTANT: We strongly recommend the usage of link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`@Identifier` annotation] instead of the link:https://www.javadoc.io/doc/javax/javaee-api/latest/javax/inject/Named.html[`@Named` annotation]. Some other feature rely on the usage of `@Identifier`. Please see section <<health_checks>> for details.
 
+== `@Default` Bean [[default-bean]]
+When an unnamed configuration is provided, this configuration will be registered as link:https://jakarta.ee/specifications/cdi/2.0/apidocs/javax/enterprise/inject/default[`@Default`] bean. Otherwise, if only a single configuration is provided, this configuration will be registered as `@Default` bean. This mechanism allows us to inject this bean without any qualifier.
+
 == Setting properties at runtime results in a warning
-When we override the properties `url`, `username` or `password` of a configuration at runtime - either through the implicit environment variable (`QUARKUS_ARTEMIS_URL`, `QUARKUS_ARTEMIS\__CONNECTION_NAME__URL`), a custom environment variable (`quarkus.artemis.url=${ARTEMIS_URL:tcp://dummy:12345}`) or a runtime-provided `.properties` files, we will see a warning at startup similar to this one:
+When we override the properties `url`, `username` or `password` of a configuration at runtime - either through the implicit environment variable (`QUARKUS_ARTEMIS_URL`, `QUARKUS_ARTEMIS\__CONNECTION_NAME__URL`), a custom environment variable (`quarkus.artemis.url=${ARTEMIS_URL:tcp://dummy:12345}`) or a runtime-provided `.properties`-/`.yaml` files, we will see a warning at startup similar to this one:
 
 .Warning at startup
 [source,subs=attributes+]
@@ -211,14 +214,55 @@ When we override the properties `url`, `username` or `password` of a configurati
  - quarkus.artemis.url is set to 'tcp://localhost:61616' but it is build time fixed to 'tcp://dummy:12345'. Did you change the property quarkus.artemis.url after building the application?
 ----
 
-This is expected. We bind some properties twice: once as build-time property, once as run time property. We do so to analyze the (run time-)configuration at build time to get a list of named connections. The overwritten configuration will take effect. The correct behaviour enforced by https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/core/with-default-change-url[two] different https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/jms/with-default-change-url[tests]. The above example is taken from the logs of our tests.
+This is expected. We bind some properties twice: once as build-time property, once as run time property. We do so to analyze the (run time-)configuration at build time to get a list of named connections. The overwritten configuration will take effect. The correct behaviour is enforced by https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/core/with-default-change-url[two] different https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/jms/with-default-change-url[tests]. The above example is taken from the logs of those tests.
 
 == Configuration detection at build-time
-We took special care so the configurations behave "as intuitively as possible". This means that if no connection-related configuration (`enabled`, `url`, `username`, `password`, `devservices...`, `health-exclude`, `xa-enabled`) is present at build-time, it is assumed that the  configuration is not used and disabled. Therefore, if we want to use any configuration, but not configure it, we should set `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true* to explicitly enable the configuration.
+We took special care so the configurations behave "as intuitively as possible". This means that if no connection-related configuration (`enabled`, `url`, `username`, `password`, `devservices...`, `health-exclude`, `xa-enabled`) is present at build-time, it is assumed that the  configuration is not used and disabled. Therefore, if we want to use any configuration, but not configure it, we should set `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true* to explicitly enable the configuration. Due to the fact how the configuration system works in quarkus, we are only able to analyze properties defined in the default profile, i.e. properties without a prefix (`%dev`, `%text`, ...). If in doubt, we recommend setting `quarkus.artemis.enabled`/`quarkus.artemis."named-configuration".enabled` to **true**.
 
-NOTE: binding a property to an environment variable, like `quarkus.artemis.url=$\{ARTEMIS_URL}` is sufficient, so the extension can pick up the configuration at build-time.
+NOTE: This is also the case if we bind properties in the default profile to environment variables, without a default value. For example, `quarkus.artemis.url=$\{ARTEMIS_URL}` has no value at build-time, thus this property is "invisible" at build time.
+
+NOTE: Binding a property to an environment variable, like `quarkus.artemis.url=$\{ARTEMIS_URL}` is sufficient, so the extension can pick up the configuration at build-time.
 
 TIP: If we want to configure a connection solely through the implicit environment variables `QUARKUS_ARTEMIS_...`, we should enable the configuration by setting `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true*. For example, if we want to configure connection `quarkus.artemis."named-1"` through the implicit environment variables, we would set `quarkus.artemis."named-1".enabled=true` and then configure the connection through environment variables `QUARKUS_ARTEMIS\__NAMED_1__...`.
+
+Table <<table-visibility>> gives an overview when a property is visible at build time, and when it is not.
+
+.Visibility of configuration values
+[[table-visibility]]
+[cols=3*,options=header]
+|===
+| Description
+| Example
+| Visible?
+a|
+configuration property belonging to a specific profile
+a|
+* `%dev.quarkus.artemis.url=tcp://localhost:61616`
+* `%test.quarkus.artemis.password=${ARTEMIS_PASSWORD:artemis}`
+a|
+❌
+a|
+configuration property bound to constant value
+a|
+* `quarkus.artemis.url=tcp://localhost:61616`
+* `quarkus.artemis.username=artems`
+a|
+✔️
+a|
+configuration property bound to environment variable
+a|
+* `quarkus.artemis."named".url=${ARTEMIS_NAMED_URL}`
+* `quarkus.artemis.password=${ARTEMIS_PASSWORD}`
+a|
+❌
+a|
+configuration property bound to environment variable with default value
+a|
+* `quarkus.artemis."named".url=${ARTEMIS_NAMED_URL:tcp://localhost:61616}`
+* `quarkus.artemis.password=${ARTEMIS_PASSWORD:artemis}`
+a|
+✔️
+|===
 
 Please do not try to configure a configuration purely through environment variables, without having any indication of its present in the application's configuration file. We specifically rely on the present of some configuration fragment at build-time to detect configurations.
 
@@ -228,7 +272,7 @@ XA Transactions  must be activated on a per-configuration basis, they are not en
 To activate XA transactions, we can set `quarkus.artemis.xa-enabled` / `quarkus.artemis."named-configuration".xa-enabled` to *true*.
 
 == URL as optional configuration
-The `url` configuration property is optional. But in general, without a `url` property, we cannot create a connection. In case of tests with embedded resources or devservices, the corresponding annotation/service injects a url. But if  the application starts up and no `url` property is found, the creation of the bean will throw a `RuntimeException` with a corresponding error message. Notice that this will happen when the bean is created. If the bean is never used (and thus never created), the exception will not occur.
+The `url` configuration property is optional. But in general, without a `url` property, we cannot create a connection. In case of tests with embedded resources or devservices, the corresponding annotation/service injects an url. But if  the application starts up and no `url` property is found, the creation of the bean will throw a `RuntimeException` with a corresponding error message. Notice that this will happen when the bean is created. If the bean is never used (and thus never created), the exception will not occur.
 
 == Health checks [[health_checks]]
 By default, all configurations are added to the health check endpoint when extension `quarkus-smallrye-health` is loaded.
@@ -239,7 +283,7 @@ We can disable health checks for individual configurations by setting `quarkus.a
 
 IMPORTANT: Note that we can only enable health checks through the above configuration if `quarkus.artemis.health.enabled` is *true*. Otherwise, setting `quarkus.artemis.health-exclude` / `quarkus.artemis."named-connection".health-exclude` has no effect.
 
-If we create `ServerLocator`- (extension `quarkus-artemis-core`) or `ConnectionFactory`- (extension `quarkus-artemis-jms`) beans within our application (i.e. outside of this extension), we can include them in the health check by using the link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`Identifier` annotation], e.g.:
+If we create `ServerLocator`- (extension `quarkus-artemis-core`) or `ConnectionFactory`- (extension `quarkus-artemis-jms`) beans within our application (i.e. outside of this extension), we can include them in the health check by using the link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`@Identifier` annotation], e.g.:
 
 .Defining a `ServerLocator`-bean that is picked up automatically by health checks
 [source,java,subs=attributes+]
@@ -273,6 +317,36 @@ If we do not want that beans created within our application is picked up by the 
 
 IMPORTANT: Note that `ServerLocator` s / `ConnectionFactory` s are only picked up when `quarkus.artemis.health.enabled` is *true*.
 
+== Camel support
+All connection factories that are configured through `quarkus-artemis-jms` are automatically registered in the camel context, if the program uses camel. This allows us to reference the connection factories by name, e.g.:
+
+.Referencing `ConnectionFactory` s in a camel route by their bean name
+[source,java,subs=attributes+]
+----
+from(jms("queue:in").connectionFactory("<default>"))
+    .to(jms("queue:out").connectionFactory("named"));
+----
+
+As with <<health_checks>>, connection factories that are defined outside this extension, but are annotated with link:https://github.com/smallrye/smallrye-common/blob/main/annotation/src/main/java/io/smallrye/common/annotation/Identifier.java[`@Identifier`] are treated the same way. So if we define a `ConnectionFactory`-bean in our code, e.g. through a method annotated with link:https://jakarta.ee/specifications/cdi/4.0/apidocs/jakarta.cdi/jakarta/enterprise/inject/produces[`@Produces`] and, for example, `@Identifier("externally-defined")`, we can use this `ConnectionFactory` as follows:
+
+.Referencing an externally defined `ConnectionFactory`-bean by its name
+[source,java,subs=attributes+]
+----
+from(jms("queue:in").connectionFactory("externally-defined"))
+    .to(jms("queue:out").connectionFactory("externally-defined"));
+----
+
+Finally, if only a single `ConnectionFactory` is defined through `quarkus-artemis-jms`, this `ConnectionFactory` is always registered as link:https://jakarta.ee/specifications/cdi/2.0/apidocs/javax/enterprise/inject/default[`@Default`] bean (see Section <<default-bean>>). This allows us to use this `ConnectionFactory` implicitly in a camel route, without setting it explicitly:
+
+.Implicitly use the only `ConnectionFactory`-bean defined in the application
+[source,java,subs=attributes+]
+----
+from(jms("queue:in"))
+    .to(jms("queue:out"));
+----
+
+This also works for an externally defined `ConnectionFactory`, as long as it is defined as `@Default`. This mechanism stops working as soon as more than one `ConnectionFactory` bean is defined in the application.
+
 == Artemis DevServices
 Artemis DevServices are automatically enabled unless `quarkus.artemis.url` / `quarkus.artemis."named-configuration".url` is set or `quarkus.artemis.devservices.enabled` / `quarkus.artemis."named-configuration".enabled` is *false* explicitly. And if you still want to use `ArtemisTestResource` in the test, you need to disable artemis devservices.
 
@@ -298,7 +372,7 @@ This instance can be configured by placing a `broker-named-1.xml` in `src/test/r
 For an in-depth explanation of what can be configured in a `broker.xml`, please see the link:https://activemq.apache.org/components/artemis/documentation/latest/configuration-index.html:[official Artemis documentation].
 
 == Examples
-Examples can be found in the `integration-tests` module, e.g
+Examples can be found in the `integration-tests` module, e.g.
 https://github.com/quarkiverse/quarkus-artemis/tree/2.0.0/integration-tests/core/with-default[The Apache ActiveMQ Artemis Core integration with default configuration tests module]
 
 [[extension-configuration-reference]]
