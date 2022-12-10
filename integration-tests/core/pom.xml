@@ -13,10 +13,11 @@
 
     <packaging>pom</packaging>
     <modules>
+        <module>common</module>
         <module>empty-config</module>
         <module>with-default</module>
-        <module>with-default-change-url</module>
         <module>with-default-and-external</module>
+        <module>with-default-change-url</module>
         <module>with-external</module>
         <module>without-default</module>
     </modules>
@@ -26,6 +27,13 @@
         <dependency>
             <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-artemis-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-integration-test-artemis-common</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

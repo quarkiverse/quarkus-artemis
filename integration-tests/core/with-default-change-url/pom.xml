@@ -10,4 +10,17 @@
     <artifactId>quarkus-integration-test-artemis-core-with-default-change-url</artifactId>
     <name>Quarkus - Artemis - Integration Tests - Core - With default change url configuration</name>
     <description>The Apache ActiveMQ Artemis Core integration with default change url configuration tests module</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-integration-test-artemis-core-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-integration-test-artemis-core-common</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+        </dependency>
+    </dependencies>
 </project>

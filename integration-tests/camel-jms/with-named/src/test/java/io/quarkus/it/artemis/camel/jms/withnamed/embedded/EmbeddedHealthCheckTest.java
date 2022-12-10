@@ -4,20 +4,20 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.it.artemis.camel.jms.withnamed.ArtemisHealthCheckHelper;
+import io.quarkus.it.artemis.common.ArtemisHealthCheckHelper;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @QuarkusTestResource(NamedArtemisTestResource.class)
-class EmbeddedHealthCheckTest extends ArtemisHealthCheckHelper {
+class EmbeddedHealthCheckTest {
     @Test
     void testHealth() {
-        ArtemisHealthCheckHelper.test("/q/health", Set.of("named"));
+        ArtemisHealthCheckHelper.testJms("/q/health", Set.of("named"));
     }
 
     @Test
     void testReady() {
-        ArtemisHealthCheckHelper.test("/q/health/ready", Set.of("named"));
+        ArtemisHealthCheckHelper.testJms("/q/health/ready", Set.of("named"));
     }
 }

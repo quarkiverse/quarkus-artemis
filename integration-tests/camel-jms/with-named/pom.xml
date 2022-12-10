@@ -12,4 +12,14 @@
     <artifactId>quarkus-integration-test-artemis-camel-jms-with-named</artifactId>
     <name>Quarkus - Artemis - Integration Tests - Camel JMS - With named configuration</name>
     <description>The Apache ActiveMQ Artemis Camel JMS integration tests with named configuration module</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-integration-test-artemis-camel-jms-common</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

@@ -6,16 +6,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import io.quarkus.it.artemis.jms.common.ArtemisJmsConsumerManager;
+import io.quarkus.it.artemis.jms.common.ArtemisJmsProducerManager;
+
 @Path("send-and-receive")
 @Consumes(MediaType.TEXT_PLAIN)
 @Produces(MediaType.TEXT_PLAIN)
 public class ArtemisEndpoint {
-    private final ArtemisConsumerManager consumerManager;
-    private final ArtemisProducerManager producerManager;
+    private final ArtemisJmsConsumerManager consumerManager;
+    private final ArtemisJmsProducerManager producerManager;
 
-    public ArtemisEndpoint(
-            ArtemisConsumerManager consumerManager,
-            ArtemisProducerManager producerManager) {
+    public ArtemisEndpoint(ArtemisJmsConsumerManager consumerManager, ArtemisJmsProducerManager producerManager) {
         this.consumerManager = consumerManager;
         this.producerManager = producerManager;
     }

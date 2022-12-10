@@ -1,31 +1,22 @@
 package io.quarkus.it.artemis.jms.withoutdefault;
 
-import javax.jms.JMSConsumer;
-import javax.jms.JMSContext;
-import javax.jms.JMSException;
-import javax.jms.Message;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
+import io.quarkus.it.artemis.jms.common.ArtemisJmsHelper;
 
-abstract public class BaseArtemisProducerTest implements ArtemisHelper {
+abstract public class BaseArtemisProducerTest extends ArtemisJmsHelper {
     @Test
     void testNamedOne() throws Exception {
-        test(createNamedOnContext(), "/artemis/named-1", "test-jms-named-1");
+        receiveAndVerify("/artemis/named-1", createNamedOneContext(), "test-jms-named-1");
     }
 
-    private void test(JMSContext context, String endpoint, String queueName) throws JMSException {
-        String body = createBody();
-        Response response = RestAssured.with().body(body).post(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+    @Test
+    void testXANamedOne() throws Exception {
+        receiveAndVerify("/artemis/named-1/xa", createNamedOneContext(), "test-jms-named-1");
+    }
 
-        try (JMSContext autoClosedContext = context) {
-            JMSConsumer consumer = autoClosedContext.createConsumer(autoClosedContext.createQueue(queueName));
-            Message message = consumer.receive(1000L);
-            Assertions.assertEquals(body, message.getBody(String.class));
-        }
+    @Test
+    void testRollbackNamedOne() {
+        testRollback("/artemis/named-1/xa", createNamedOneContext(), "test-jms-named-1");
     }
 }
