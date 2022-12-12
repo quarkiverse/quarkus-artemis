@@ -45,6 +45,11 @@ jobs:
     strategy:
       matrix:
         integration-test-module: [
+          integration-tests/camel-jms/with-default,
+          integration-tests/camel-jms/with-default-and-named,
+          integration-tests/camel-jms/with-external,
+          integration-tests/camel-jms/with-named,
+          integration-tests/camel-jms/with-named-and-external,
           integration-tests/core/empty-config,
           integration-tests/core/with-default,
           integration-tests/core/with-default-and-external,
