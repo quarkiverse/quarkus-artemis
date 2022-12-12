@@ -38,7 +38,7 @@ jobs:
           cache: 'maven'
 
       - name: Build with Maven
-        run: mvn -B formatter:validate impsort:check verify --file pom.xml
+        run: mvn -B clean verify -Dno-format
 
-      - name: Build with Native
-        run: mvn -B verify --file pom.xml -Dnative -Dquarkus.native.container-build=true -Dnative.surefire.skip=true
+      - name: Build with Maven (Native)
+        run: mvn -B verify -Dnative -Dquarkus.native.container-build -Dnative.surefire.skip
