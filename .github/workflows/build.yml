@@ -23,11 +23,11 @@ on:
       - '.all-contributorsrc'
 
 jobs:
-  prefetch-cache:
+  populate-cache:
     runs-on: ubuntu-latest
 
     outputs:
-      cache-hit: ${{ steps.prefetch.cache-hit }}
+      cache-hit: ${{ steps.populate.outputs.cache-hit }}
 
     steps:
       - uses: actions/checkout@v3
@@ -40,10 +40,10 @@ jobs:
           cache: 'maven'
         id: setup
 
-      - name: Prefetch Maven Cache and verify whole project
-        id: prefetch
+      - name: Populate Maven Cache and run verify
+        id: populate
         run: |
-          if [[ ${{ steps.setup.outputs.cache-hit != 'true' }} ]]
+          if [[ ${{ steps.setup.outputs.cache-hit }} != 'true' ]]
           then
             mvn -B dependency:go-offline verify -Dno-verify
             echo "cache-hit=false" >> $GITHUB_OUTPUT
@@ -52,35 +52,34 @@ jobs:
           fi
 
   build:
-    needs: prefetch-cache
+    needs: populate-cache
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        integration-test-module: [
-          integration-tests/camel-jms/with-default,
-          integration-tests/camel-jms/with-default-and-named,
-          integration-tests/camel-jms/with-external,
-          integration-tests/camel-jms/with-named,
-          integration-tests/camel-jms/with-named-and-external,
-          integration-tests/core/empty-config,
-          integration-tests/core/with-default,
-          integration-tests/core/with-default-and-external,
-          integration-tests/core/with-default-change-url,
-          integration-tests/core/with-external,
-          integration-tests/core/without-default,
-          integration-tests/jms/empty-config,
-          integration-tests/jms/with-default,
-          integration-tests/jms/with-default-and-external,
-          integration-tests/jms/with-default-change-url,
-          integration-tests/jms/with-external,
-          integration-tests/jms/without-default
-        ]
-    runs-on: ubuntu-latest
+        integration-test-module:
+          - integration-tests/camel-jms/with-default,
+          - integration-tests/camel-jms/with-default-and-named,
+          - integration-tests/camel-jms/with-external,
+          - integration-tests/camel-jms/with-named,
+          - integration-tests/camel-jms/with-named-and-external,
+          - integration-tests/core/empty-config,
+          - integration-tests/core/with-default,
+          - integration-tests/core/with-default-and-external,
+          - integration-tests/core/with-default-change-url,
+          - integration-tests/core/with-external,
+          - integration-tests/core/without-default,
+          - integration-tests/jms/empty-config,
+          - integration-tests/jms/with-default,
+          - integration-tests/jms/with-default-and-external,
+          - integration-tests/jms/with-default-change-url,
+          - integration-tests/jms/with-external,
+          - integration-tests/jms/without-default
 
     steps:
-      - if: ${{ needs.prefetch-cache.outputs.outputs.cache-hit }}
+      - if: ${{ needs.populate-cache.outputs.cache-hit == 'true' }}
         uses: actions/checkout@v3
 
-      - if: ${{ needs.prefetch-cache.outputs.cache-hit }}
+      - if: ${{ needs.populate-cache.outputs.cache-hit == 'true' }}
         name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
@@ -88,7 +87,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - if: ${{ needs.prefetch-cache.outputs.cache-hit }}
+      - if: ${{ needs.populate-cache.outputs.cache-hit == 'true' }}
         name: Build with Maven (${{ matrix.integration-test-module }})
         run: |
           mvn -B clean verify \
@@ -101,35 +100,42 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        integration-test-module: [
-          integration-tests/camel-jms/with-default,
-          integration-tests/camel-jms/with-default-and-named,
-          integration-tests/camel-jms/with-external,
-          integration-tests/camel-jms/with-named,
-          integration-tests/camel-jms/with-named-and-external,
-          integration-tests/core/empty-config,
-          integration-tests/core/with-default,
-          integration-tests/core/with-default-and-external,
-          integration-tests/core/with-default-change-url,
-          integration-tests/core/with-external,
-          integration-tests/core/without-default,
-          integration-tests/jms/empty-config,
-          integration-tests/jms/with-default,
-          integration-tests/jms/with-default-and-external,
-          integration-tests/jms/with-default-change-url,
-          integration-tests/jms/with-external,
-          integration-tests/jms/without-default
-        ]
+        integration-test-module:
+          - integration-tests/camel-jms/with-default,
+          - integration-tests/camel-jms/with-default-and-named,
+          - integration-tests/camel-jms/with-external,
+          - integration-tests/camel-jms/with-named,
+          - integration-tests/camel-jms/with-named-and-external,
+          - integration-tests/core/empty-config,
+          - integration-tests/core/with-default,
+          - integration-tests/core/with-default-and-external,
+          - integration-tests/core/with-default-change-url,
+          - integration-tests/core/with-external,
+          - integration-tests/core/without-default,
+          - integration-tests/jms/empty-config,
+          - integration-tests/jms/with-default,
+          - integration-tests/jms/with-default-and-external,
+          - integration-tests/jms/with-default-change-url,
+          - integration-tests/jms/with-external,
+          - integration-tests/jms/without-default
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up JDK 11
+      - name: Get Maven Cache
         uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: 'temurin'
           cache: 'maven'
+
+      - name: Set up GraalVM 17
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: 17
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build with Maven (Native, ${{matrix.integration-test-module}})
         run: |
@@ -137,5 +143,4 @@ jobs:
             -pl core/deployment,jms/deployment,${{ matrix.integration-test-module }} \
             -am \
             -Dnative \
-            -Dquarkus.native.container-build \
             -Dnative.surefire.skip
