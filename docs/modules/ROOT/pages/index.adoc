@@ -272,7 +272,7 @@ XA Transactions  must be activated on a per-configuration basis, they are not en
 To activate XA transactions, we can set `quarkus.artemis.xa-enabled` / `quarkus.artemis."named-configuration".xa-enabled` to *true*.
 
 == URL as optional configuration
-The `url` configuration property is optional. But in general, without a `url` property, we cannot create a connection. In case of tests with embedded resources or devservices, the corresponding annotation/service injects an url. But if  the application starts up and no `url` property is found, the creation of the bean will throw a `RuntimeException` with a corresponding error message. Notice that this will happen when the bean is created. If the bean is never used (and thus never created), the exception will not occur.
+The `url` configuration property is optional. But in general, without a `url` property, we cannot create a connection. In case of tests with embedded resources or devservices, the corresponding annotation/service injects a url. But if  the application starts up and no `url` property is found, the creation of the bean will throw a `RuntimeException` with a corresponding error message. Notice that this will happen when the bean is created. If the bean is never used (and thus never created), the exception will not occur.
 
 == Health checks [[health_checks]]
 By default, all configurations are added to the health check endpoint when extension `quarkus-smallrye-health` is loaded.
