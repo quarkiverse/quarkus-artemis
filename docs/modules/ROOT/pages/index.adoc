@@ -52,6 +52,8 @@ Once the BOM is added, simply add the `io.quarkiverse.artemis:quarkus-artemis-jm
 
 We recommend to set properties `quarkus.version` and `artemis.version` to the versions you are using/need to use. We also recommend to align `artemis.version` with the artemis server version used.
 
+If you are using `camel-quarkus`, we also recommend setting `camel-quarkus.platform.version` to the version of camel used.
+
 == Named configurations
 As with `quarkus.datasource`, we can configure multiple, named configuration. If a configuration is configured under the root `quarkus.artemis`, then this is the default or unnamed configuration.
 
