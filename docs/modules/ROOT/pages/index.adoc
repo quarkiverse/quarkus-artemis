@@ -349,6 +349,8 @@ from(jms("queue:in"))
 
 This also works for an externally defined `ConnectionFactory`, as long as it is defined as `@Default`. This mechanism stops working as soon as more than one `ConnectionFactory` bean is defined in the application.
 
+In `camel-quarkus`, an externally defined `ConnectionFactory` can only be referenced by its name in a route configuration if it has a `@Named(...)` annotation (link:https://camel.apache.org/camel-quarkus/2.15.x/user-guide/cdi.html#_refer_to_a_bean_by_name:[documentation]). This conflicts somewhat with the philosophy of the `quarkus-artemis` extensions, since it uses `@Identifier` instead. We bridge this gap by allowing to register all `ConnectionFactory` s annotated with `@Identifier` with the camel context. To enable this feature, we can set configuration property `quarkus.artemis.camel-quarkus-enhance-enabled` to **true**. This property is set to **false** by default.
+
 == Artemis DevServices
 Artemis DevServices are automatically enabled unless `quarkus.artemis.url` / `quarkus.artemis."named-configuration".url` is set or `quarkus.artemis.devservices.enabled` / `quarkus.artemis."named-configuration".enabled` is *false* explicitly. And if you still want to use `ArtemisTestResource` in the test, you need to disable artemis devservices.
 
