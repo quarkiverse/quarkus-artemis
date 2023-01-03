@@ -3,6 +3,7 @@ package io.quarkus.it.artemis.camel.jms.withnamedandexternal;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.Typed;
+import javax.inject.Named;
 import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
@@ -17,6 +18,7 @@ public class BeanProducer {
     @Typed({ ConnectionFactory.class })
     @ApplicationScoped
     @Identifier("externally-defined")
+    @Named("externally-defined")
     ActiveMQConnectionFactory externallyDefinedConnectionFactory(
             @ConfigProperty(name = "artemis.externally-defined.url") String externallyDefinedUrl) {
         return new ActiveMQConnectionFactory(externallyDefinedUrl);
