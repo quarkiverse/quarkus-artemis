@@ -94,7 +94,8 @@ public class ArtemisJmsProcessor {
             boolean isXaEnable) {
         SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator = initializeConfigurator(isXaEnable)
                 .supplier(connectionFactorySupplier)
-                .scope(ApplicationScoped.class);
+                .scope(ApplicationScoped.class)
+                .name(name);
         return ArtemisCoreProcessor.addQualifiers(name, isSoleConnectionFactory, configurator)
                 .setRuntimeInit()
                 .done();

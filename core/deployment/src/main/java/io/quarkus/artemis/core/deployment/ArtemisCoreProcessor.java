@@ -161,7 +161,8 @@ public class ArtemisCoreProcessor {
         if (ArtemisUtil.isDefault(name) || isSoleArtemisBean) {
             configurator
                     .unremovable()
-                    .addQualifier().annotation(Default.class).done();
+                    .addQualifier().annotation(Default.class).done()
+                    .name(name);
         }
         return configurator
                 .addQualifier().annotation(Identifier.class).addValue("value", name).done();
