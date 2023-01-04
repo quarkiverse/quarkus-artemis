@@ -31,6 +31,16 @@ public class ArtemisBuildTimeConfigs {
     @ConfigItem(name = "health.enabled")
     public Optional<Boolean> healthEnabled = Optional.empty();
 
+    /**
+     * Whether camel context enhancement should be enabled.
+     * <p>
+     * If enabled, all {@link javax.jms.ConnectionFactory}s annotated with
+     * {@link io.smallrye.common.annotation.Identifier} are registered as named beans in the camel
+     * context.
+     */
+    @ConfigItem(name = "camel-quarkus-enhance-enabled")
+    public boolean camelQuarkusEnhanceEnable = false;
+
     public ArtemisBuildTimeConfig getDefaultConfig() {
         return defaultConfig;
     }
@@ -55,5 +65,9 @@ public class ArtemisBuildTimeConfigs {
         return defaultConfig.isEmpty()
                 && namedConfigs.isEmpty()
                 && healthEnabled.isEmpty();
+    }
+
+    public boolean isCamelQuarkusEnhanceEnable() {
+        return camelQuarkusEnhanceEnable;
     }
 }
