@@ -59,7 +59,6 @@
                         <artifactId>johnzon-core</artifactId>
                     </exclusion>
 
-
                     <!-- Quarkus uses JBoss Logging facade -->
                     <exclusion>
                         <groupId>commons-logging</groupId>
