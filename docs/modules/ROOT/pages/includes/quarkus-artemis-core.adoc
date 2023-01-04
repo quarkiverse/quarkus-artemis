@@ -210,6 +210,23 @@ endif::add-copy-button-to-env-var[]
 |
 
 
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.camel-quarkus-enhance-enabled]]`link:#quarkus-artemis-core_quarkus.artemis.camel-quarkus-enhance-enabled[quarkus.artemis.camel-quarkus-enhance-enabled]`
+
+[.description]
+--
+Whether camel context enhancement should be enabled. 
+If enabled, all `javax.jms.ConnectionFactory`s annotated with `io.smallrye.common.annotation.Identifier` are registered as named beans in the camel context.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CAMEL_QUARKUS_ENHANCE_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CAMEL_QUARKUS_ENHANCE_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`false`
+
+
 a| [[quarkus-artemis-core_quarkus.artemis.url]]`link:#quarkus-artemis-core_quarkus.artemis.url[quarkus.artemis.url]`
 
 [.description]
