@@ -34,8 +34,8 @@ public class ArtemisBuildTimeConfigs {
     /**
      * Whether camel context enhancement should be enabled.
      * <p>
-     * If enabled, all {@link javax.jms.ConnectionFactory}s annotated with
-     * {@link io.smallrye.common.annotation.Identifier} are registered as named beans in the camel
+     * If enabled, all {@code javax.jms.ConnectionFactory}s annotated with
+     * {@code io.smallrye.common.annotation.Identifier} are registered as named beans in the camel
      * context.
      */
     @ConfigItem(name = "camel-quarkus-enhance-enabled")
