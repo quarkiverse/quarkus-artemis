@@ -57,22 +57,22 @@ jobs:
     strategy:
       matrix:
         integration-test-module:
-          - integration-tests/camel-jms/with-default,
-          - integration-tests/camel-jms/with-default-and-named,
-          - integration-tests/camel-jms/with-external,
-          - integration-tests/camel-jms/with-named,
-          - integration-tests/camel-jms/with-named-and-external,
-          - integration-tests/core/empty-config,
-          - integration-tests/core/with-default,
-          - integration-tests/core/with-default-and-external,
-          - integration-tests/core/with-default-change-url,
-          - integration-tests/core/with-external,
-          - integration-tests/core/without-default,
-          - integration-tests/jms/empty-config,
-          - integration-tests/jms/with-default,
-          - integration-tests/jms/with-default-and-external,
-          - integration-tests/jms/with-default-change-url,
-          - integration-tests/jms/with-external,
+          - integration-tests/camel-jms/with-default
+          - integration-tests/camel-jms/with-default-and-named
+          - integration-tests/camel-jms/with-external
+          - integration-tests/camel-jms/with-named
+          - integration-tests/camel-jms/with-named-and-external
+          - integration-tests/core/empty-config
+          - integration-tests/core/with-default
+          - integration-tests/core/with-default-and-external
+          - integration-tests/core/with-default-change-url
+          - integration-tests/core/with-external
+          - integration-tests/core/without-default
+          - integration-tests/jms/empty-config
+          - integration-tests/jms/with-default
+          - integration-tests/jms/with-default-and-external
+          - integration-tests/jms/with-default-change-url
+          - integration-tests/jms/with-external
           - integration-tests/jms/without-default
 
     steps:
@@ -91,7 +91,7 @@ jobs:
         name: Build with Maven (${{ matrix.integration-test-module }})
         run: |
           mvn -B clean verify \
-            -pl core/deployment,jms/deployment,integration-tests/camel-jms/with-default \
+            -pl core/deployment,jms/deployment,${{ matrix.integration-test-module }} \
             -am \
             -Dno-format
 
@@ -101,22 +101,22 @@ jobs:
     strategy:
       matrix:
         integration-test-module:
-          - integration-tests/camel-jms/with-default,
-          - integration-tests/camel-jms/with-default-and-named,
-          - integration-tests/camel-jms/with-external,
-          - integration-tests/camel-jms/with-named,
-          - integration-tests/camel-jms/with-named-and-external,
-          - integration-tests/core/empty-config,
-          - integration-tests/core/with-default,
-          - integration-tests/core/with-default-and-external,
-          - integration-tests/core/with-default-change-url,
-          - integration-tests/core/with-external,
-          - integration-tests/core/without-default,
-          - integration-tests/jms/empty-config,
-          - integration-tests/jms/with-default,
-          - integration-tests/jms/with-default-and-external,
-          - integration-tests/jms/with-default-change-url,
-          - integration-tests/jms/with-external,
+          - integration-tests/camel-jms/with-default
+          - integration-tests/camel-jms/with-default-and-named
+          - integration-tests/camel-jms/with-external
+          - integration-tests/camel-jms/with-named
+          - integration-tests/camel-jms/with-named-and-external
+          - integration-tests/core/empty-config
+          - integration-tests/core/with-default
+          - integration-tests/core/with-default-and-external
+          - integration-tests/core/with-default-change-url
+          - integration-tests/core/with-external
+          - integration-tests/core/without-default
+          - integration-tests/jms/empty-config
+          - integration-tests/jms/with-default
+          - integration-tests/jms/with-default-and-external
+          - integration-tests/jms/with-default-change-url
+          - integration-tests/jms/with-external
           - integration-tests/jms/without-default
 
     steps:
