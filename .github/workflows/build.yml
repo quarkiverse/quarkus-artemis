@@ -86,7 +86,7 @@ jobs:
         name: Build with Maven (${{ matrix.integration-test-module }})
         run: |
           mvn -B clean verify \
-            -pl core/deployment,jms/deployment,integration-tests/camel-jms/with-default \
+            -pl core/deployment,jms/deployment,${{ matrix.integration-test-module }} \
             -am \
             -Dno-format
 
