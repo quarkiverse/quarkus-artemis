@@ -35,7 +35,7 @@
 
         <artemis.version>2.26.0</artemis.version>
         <camel-quarkus.platform.artifact-id>quarkus-camel-bom</camel-quarkus.platform.artifact-id>
-        <camel-quarkus.platform.version>2.15.0.Final</camel-quarkus.platform.version>
+        <camel-quarkus.platform.version>2.15.1.Final</camel-quarkus.platform.version>
     </properties>
 
     <build>
