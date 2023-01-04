@@ -4,18 +4,20 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
+import io.quarkus.it.artemis.jms.common.ArtemisJmsConsumerManager;
+import io.quarkus.it.artemis.jms.common.ArtemisJmsXaProducerManager;
 import io.smallrye.common.annotation.Identifier;
 
 @Path("/artemis")
 @Consumes(MediaType.TEXT_PLAIN)
 @Produces(MediaType.TEXT_PLAIN)
 public class ArtemisEndpoint {
-    private final ArtemisProducerManager namedOneProducer;
-    private final ArtemisConsumerManager namedOneConsumer;
+    private final ArtemisJmsXaProducerManager namedOneProducer;
+    private final ArtemisJmsConsumerManager namedOneConsumer;
 
     public ArtemisEndpoint(
-            @Identifier("named-1") ArtemisProducerManager namedOneProducer,
-            @Identifier("named-1") ArtemisConsumerManager namedOneConsumer) {
+            @Identifier("named-1") ArtemisJmsXaProducerManager namedOneProducer,
+            @Identifier("named-1") ArtemisJmsConsumerManager namedOneConsumer) {
         this.namedOneProducer = namedOneProducer;
         this.namedOneConsumer = namedOneConsumer;
     }

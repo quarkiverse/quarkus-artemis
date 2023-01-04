@@ -1,27 +1,12 @@
 package io.quarkus.it.artemis.jms.withoutdefault;
 
-import jakarta.jms.JMSContext;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
+import io.quarkus.it.artemis.jms.common.ArtemisJmsHelper;
 
-public abstract class BaseArtemisConsumerTest implements ArtemisHelper {
+public abstract class BaseArtemisConsumerTest extends ArtemisJmsHelper {
     @Test
     void testNamedOne() {
-        test(createNamedOnContext(), "test-jms-named-1", "/artemis/named-1");
-    }
-
-    private void test(JMSContext context, String queueName, String endpoint) {
-        String body = createBody();
-        try (JMSContext ignored = context) {
-            context.createProducer().send(context.createQueue(queueName), body);
-        }
-
-        Response response = RestAssured.with().get(endpoint);
-        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
-        Assertions.assertEquals(body, response.getBody().asString());
+        sendAndVerify(createNamedOneContext(), "test-jms-named-1", "/artemis/named-1");
     }
 }

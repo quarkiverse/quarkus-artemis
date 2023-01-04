@@ -1,36 +1,37 @@
 package io.quarkus.it.artemis.jms.withdefaultandexternal;
 
-import jakarta.jms.JMSConsumer;
-import jakarta.jms.JMSContext;
-import jakarta.jms.JMSException;
-import jakarta.jms.Message;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
+import io.quarkus.it.artemis.jms.common.ArtemisJmsHelper;
 
-abstract public class BaseArtemisProducerTest implements ArtemisHelper {
+abstract public class BaseArtemisProducerTest extends ArtemisJmsHelper {
     @Test
     void testDefault() throws Exception {
-        test(createDefaultContext(), "test-jms-default", "/artemis");
+        receiveAndVerify("/artemis", createDefaultContext(), "test-jms-default");
     }
 
     @Test
     void testNamedOne() throws Exception {
-        test(createNamedOneContext(), "test-jms-named-1", "/artemis/named-1");
+        receiveAndVerify("/artemis/named-1", createNamedOneContext(), "test-jms-named-1");
     }
 
-    protected void test(JMSContext context, String queueName, String endpoint) throws JMSException {
-        String body = createBody();
-        Response response = RestAssured.with().body(body).post(endpoint);
-        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+    @Test
+    void testXADefault() throws Exception {
+        receiveAndVerify("/artemis/xa", createDefaultContext(), "test-jms-default");
+    }
 
-        try (JMSContext autoClosedContext = context) {
-            JMSConsumer consumer = autoClosedContext.createConsumer(autoClosedContext.createQueue(queueName));
-            Message message = consumer.receive(1000L);
-            Assertions.assertEquals(body, message.getBody(String.class));
-        }
+    @Test
+    void testXANamedOne() throws Exception {
+        receiveAndVerify("/artemis/named-1/xa", createNamedOneContext(), "test-jms-named-1");
+    }
+
+    @Test
+    void testRollbackDefault() {
+        testRollback("/artemis/xa", createDefaultContext(), "test-jms-default");
+    }
+
+    @Test
+    void testRollbackNamedOne() {
+        testRollback("/artemis/named-1/xa", createNamedOneContext(), "test-jms-named-1");
     }
 }

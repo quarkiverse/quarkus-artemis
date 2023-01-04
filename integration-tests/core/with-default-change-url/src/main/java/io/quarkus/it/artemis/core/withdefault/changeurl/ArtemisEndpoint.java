@@ -3,22 +3,24 @@ package io.quarkus.it.artemis.core.withdefault.changeurl;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
+import io.quarkus.it.artemis.core.common.ArtemisCoreConsumerManager;
+import io.quarkus.it.artemis.core.common.ArtemisCoreProducerManager;
 import io.smallrye.common.annotation.Identifier;
 
 @Path("/artemis")
 @Consumes(MediaType.TEXT_PLAIN)
 @Produces(MediaType.TEXT_PLAIN)
 public class ArtemisEndpoint {
-    private final ArtemisProducerManager defaultProducer;
-    private final ArtemisConsumerManager defaultConsumer;
-    private final ArtemisProducerManager namedOneProducer;
-    private final ArtemisConsumerManager namedOneConsumer;
+    private final ArtemisCoreProducerManager defaultProducer;
+    private final ArtemisCoreConsumerManager defaultConsumer;
+    private final ArtemisCoreProducerManager namedOneProducer;
+    private final ArtemisCoreConsumerManager namedOneConsumer;
 
     public ArtemisEndpoint(
-            ArtemisProducerManager defaultProducer,
-            ArtemisConsumerManager defaultConsumer,
-            @Identifier("named-1") ArtemisProducerManager namedOneProducer,
-            @Identifier("named-1") ArtemisConsumerManager namedOneConsumer) {
+            ArtemisCoreProducerManager defaultProducer,
+            ArtemisCoreConsumerManager defaultConsumer,
+            @Identifier("named-1") ArtemisCoreProducerManager namedOneProducer,
+            @Identifier("named-1") ArtemisCoreConsumerManager namedOneConsumer) {
         this.defaultProducer = defaultProducer;
         this.defaultConsumer = defaultConsumer;
         this.namedOneProducer = namedOneProducer;
