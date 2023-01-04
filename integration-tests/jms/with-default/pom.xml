@@ -10,4 +10,18 @@
     <artifactId>quarkus-integration-test-artemis-jms-with-default</artifactId>
     <name>Quarkus - Artemis - Integration Tests - JMS - With default configuration</name>
     <description>The Apache ActiveMQ Artemis JMS integration tests with default configuration module</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-integration-test-artemis-jms-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-integration-test-artemis-jms-common</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

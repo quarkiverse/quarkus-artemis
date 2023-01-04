@@ -53,17 +53,22 @@ public class ArtemisJmsProcessor {
             return null;
         }
         ArtemisJmsWrapper wrapper = getWrapper(recorder, wrapperItem);
-        final Set<String> configurationNames = bootstrap.getConfigurationNames();
+        Set<String> configurationNames = bootstrap.getConfigurationNames();
+        boolean isSoleConnectionFactory = configurationNames.size() == 1;
         for (String name : configurationNames) {
-            if (!shadowRunTimeConfigs.getNames().contains(name)
-                    && buildTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisBuildTimeConfig()).isEmpty()) {
+            if (!shadowRunTimeConfigs.getNames().contains(name) && buildTimeConfigs.getAllConfigs().getOrDefault(name,
+                    new ArtemisBuildTimeConfig()).isEmpty()) {
                 continue;
             }
-            Supplier<ConnectionFactory> connectionFactorySupplier = recorder.getConnectionFactoryProducer(name, runtimeConfigs,
-                    buildTimeConfigs, wrapper);
-            syntheticBeanProducer.produce(toSyntheticBeanBuildItem(
+            Supplier<ConnectionFactory> connectionFactorySupplier = recorder.getConnectionFactoryProducer(
                     name,
+                    runtimeConfigs,
+                    buildTimeConfigs,
+                    wrapper);
+            syntheticBeanProducer.produce(toSyntheticBeanBuildItem(
                     connectionFactorySupplier,
+                    name,
+                    isSoleConnectionFactory,
                     buildTimeConfigs.getAllConfigs().getOrDefault(name,
                             new ArtemisBuildTimeConfig()).isXaEnabled()));
         }
@@ -83,13 +88,15 @@ public class ArtemisJmsProcessor {
     }
 
     private static SyntheticBeanBuildItem toSyntheticBeanBuildItem(
-            String name,
             Supplier<ConnectionFactory> connectionFactorySupplier,
+            String name,
+            boolean isSoleConnectionFactory,
             boolean isXaEnable) {
         SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator = initializeConfigurator(isXaEnable)
                 .supplier(connectionFactorySupplier)
-                .scope(ApplicationScoped.class);
-        return ArtemisCoreProcessor.addQualifiers(configurator, name)
+                .scope(ApplicationScoped.class)
+                .name(name);
+        return ArtemisCoreProcessor.addQualifiers(name, isSoleConnectionFactory, configurator)
                 .setRuntimeInit()
                 .done();
     }

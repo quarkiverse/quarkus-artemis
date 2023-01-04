@@ -1,13 +1,35 @@
 package io.quarkus.it.artemis.jms.withexternal.embedded;
 
-import io.quarkus.artemis.test.ArtemisTestResource;
-import io.quarkus.it.artemis.jms.withexternal.BaseArtemisProducerTest;
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.it.artemis.jms.common.ArtemisJmsHelper;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@QuarkusTestResource(ArtemisTestResource.class)
-@QuarkusTestResource(NamedOneArtemisTestResource.class)
 @QuarkusTestResource(ExternallyDefinedArtemisTestResource.class)
-class EmbeddedProducerTest extends BaseArtemisProducerTest {
+class EmbeddedProducerTest extends ArtemisJmsHelper {
+    @Test
+    void testExternallyDefined() throws Exception {
+        receiveAndVerify(
+                "/artemis/externally-defined",
+                createExternallyDefinedContext("artemis.externally-defined.url"),
+                "test-jms-externally-defined");
+    }
+
+    @Test
+    void testXAExternallyDefined() throws Exception {
+        receiveAndVerify(
+                "/artemis/externally-defined/xa",
+                createExternallyDefinedContext("artemis.externally-defined.url"),
+                "test-jms-externally-defined");
+    }
+
+    @Test
+    void testRollbackExternallyDefined() {
+        testRollback(
+                "/artemis/externally-defined/xa",
+                createExternallyDefinedContext("artemis.externally-defined.url"),
+                "test-jms-externally-defined");
+    }
 }

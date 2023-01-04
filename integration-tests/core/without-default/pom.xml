@@ -10,4 +10,17 @@
     <artifactId>quarkus-integration-test-artemis-core-without-default</artifactId>
     <name>Quarkus - Artemis - Integration Tests - Core - Without default configuration</name>
     <description>The Apache ActiveMQ Artemis Core integration tests without default configuration module</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-integration-test-artemis-core-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-integration-test-artemis-core-common</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+        </dependency>
+    </dependencies>
 </project>
