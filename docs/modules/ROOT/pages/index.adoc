@@ -329,7 +329,25 @@ from(jms("queue:in").connectionFactory("<default>"))
     .to(jms("queue:out").connectionFactory("named"));
 ----
 
-As with <<health_checks>>, connection factories that are defined outside this extension, but are annotated with link:https://github.com/smallrye/smallrye-common/blob/main/annotation/src/main/java/io/smallrye/common/annotation/Identifier.java[`@Identifier`] are treated the same way. So if we define a `ConnectionFactory`-bean in our code, e.g. through a method annotated with link:https://jakarta.ee/specifications/cdi/4.0/apidocs/jakarta.cdi/jakarta/enterprise/inject/produces[`@Produces`] and, for example, `@Identifier("externally-defined")`, we can use this `ConnectionFactory` as follows:
+In `camel-quarkus`, an externally defined `ConnectionFactory` can only be referenced by its name in a route configuration if it has a `@Named(...)` annotation (link:https://camel.apache.org/camel-quarkus/2.15.x/user-guide/cdi.html#_refer_to_a_bean_by_name:[documentation]). This conflicts somewhat with the philosophy of the `quarkus-artemis` extensions, since it uses `@Identifier` instead. We bridge this gap by allowing to register all `ConnectionFactory` s annotated with `@Identifier` with the camel context. To enable this feature, we can set configuration property `quarkus.artemis.camel-quarkus-enhance-enabled` to **true**. This property is set to **false** by default.
+
+With this in place, we can define a `ConnectionFactory`, e.g. through a method annotated with link:https://jakarta.ee/specifications/cdi/4.0/apidocs/jakarta.cdi/jakarta/enterprise/inject/produces[`@Produces`] and, for example, `@Identifier("externally-defined")`:
+
+
+.Defining an externally defined `ConnectionFactory`-bean through a `@Produces` method
+[source,java,subs=attributes+]
+----
+@Produces
+@Typed({ ConnectionFactory.class })
+@ApplicationScoped
+@Identifier("externally-defined")
+ActiveMQConnectionFactory externallyDefinedConnectionFactory(
+        @ConfigProperty(name = "artemis.externally-defined.url") String externallyDefinedUrl) {
+    return new ActiveMQConnectionFactory(externallyDefinedUrl);
+}
+----
+
+We can then use this `ConnectionFactory` as follows:
 
 .Referencing an externally defined `ConnectionFactory`-bean by its name
 [source,java,subs=attributes+]
@@ -347,9 +365,9 @@ from(jms("queue:in"))
     .to(jms("queue:out"));
 ----
 
-This also works for an externally defined `ConnectionFactory`, as long as it is defined as `@Default`. This mechanism stops working as soon as more than one `ConnectionFactory` bean is defined in the application.
+This also works for an externally defined `ConnectionFactory`, as long as it is defined as `@Default` (remember that link:https://jakarta.ee/specifications/cdi/2.0/cdi-spec-2.0.html#builtin_qualifiers:[all beans that do not have any qualifier annotation are automatically `@Default` beans]). For an externally defined `ConnectionFactory`, this does not require to set `quarkus.artemis.camel-context-enhance-enable` to be **true**.
 
-In `camel-quarkus`, an externally defined `ConnectionFactory` can only be referenced by its name in a route configuration if it has a `@Named(...)` annotation (link:https://camel.apache.org/camel-quarkus/2.15.x/user-guide/cdi.html#_refer_to_a_bean_by_name:[documentation]). This conflicts somewhat with the philosophy of the `quarkus-artemis` extensions, since it uses `@Identifier` instead. We bridge this gap by allowing to register all `ConnectionFactory` s annotated with `@Identifier` with the camel context. To enable this feature, we can set configuration property `quarkus.artemis.camel-quarkus-enhance-enabled` to **true**. This property is set to **false** by default.
+This mechanism stops working as soon as more than one `ConnectionFactory` bean is defined in the application.
 
 == Artemis DevServices
 Artemis DevServices are automatically enabled unless `quarkus.artemis.url` / `quarkus.artemis."named-configuration".url` is set or `quarkus.artemis.devservices.enabled` / `quarkus.artemis."named-configuration".enabled` is *false* explicitly. And if you still want to use `ArtemisTestResource` in the test, you need to disable artemis devservices.
