@@ -215,7 +215,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.ca
 [.description]
 --
 Whether camel context enhancement should be enabled. 
-If enabled, all `javax.jms.ConnectionFactory`s annotated with `io.smallrye.common.annotation.Identifier` are registered as named beans in the camel context.
+If enabled, all `javax.jms.ConnectionFactory` s annotated with `io.smallrye.common.annotation.Identifier` are registered as named beans in the camel context.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CAMEL_QUARKUS_ENHANCE_ENABLED+++[]
