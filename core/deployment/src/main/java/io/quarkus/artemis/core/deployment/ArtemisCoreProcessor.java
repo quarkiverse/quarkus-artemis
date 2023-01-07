@@ -105,7 +105,7 @@ public class ArtemisCoreProcessor {
             return null;
         }
         if (shadowRunTimeConfigs.isEmpty() && buildTimeConfigs.isEmpty()) {
-            return null;
+            return new ArtemisCoreConfiguredBuildItem();
         }
 
         boolean isSoleServerLocator = bootstrap.getConfigurationNames().size() == 1;

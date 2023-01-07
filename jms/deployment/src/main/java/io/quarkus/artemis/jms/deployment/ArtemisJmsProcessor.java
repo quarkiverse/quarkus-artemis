@@ -50,8 +50,9 @@ public class ArtemisJmsProcessor {
             Optional<ArtemisJmsWrapperBuildItem> wrapperItem,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer) {
         if (shadowRunTimeConfigs.isEmpty() && buildTimeConfigs.isEmpty()) {
-            return null;
+            return new ArtemisJmsConfiguredBuildItem();
         }
+
         ArtemisJmsWrapper wrapper = getWrapper(recorder, wrapperItem);
         Set<String> configurationNames = bootstrap.getConfigurationNames();
         boolean isSoleConnectionFactory = configurationNames.size() == 1;

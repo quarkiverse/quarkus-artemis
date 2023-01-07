@@ -207,7 +207,7 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS_HEALTH_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --|boolean 
-|
+|`true`
 
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.camel-quarkus-enhance-enabled]]`link:#quarkus-artemis-core_quarkus.artemis.camel-quarkus-enhance-enabled[quarkus.artemis.camel-quarkus-enhance-enabled]`
