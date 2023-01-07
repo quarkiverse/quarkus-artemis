@@ -2,11 +2,9 @@ package io.quarkus.artemis.core.runtime;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import io.quarkus.runtime.annotations.*;
 
-@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @ConfigRoot(name = "artemis", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
 public class ArtemisBuildTimeConfigs {
     /**
@@ -28,8 +26,8 @@ public class ArtemisBuildTimeConfigs {
      * <p>
      * This is a global setting and is not specific to a datasource.
      */
-    @ConfigItem(name = "health.enabled")
-    public Optional<Boolean> healthEnabled = Optional.empty();
+    @ConfigItem(name = "health.enabled", defaultValue = "true")
+    public boolean healthEnabled = true;
 
     /**
      * Whether camel context enhancement should be enabled.
@@ -58,13 +56,12 @@ public class ArtemisBuildTimeConfigs {
     }
 
     public boolean isHealthEnabled() {
-        return healthEnabled.orElse(true);
+        return healthEnabled;
     }
 
     public boolean isEmpty() {
         return defaultConfig.isEmpty()
-                && namedConfigs.isEmpty()
-                && healthEnabled.isEmpty();
+                && namedConfigs.isEmpty();
     }
 
     public boolean isCamelQuarkusEnhanceEnable() {
