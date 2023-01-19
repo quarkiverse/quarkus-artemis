@@ -31,7 +31,7 @@
         <maven-dependency-plugin.version>3.4.0</maven-dependency-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus.version>3.0.0.Alpha2</quarkus.version>
+        <quarkus.version>3.0.0.Alpha3</quarkus.version>
 
         <artemis.version>2.26.0</artemis.version>
     </properties>
