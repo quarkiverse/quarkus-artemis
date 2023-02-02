@@ -31,7 +31,7 @@
         <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus.version>2.16.0.Final</quarkus.version>
+        <quarkus.version>2.16.1.Final</quarkus.version>
 
         <artemis.version>2.26.0</artemis.version>
         <camel-quarkus.platform.artifact-id>quarkus-camel-bom</camel-quarkus.platform.artifact-id>
