@@ -1,8 +1,6 @@
 name: Build
 
 on:
-  # TODO: remove after test
-  workflow_dispatcher:
   push:
     branches:
       - "main"
