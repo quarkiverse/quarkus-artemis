@@ -35,6 +35,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- TODO: Remove this dependency when https://github.com/quarkusio/quarkus/pull/31075 get merged and included in a new release -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-jms-spi-deployment</artifactId>
+                <version>${quarkus.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
