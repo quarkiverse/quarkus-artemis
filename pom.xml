@@ -23,17 +23,21 @@
         <module>test-framework</module>
     </modules>
     <properties>
+        <!-- Plugin versions -->
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <jandex-maven-plugin.version>3.0.5</jandex-maven-plugin.version>
+
+        <!-- Dependency versions -->
+        <artemis.version>2.26.0</artemis.version>
+        <quarkus.version>3.0.0.Alpha4</quarkus.version>
+
+        <!-- Project setup -->
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus.version>3.0.0.Alpha4</quarkus.version>
-
-        <artemis.version>2.26.0</artemis.version>
     </properties>
 
     <build>

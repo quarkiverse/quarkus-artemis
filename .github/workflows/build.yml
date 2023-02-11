@@ -1,6 +1,7 @@
 name: Build
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - "main"
@@ -23,14 +24,65 @@ on:
       - '.all-contributorsrc'
 
 jobs:
-  populate-cache:
+  generate-matrix:
     runs-on: ubuntu-latest
 
     outputs:
-      cache-hit: ${{ steps.populate.outputs.cache-hit }}
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Generate Matrix
+        id: generate-matrix
+        run: |
+          root=$(pwd)/integration-tests
+          pom_file=pom.xml
+          exclude_dir_pattern=common
+          exclude_package_type=pom
+
+          mapfile -t candidates < <(
+          find "${root}" -type f -name "${pom_file}" \
+            | sed "s|/${pom_file}$||" \
+            | sort \
+            | uniq)
+
+          results=()
+          for candidate in "${candidates[@]}"
+          do
+            if [[ "${candidate}" = "${root}" || "${candidate}" =~ ${exclude_dir_pattern} ]]
+            then
+              continue
+            fi
+
+            pom_packaging=0
+            grep --quiet \
+              "<packaging>${exclude_package_type}</packaging>" \
+              "${candidate}/${pom_file}" \
+                || pom_packaging="${?}"
+            if [[ "${pom_packaging}" -ne 0 ]]
+            then
+              results+=("${candidate}")
+            fi
+          done
+          matrix=$( \
+            echo "${results[@]}" \
+              | tr " " "\n" \
+              | sed "s|$(pwd)/||" \
+              | jq \
+                --raw-input \
+                --null-input \
+                --compact-output \
+                "[ [inputs][] | { \"integration-test-module\": . } ] | { \"include\": . }")
+          echo "matrix=${matrix}" >> "${GITHUB_OUTPUT}"
+
+  populate-cache:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
@@ -40,77 +92,69 @@ jobs:
           cache: 'maven'
         id: setup
 
-      - name: Populate Maven Cache and run verify
+      # TODO: remove the "package" phase, as well as "-DskipTests" and "-Dno-format" from the maven build when
+      # https://github.com/quarkusio/quarkus/pull/31092 is merged and released (probably 3.0.0)
+      - name: Populate Maven Cache
         id: populate
         run: |
           if [[ ${{ steps.setup.outputs.cache-hit }} != 'true' ]]
           then
-            mvn -B dependency:go-offline verify -Dno-verify
-            echo "cache-hit=false" >> $GITHUB_OUTPUT
-          else
-            echo "cache-hit=true" >> $GITHUB_OUTPUT
+            mvn \
+              --batch-mode \
+              --define skipTests \
+              --define no-format \
+              package \
+              quarkus:go-offline \
+              de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
           fi
 
-  build:
-    needs: populate-cache
+  build-and-test-jvm:
     runs-on: ubuntu-latest
+
+    needs:
+      - generate-matrix
+      - populate-cache
+
     strategy:
-      matrix:
-        integration-test-module:
-          - integration-tests/core/empty-config
-          - integration-tests/core/with-default
-          - integration-tests/core/with-default-and-external
-          - integration-tests/core/with-default-change-url
-          - integration-tests/core/with-external
-          - integration-tests/core/without-default
-          - integration-tests/jms/empty-config
-          - integration-tests/jms/with-default
-          - integration-tests/jms/with-default-and-external
-          - integration-tests/jms/with-default-change-url
-          - integration-tests/jms/with-external
-          - integration-tests/jms/without-default
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
 
     steps:
-      - if: ${{ needs.populate-cache.outputs.cache-hit == 'true' }}
+      - name: Git checkout
         uses: actions/checkout@v3
 
-      - if: ${{ needs.populate-cache.outputs.cache-hit == 'true' }}
-        name: Set up JDK 11
+      - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: 'temurin'
           cache: 'maven'
 
-      - if: ${{ needs.populate-cache.outputs.cache-hit == 'true' }}
-        name: Build with Maven (${{ matrix.integration-test-module }})
+      - name: ${{ matrix.integration-test-module }}
         run: |
-          mvn -B clean verify \
-            -pl core/deployment,jms/deployment,${{ matrix.integration-test-module }} \
-            -am \
-            -Dno-format
+          mvn \
+            --batch-mode \
+            --also-make \
+            --define no-format \
+            --projects \
+              "core/deployment, \
+              jms/deployment, \
+              ${{ matrix.integration-test-module }}" \
+            verify
 
-  test-native:
-    needs: build
+  build-and-test-native:
     runs-on: ubuntu-latest
+
+    needs:
+      - generate-matrix
+      - populate-cache
+      - build-and-test-jvm
+
     strategy:
-      matrix:
-        integration-test-module:
-          - integration-tests/core/empty-config
-          - integration-tests/core/with-default
-          - integration-tests/core/with-default-and-external
-          - integration-tests/core/with-default-change-url
-          - integration-tests/core/with-external
-          - integration-tests/core/without-default
-          - integration-tests/jms/empty-config
-          - integration-tests/jms/with-default
-          - integration-tests/jms/with-default-and-external
-          - integration-tests/jms/with-default-change-url
-          - integration-tests/jms/with-external
-          - integration-tests/jms/without-default
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Git checkout
+        uses: actions/checkout@v3
 
       - name: Get Maven Cache
         uses: actions/setup-java@v3
@@ -127,10 +171,15 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build with Maven (Native, ${{matrix.integration-test-module}})
+      - name: ${{matrix.integration-test-module}}
         run: |
-          mvn -B verify \
-            -pl core/deployment,jms/deployment,${{ matrix.integration-test-module }} \
-            -am \
-            -Dnative \
-            -Dnative.surefire.skip
+          mvn \
+            --batch-mode  \
+            --also-make \
+            --define native \
+            --define native.surefire.skip \
+            --projects \
+              "core/deployment, \
+              jms/deployment, \
+              ${{ matrix.integration-test-module }}" \
+            verify
