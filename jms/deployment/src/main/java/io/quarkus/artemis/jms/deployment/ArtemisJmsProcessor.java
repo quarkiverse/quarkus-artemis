@@ -2,6 +2,7 @@ package io.quarkus.artemis.jms.deployment;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -14,12 +15,12 @@ import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.*;
 import io.quarkus.artemis.core.runtime.*;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsRecorder;
-import io.quarkus.artemis.jms.runtime.ArtemisJmsWrapper;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.jms.spi.deployment.ConnectionFactoryWrapperBuildItem;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ArtemisJmsProcessor {
@@ -47,49 +48,57 @@ public class ArtemisJmsProcessor {
             ShadowRunTimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             ArtemisBootstrappedBuildItem bootstrap,
-            Optional<ArtemisJmsWrapperBuildItem> wrapperItem,
+            Optional<ConnectionFactoryWrapperBuildItem> wrapperItem,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer) {
         if (shadowRunTimeConfigs.isEmpty() && buildTimeConfigs.isEmpty()) {
-            return null;
+            return new ArtemisJmsConfiguredBuildItem();
         }
-        ArtemisJmsWrapper wrapper = getWrapper(recorder, wrapperItem);
-        final Set<String> configurationNames = bootstrap.getConfigurationNames();
+
+        Function<ConnectionFactory, Object> wrapper = getWrapper(recorder, wrapperItem);
+        Set<String> configurationNames = bootstrap.getConfigurationNames();
+        boolean isSoleConnectionFactory = configurationNames.size() == 1;
         for (String name : configurationNames) {
-            if (!shadowRunTimeConfigs.getNames().contains(name)
-                    && buildTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisBuildTimeConfig()).isEmpty()) {
+            if (!shadowRunTimeConfigs.getNames().contains(name) && buildTimeConfigs.getAllConfigs().getOrDefault(name,
+                    new ArtemisBuildTimeConfig()).isEmpty()) {
                 continue;
             }
-            Supplier<ConnectionFactory> connectionFactorySupplier = recorder.getConnectionFactoryProducer(name, runtimeConfigs,
-                    buildTimeConfigs, wrapper);
-            syntheticBeanProducer.produce(toSyntheticBeanBuildItem(
+            Supplier<ConnectionFactory> connectionFactorySupplier = recorder.getConnectionFactoryProducer(
                     name,
+                    runtimeConfigs,
+                    buildTimeConfigs,
+                    wrapper);
+            syntheticBeanProducer.produce(toSyntheticBeanBuildItem(
                     connectionFactorySupplier,
+                    name,
+                    isSoleConnectionFactory,
                     buildTimeConfigs.getAllConfigs().getOrDefault(name,
                             new ArtemisBuildTimeConfig()).isXaEnabled()));
         }
         return new ArtemisJmsConfiguredBuildItem();
     }
 
-    private static ArtemisJmsWrapper getWrapper(
+    private static Function<ConnectionFactory, Object> getWrapper(
             ArtemisJmsRecorder recorder,
-            Optional<ArtemisJmsWrapperBuildItem> wrapperItem) {
-        ArtemisJmsWrapper wrapper;
+            Optional<ConnectionFactoryWrapperBuildItem> wrapperItem) {
+        Function<ConnectionFactory, Object> wrapper;
         if (wrapperItem.isPresent()) {
             wrapper = wrapperItem.get().getWrapper();
         } else {
-            wrapper = new ArtemisJmsWrapperBuildItem(recorder.getDefaultWrapper()).getWrapper();
+            wrapper = recorder.getDefaultWrapper();
         }
         return wrapper;
     }
 
     private static SyntheticBeanBuildItem toSyntheticBeanBuildItem(
-            String name,
             Supplier<ConnectionFactory> connectionFactorySupplier,
+            String name,
+            boolean isSoleConnectionFactory,
             boolean isXaEnable) {
         SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator = initializeConfigurator(isXaEnable)
                 .supplier(connectionFactorySupplier)
-                .scope(ApplicationScoped.class);
-        return ArtemisCoreProcessor.addQualifiers(configurator, name)
+                .scope(ApplicationScoped.class)
+                .name(name);
+        return ArtemisCoreProcessor.addQualifiers(name, isSoleConnectionFactory, configurator)
                 .setRuntimeInit()
                 .done();
     }

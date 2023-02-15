@@ -105,9 +105,10 @@ public class ArtemisCoreProcessor {
             return null;
         }
         if (shadowRunTimeConfigs.isEmpty() && buildTimeConfigs.isEmpty()) {
-            return null;
+            return new ArtemisCoreConfiguredBuildItem();
         }
 
+        boolean isSoleServerLocator = bootstrap.getConfigurationNames().size() == 1;
         for (String name : bootstrap.getConfigurationNames()) {
             if (!shadowRunTimeConfigs.getNames().contains(name)
                     && buildTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisBuildTimeConfig()).isEmpty()) {
@@ -117,7 +118,7 @@ public class ArtemisCoreProcessor {
                     name,
                     runtimeConfigs,
                     buildTimeConfigs);
-            SyntheticBeanBuildItem serverLocator = toSyntheticBeanBuildItem(name, supplier);
+            SyntheticBeanBuildItem serverLocator = toSyntheticBeanBuildItem(supplier, name, isSoleServerLocator);
             syntheticBeanProducer.produce(serverLocator);
         }
         return new ArtemisCoreConfiguredBuildItem();
@@ -141,24 +142,27 @@ public class ArtemisCoreProcessor {
     }
 
     private SyntheticBeanBuildItem toSyntheticBeanBuildItem(
+            Supplier<ServerLocator> supplier,
             String name,
-            Supplier<ServerLocator> supplier) {
+            boolean isSoleServerLocator) {
         SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator = SyntheticBeanBuildItem
                 .configure(ServerLocator.class)
                 .supplier(supplier)
                 .scope(ApplicationScoped.class);
-        return addQualifiers(configurator, name)
+        return addQualifiers(name, isSoleServerLocator, configurator)
                 .setRuntimeInit()
                 .done();
     }
 
     public static SyntheticBeanBuildItem.ExtendedBeanConfigurator addQualifiers(
-            SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator,
-            String name) {
-        if (ArtemisUtil.isDefault(name)) {
+            String name,
+            boolean isSoleArtemisBean,
+            SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator) {
+        if (ArtemisUtil.isDefault(name) || isSoleArtemisBean) {
             configurator
                     .unremovable()
-                    .addQualifier().annotation(Default.class).done();
+                    .addQualifier().annotation(Default.class).done()
+                    .name(name);
         }
         return configurator
                 .addQualifier().annotation(Identifier.class).addValue("value", name).done();
