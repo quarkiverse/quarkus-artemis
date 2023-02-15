@@ -10,11 +10,6 @@ public class ArtemisHealthSupportRecorder {
     public Supplier<ArtemisHealthSupport> getArtemisSupportBuilder(
             Set<String> names,
             Set<String> excludedNames) {
-        return new Supplier<>() {
-            @Override
-            public ArtemisHealthSupport get() {
-                return new ArtemisHealthSupport(names, excludedNames);
-            }
-        };
+        return () -> new ArtemisHealthSupport(names, excludedNames);
     }
 }

@@ -17,12 +17,9 @@ public class ArtemisCoreRecorder {
         ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisRuntimeConfig());
         ArtemisBuildTimeConfig buildTimeConfig = buildTimeConfigs.getAllConfigs().getOrDefault(name,
                 new ArtemisBuildTimeConfig());
-        return new Supplier<>() {
-            @Override
-            public ServerLocator get() {
-                ArtemisUtil.validateIntegrity(name, runtimeConfig, buildTimeConfig);
-                return Objects.requireNonNull(getServerLocator(runtimeConfig));
-            }
+        return () -> {
+            ArtemisUtil.validateIntegrity(name, runtimeConfig, buildTimeConfig);
+            return Objects.requireNonNull(getServerLocator(runtimeConfig));
         };
     }
 
