@@ -1,10 +1,10 @@
 package io.quarkus.it.artemis.jms.withdefault;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.jms.ConnectionFactory;
-import javax.jms.XAConnectionFactory;
-import javax.transaction.TransactionManager;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.XAConnectionFactory;
+import jakarta.transaction.TransactionManager;
 
 import io.quarkus.it.artemis.jms.common.ArtemisJmsConsumerManager;
 import io.quarkus.it.artemis.jms.common.ArtemisJmsXaProducerManager;

@@ -1,8 +1,8 @@
 package io.quarkus.it.artemis.jms.common;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSContext;
-import javax.jms.JMSProducer;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSProducer;
 
 public class ArtemisJmsProducerManager {
     private final ConnectionFactory connectionFactory;

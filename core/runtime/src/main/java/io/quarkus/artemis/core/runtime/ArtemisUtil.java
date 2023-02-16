@@ -3,7 +3,7 @@ package io.quarkus.artemis.core.runtime;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
-import javax.enterprise.inject.Any;
+import jakarta.enterprise.inject.Any;
 
 import io.quarkus.arc.Arc;
 import io.quarkus.arc.InstanceHandle;

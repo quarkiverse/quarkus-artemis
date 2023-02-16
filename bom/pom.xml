@@ -68,7 +68,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-jms-client</artifactId>
+                <artifactId>artemis-jakarta-client</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
                     <!-- Excluding the JSON api and implementation (no longer needed for >= Artemis 2.20.0) -->

@@ -1,7 +1,7 @@
 package io.quarkus.it.artemis.core.withdefault.changeurl;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 
 import io.quarkus.it.artemis.core.common.ArtemisCoreConsumerManager;
 import io.quarkus.it.artemis.core.common.ArtemisCoreProducerManager;

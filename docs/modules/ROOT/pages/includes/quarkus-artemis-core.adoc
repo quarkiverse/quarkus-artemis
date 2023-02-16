@@ -181,7 +181,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.xa
 
 [.description]
 --
-Support to expose `javax.jms.XAConnectionFactory`. Is not activated by default.
+Support to expose `jakarta.jms.XAConnectionFactory`. Is not activated by default.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_XA_ENABLED+++[]
@@ -207,24 +207,7 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS_HEALTH_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --|boolean 
-|`true`
-
-
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.camel-quarkus-enhance-enabled]]`link:#quarkus-artemis-core_quarkus.artemis.camel-quarkus-enhance-enabled[quarkus.artemis.camel-quarkus-enhance-enabled]`
-
-[.description]
---
-Whether camel context enhancement should be enabled. 
-If enabled, all `javax.jms.ConnectionFactory` s annotated with `io.smallrye.common.annotation.Identifier` are registered as named beans in the camel context.
-
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CAMEL_QUARKUS_ENHANCE_ENABLED+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++QUARKUS_ARTEMIS_CAMEL_QUARKUS_ENHANCE_ENABLED+++`
-endif::add-copy-button-to-env-var[]
---|boolean 
-|`false`
+|
 
 
 a| [[quarkus-artemis-core_quarkus.artemis.url]]`link:#quarkus-artemis-core_quarkus.artemis.url[quarkus.artemis.url]`
@@ -279,7 +262,7 @@ a| [[quarkus-artemis-core_quarkus.artemis.health.external.enabled]]`link:#quarku
 
 [.description]
 --
-Whether configurations (`org.apache.activemq.artemis.api.core.client.ServerLocator`s in case of the `artemis-core` extension, `javax.jms.ConnectionFactory`s in case of the `artemis-jms` extension) should be included in the health check. Defaults to `true` if not set.
+Whether configurations (`org.apache.activemq.artemis.api.core.client.ServerLocator`s in case of the `artemis-core` extension, `jakarta.jms.ConnectionFactory`s in case of the `artemis-jms` extension) should be included in the health check. Defaults to `true` if not set.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_HEALTH_EXTERNAL_ENABLED+++[]
@@ -467,7 +450,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.-c
 
 [.description]
 --
-Support to expose `javax.jms.XAConnectionFactory`. Is not activated by default.
+Support to expose `jakarta.jms.XAConnectionFactory`. Is not activated by default.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__XA_ENABLED+++[]

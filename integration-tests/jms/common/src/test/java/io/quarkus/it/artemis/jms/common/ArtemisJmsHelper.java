@@ -2,10 +2,10 @@ package io.quarkus.it.artemis.jms.common;
 
 import java.util.Random;
 
-import javax.jms.JMSConsumer;
-import javax.jms.JMSContext;
-import javax.jms.JMSException;
-import javax.jms.Message;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -43,14 +43,14 @@ public class ArtemisJmsHelper {
         }
 
         Response response = RestAssured.with().get(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
         Assertions.assertEquals(body, response.getBody().asString());
     }
 
     public void receiveAndVerify(String endpoint, JMSContext context, String queueName) throws JMSException {
         String body = createBody();
         Response response = RestAssured.with().body(body).post(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
 
         try (JMSContext autoClosedContext = context) {
             JMSConsumer consumer = autoClosedContext.createConsumer(autoClosedContext.createQueue(queueName));
@@ -61,7 +61,7 @@ public class ArtemisJmsHelper {
 
     public void testRollback(String endpoint, JMSContext context, String queueName) {
         Response response = RestAssured.with().body("fail").post(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
 
         try (JMSContext autoClosedContext = context) {
             JMSConsumer consumer = autoClosedContext.createConsumer(autoClosedContext.createQueue(queueName));

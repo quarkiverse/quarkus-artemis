@@ -5,9 +5,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.jms.ConnectionFactory;
-import javax.jms.XAConnectionFactory;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.XAConnectionFactory;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 

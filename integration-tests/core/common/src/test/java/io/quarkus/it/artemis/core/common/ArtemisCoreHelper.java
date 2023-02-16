@@ -38,14 +38,14 @@ public class ArtemisCoreHelper {
         }
 
         Response response = RestAssured.with().get(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
         Assertions.assertEquals(body, response.getBody().asString());
     }
 
     public void receiveAndVerify(String endpoint, ClientSession session, String queueName) throws ActiveMQException {
         String body = createBody();
         Response response = RestAssured.with().body(body).post(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
 
         try (ClientSession autoClosedSession = session) {
             session.start();

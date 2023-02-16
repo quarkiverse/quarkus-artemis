@@ -26,7 +26,7 @@ public class ArtemisRuntimeConfigs {
 
     /**
      * Whether configurations ({@link org.apache.activemq.artemis.api.core.client.ServerLocator}s in case of the
-     * {@code artemis-core} extension, {@link javax.jms.ConnectionFactory}s in case of the
+     * {@code artemis-core} extension, {@link jakarta.jms.ConnectionFactory}s in case of the
      * {@code artemis-jms} extension) should be included in the health check. Defaults to {@code true} if not set.
      */
     @ConfigItem(name = "health.external.enabled")

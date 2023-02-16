@@ -1,8 +1,8 @@
 package io.quarkus.it.artemis.jms.withdefault.changeurl;
 
-import javax.transaction.Transactional;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 
 import io.quarkus.it.artemis.jms.common.ArtemisJmsConsumerManager;
 import io.quarkus.it.artemis.jms.common.ArtemisJmsXaProducerManager;

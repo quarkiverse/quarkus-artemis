@@ -28,13 +28,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>io.quarkus.platform</groupId>
-                <artifactId>quarkus-camel-bom</artifactId>
-                <version>${camel-quarkus.platform.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <!-- TODO: Remove this dependency when https://github.com/quarkusio/quarkus/pull/31075 get merged and included in a new release -->
             <dependency>
                 <groupId>io.quarkus</groupId>

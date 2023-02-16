@@ -2,9 +2,11 @@ package io.quarkus.artemis.core.runtime;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import io.quarkus.runtime.annotations.*;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @ConfigRoot(name = "artemis", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
 public class ArtemisBuildTimeConfigs {
     /**
@@ -26,18 +28,8 @@ public class ArtemisBuildTimeConfigs {
      * <p>
      * This is a global setting and is not specific to a datasource.
      */
-    @ConfigItem(name = "health.enabled", defaultValue = "true")
-    public boolean healthEnabled = true;
-
-    /**
-     * Whether camel context enhancement should be enabled.
-     * <p>
-     * If enabled, all {@link javax.jms.ConnectionFactory} s annotated with
-     * {@link io.smallrye.common.annotation.Identifier} are registered as named beans in the camel
-     * context.
-     */
-    @ConfigItem(name = "camel-quarkus-enhance-enabled")
-    public boolean camelQuarkusEnhanceEnable = false;
+    @ConfigItem(name = "health.enabled")
+    public Optional<Boolean> healthEnabled = Optional.empty();
 
     public ArtemisBuildTimeConfig getDefaultConfig() {
         return defaultConfig;
@@ -56,15 +48,12 @@ public class ArtemisBuildTimeConfigs {
     }
 
     public boolean isHealthEnabled() {
-        return healthEnabled;
+        return healthEnabled.orElse(true);
     }
 
     public boolean isEmpty() {
         return defaultConfig.isEmpty()
-                && namedConfigs.isEmpty();
-    }
-
-    public boolean isCamelQuarkusEnhanceEnable() {
-        return camelQuarkusEnhanceEnable;
+                && namedConfigs.isEmpty()
+                && healthEnabled.isEmpty();
     }
 }
