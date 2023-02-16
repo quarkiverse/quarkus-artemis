@@ -65,7 +65,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 [.description]
 --
 The ActiveMQ Artemis container image to use. 
-Defaults to @++{++code quay.io/artemiscloud/activemq-artemis-broker:1.0.9++}++
+Defaults to @++{++code quay.io/artemiscloud/activemq-artemis-broker:1.0.14++}++
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_IMAGE_NAME+++[]
@@ -351,7 +351,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.-c
 [.description]
 --
 The ActiveMQ Artemis container image to use. 
-Defaults to @++{++code quay.io/artemiscloud/activemq-artemis-broker:1.0.9++}++
+Defaults to @++{++code quay.io/artemiscloud/activemq-artemis-broker:1.0.14++}++
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__DEVSERVICES_IMAGE_NAME+++[]
