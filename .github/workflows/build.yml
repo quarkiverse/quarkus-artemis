@@ -101,17 +101,15 @@ jobs:
       # https://github.com/quarkusio/quarkus/pull/31092 is merged and released (probably 3.0.0)
       - name: Populate Maven Cache
         id: populate
+        if: ${{ steps.setup.outputs.cache-hit != 'true' }}
         run: |
-          if [[ ${{ steps.setup.outputs.cache-hit }} != 'true' ]]
-          then
-            mvn \
-              --batch-mode \
-              --define skipTests \
-              --define no-format \
-              package \
-              quarkus:go-offline \
-              de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
-          fi
+          mvn \
+            --batch-mode \
+            --define skipTests \
+            --define no-format \
+            package \
+            quarkus:go-offline \
+            de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 
       - name: Cancel Build
         if: ${{ failure() }}
@@ -119,6 +117,8 @@ jobs:
 
   build-and-test-jvm:
     runs-on: ubuntu-latest
+
+    continue-on-error: true
 
     needs:
       - generate-matrix
@@ -138,7 +138,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: ${{ matrix.integration-test-module }}
+      - name: Build and Test
         run: |
           mvn \
             --batch-mode \
@@ -150,6 +150,37 @@ jobs:
               ${{ matrix.integration-test-module }}" \
             verify
 
+      - name: Upload JVM Test Report
+        uses: actions/upload-artifact@v3
+        if: ${{ always() }}
+        with:
+          name: test-report-jvm
+          path: '**/target/*-reports/TEST*.xml'
+          if-no-files-found: error
+          retention-days: 2
+
+  test-report-jvm:
+    runs-on: ubuntu-latest
+
+    needs:
+      - build-and-test-jvm
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Download Test Report
+        uses: actions/download-artifact@v3
+        with:
+          name: test-report-jvm
+
+      - name: JUnit Test Report
+        uses: dorny/test-reporter@v1
+        with:
+          name: JUnit Test Report JVM
+          path: '**/target/surefire-reports/TEST*.xml'
+          reporter: java-junit
+
       - name: Cancel Build
         if: ${{ failure() }}
         uses: andymckay/cancel-action@0.3
@@ -158,8 +189,10 @@ jobs:
     runs-on: ubuntu-latest
 
     needs:
+      - populate-cache
       - generate-matrix
-      - build-and-test-jvm
+
+    continue-on-error: true
 
     strategy:
       matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
@@ -183,7 +216,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: ${{matrix.integration-test-module}}
+      - name: Build and Test
         run: |
           mvn \
             --batch-mode  \
@@ -195,6 +228,37 @@ jobs:
               jms/deployment, \
               ${{ matrix.integration-test-module }}" \
             verify
+
+      - name: Upload Native Test Report
+        uses: actions/upload-artifact@v3
+        if: ${{ always() }}
+        with:
+          name: test-report-native
+          path: '**/target/*-reports/TEST*.xml'
+          if-no-files-found: error
+          retention-days: 2
+
+  test-report-native:
+    runs-on: ubuntu-latest
+
+    needs:
+      - build-and-test-native
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Download Test Report
+        uses: actions/download-artifact@v3
+        with:
+          name: test-report-native
+
+      - name: JUnit Test Report
+        uses: dorny/test-reporter@v1
+        with:
+          name: JUnit Test Report Native
+          path: '**/target/*-reports/TEST*.xml'
+          reporter: java-junit
 
       - name: Cancel Build
         if: ${{ failure() }}
