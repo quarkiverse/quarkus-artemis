@@ -78,6 +78,10 @@ jobs:
                 "[ [inputs][] | { \"integration-test-module\": . } ] | { \"include\": . }")
           echo "matrix=${matrix}" >> "${GITHUB_OUTPUT}"
 
+      - name: Cancel Build
+        if: ${{ failure() }}
+        uses: andymckay/cancel-action@0.3
+
   populate-cache:
     runs-on: ubuntu-latest
 
@@ -108,6 +112,10 @@ jobs:
               quarkus:go-offline \
               de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
           fi
+
+      - name: Cancel Build
+        if: ${{ failure() }}
+        uses: andymckay/cancel-action@0.3
 
   build-and-test-jvm:
     runs-on: ubuntu-latest
@@ -142,12 +150,15 @@ jobs:
               ${{ matrix.integration-test-module }}" \
             verify
 
+      - name: Cancel Build
+        if: ${{ failure() }}
+        uses: andymckay/cancel-action@0.3
+
   build-and-test-native:
     runs-on: ubuntu-latest
 
     needs:
       - generate-matrix
-      - populate-cache
       - build-and-test-jvm
 
     strategy:
@@ -184,3 +195,7 @@ jobs:
               jms/deployment, \
               ${{ matrix.integration-test-module }}" \
             verify
+
+      - name: Cancel Build
+        if: ${{ failure() }}
+        uses: andymckay/cancel-action@0.3
