@@ -30,9 +30,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href="https://github.com/middagj"><img src="https://avatars.githubusercontent.com/u/157566?v=4?s=100" width="100px;" alt="Jacob Middag"/><br /><sub><b>Jacob Middag</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=middagj" title="Code">💻</a> <a href="#maintenance-middagj" title="Maintenance">🚧</a></td>
-      <td align="center"><a href="https://github.com/turing85"><img src="https://avatars.githubusercontent.com/u/32584495?v=4?s=100" width="100px;" alt="Marco Bungart"/><br /><sub><b>Marco Bungart</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=turing85" title="Code">💻</a> <a href="#maintenance-turing85" title="Maintenance">🚧</a></td>
-      <td align="center"><a href="https://zhfeng.github.io/"><img src="https://avatars.githubusercontent.com/u/1246139?v=4?s=100" width="100px;" alt="Zheng Feng"/><br /><sub><b>Zheng Feng</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=zhfeng" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/middagj"><img src="https://avatars.githubusercontent.com/u/157566?v=4?s=100" width="100px;" alt="Jacob Middag"/><br /><sub><b>Jacob Middag</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=middagj" title="Code">💻</a> <a href="#maintenance-middagj" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/turing85"><img src="https://avatars.githubusercontent.com/u/32584495?v=4?s=100" width="100px;" alt="Marco Bungart"/><br /><sub><b>Marco Bungart</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=turing85" title="Code">💻</a> <a href="#maintenance-turing85" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://zhfeng.github.io/"><img src="https://avatars.githubusercontent.com/u/1246139?v=4?s=100" width="100px;" alt="Zheng Feng"/><br /><sub><b>Zheng Feng</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=zhfeng" title="Code">💻</a> <a href="#maintenance-zhfeng" title="Maintenance">🚧</a></td>
     </tr>
   </tbody>
 </table>
