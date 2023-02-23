@@ -29,15 +29,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: (Re-)create Comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: ${{ github.event_name == 'pull_request' }}
+      - name: Publish Report
+        uses: turing85/publish-report@v1.0.0
         with:
-          header: reports
-          message: |
-            ## 🚦Reports🚦
-            Reports will be posted here as they get available.
-          recreate: true
+          checkout: 'true'
+          recreate-comment: true
 
   generate-matrix:
     runs-on: ubuntu-latest
@@ -181,61 +177,13 @@ jobs:
       - build-and-test-jvm
 
     steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
-
-      - name: Download Test Report
-        uses: actions/download-artifact@v3
+      - name: Publish Report
+        uses: turing85/publish-report@v1.0.0
         with:
-          name: test-report-jvm
-
-      - name: JUnit Test Report
-        id: junit-report
-        uses: phoenix-actions/test-reporting@v10
-        with:
-          name: JUnit Test Report JVM
-          path: '**/target/surefire-reports/TEST*.xml'
-          reporter: java-junit
-
-      - name: Update PR status comment on success
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: ${{ github.event_name == 'pull_request' && steps.junit-report.conclusion == 'success' }}
-        with:
-          header: reports
-          message: |
-
-            <details>
-              <summary><h3>🥳 JUnit tests passed</h3></summary>
-
-              |Passed|Failed|Skipped|
-              |----------|---------|-----------|
-              |✅ ${{ steps.junit-report.outputs.passed }}|❌ ${{ steps.junit-report.outputs.failed }}|⚠️ ${{ steps.junit-report.outputs.skipped }}|
-
-              You can see the JUnit report [here](${{ steps.junit-report.outputs.runHtmlUrl }}).
-            </details>
-          append: true
-
-      - name: Update PR status comment on failure
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: ${{ github.event_name == 'pull_request' && steps.junit-report.conclusion != 'success' }}
-        with:
-          header: reports
-          message: |
-
-            <details>
-              <summary><h3>😔 JUnit JVM tests failed</h3></summary>
-
-              |Passed|Failed|Skipped|
-              |----------|---------|-----------|
-              |✅ ${{ steps.junit-report.outputs.passed }}|❌ ${{ steps.junit-report.outputs.failed }}|⚠️ ${{ steps.junit-report.outputs.skipped }}|
-
-              You can see the JUnit report [here](${{ steps.junit-report.outputs.runHtmlUrl }}).
-            </details>
-          append: true
-
-      - name: Cancel Build
-        if: ${{ failure() }}
-        uses: andymckay/cancel-action@0.3
+          checkout: 'true'
+          download-artifact-name: test-report-jvm
+          report-name: JUnit Test Report JVM
+          report-path: '**/target/surefire-reports/TEST*.xml'
 
   build-and-test-native:
     runs-on: ubuntu-latest
@@ -298,58 +246,11 @@ jobs:
       - build-and-test-native
 
     steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
-
-      - name: Download Test Report
-        uses: actions/download-artifact@v3
+      - name: Publish Report
+        if: ${{ always() }}
+        uses: turing85/publish-report@v1.0.0
         with:
-          name: test-report-native
-
-      - name: JUnit Test Report
-        id: junit-report
-        uses: phoenix-actions/test-reporting@v10
-        with:
-          name: JUnit Test Report Native
-          path: '**/target/*-reports/TEST*.xml'
-          reporter: java-junit
-
-      - name: Update PR status comment on success
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: ${{ github.event_name == 'pull_request' && steps.junit-report.conclusion == 'success' }}
-        with:
-          header: reports
-          message: |
-
-            <details>
-              <summary><h3>🥳 Native JUnit tests passed</h3></summary>
-
-              |Passed|Failed|Skipped|
-              |----------|---------|-----------|
-              |✅ ${{ steps.junit-report.outputs.passed }}|❌ ${{ steps.junit-report.outputs.failed }}|⚠️ ${{ steps.junit-report.outputs.skipped }}|
-
-              You can see the Native JUnit report [here](${{ steps.junit-report.outputs.runHtmlUrl }}).
-            </details>
-          append: true
-
-      - name: Update PR status comment on failure
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: ${{ github.event_name == 'pull_request' && steps.junit-report.conclusion != 'success' }}
-        with:
-          header: reports
-          message: |
-
-            <details>
-              <summary><h3>😔 Native JUnit tests failed</h3></summary>
-
-              |Passed|Failed|Skipped|
-              |----------|---------|-----------|
-              |✅ ${{ steps.junit-report.outputs.passed }}|❌ ${{ steps.junit-report.outputs.failed }}|⚠️ ${{ steps.junit-report.outputs.skipped }}|
-
-              You can see the Native JUnit report [here](${{ steps.junit-report.outputs.runHtmlUrl }}).
-            </details>
-          append: true
-
-      - name: Cancel Build
-        if: ${{ failure() }}
-        uses: andymckay/cancel-action@0.3
+          checkout: 'true'
+          download-artifact-name: test-report-native
+          report-name: JUnit Test Report Native
+          report-path: '**/target/*-reports/TEST*.xml'
