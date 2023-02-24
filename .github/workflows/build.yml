@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Publish Report
-        uses: turing85/publish-report@v1.0.0
+        uses: turing85/publish-report@v1.0.1
         with:
           checkout: 'true'
           recreate-comment: true
@@ -113,7 +113,7 @@ jobs:
         id: populate
         if: ${{ steps.setup.outputs.cache-hit != 'true' }}
         run: |
-          mvn \
+          ./mvnw \
             --batch-mode \
             --define skipTests \
             --define no-format \
@@ -150,7 +150,7 @@ jobs:
 
       - name: Build and Test
         run: |
-          mvn \
+          ./mvnw \
             --batch-mode \
             --also-make \
             --define no-format \
@@ -178,11 +178,11 @@ jobs:
 
     steps:
       - name: Publish Report
-        uses: turing85/publish-report@v1.0.0
+        uses: turing85/publish-report@v1.0.1
         with:
           checkout: 'true'
           download-artifact-name: test-report-jvm
-          report-name: JUnit Test Report JVM
+          report-name: JUnit JVM Test
           report-path: '**/target/surefire-reports/TEST*.xml'
 
   build-and-test-native:
@@ -218,7 +218,7 @@ jobs:
 
       - name: Build and Test
         run: |
-          mvn \
+          ./mvnw \
             --batch-mode  \
             --also-make \
             --define native \
@@ -248,9 +248,9 @@ jobs:
     steps:
       - name: Publish Report
         if: ${{ always() }}
-        uses: turing85/publish-report@v1.0.0
+        uses: turing85/publish-report@v1.0.1
         with:
           checkout: 'true'
           download-artifact-name: test-report-native
-          report-name: JUnit Test Report Native
+          report-name: JUnit Native Test
           report-path: '**/target/*-reports/TEST*.xml'
