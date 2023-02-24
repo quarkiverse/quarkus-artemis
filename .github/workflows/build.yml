@@ -113,7 +113,7 @@ jobs:
         id: populate
         if: ${{ steps.setup.outputs.cache-hit != 'true' }}
         run: |
-          mvn \
+          ./mvnw \
             --batch-mode \
             --define skipTests \
             --define no-format \
@@ -150,7 +150,7 @@ jobs:
 
       - name: Build and Test
         run: |
-          mvn \
+          ./mvnw \
             --batch-mode \
             --also-make \
             --define no-format \
@@ -218,7 +218,7 @@ jobs:
 
       - name: Build and Test
         run: |
-          mvn \
+          ./mvnw \
             --batch-mode  \
             --also-make \
             --define native \
