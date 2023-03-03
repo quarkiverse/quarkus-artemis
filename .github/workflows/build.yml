@@ -24,6 +24,11 @@ on:
       - '*.txt'
       - '.all-contributorsrc'
 
+permissions:
+  actions: write
+  checks: write
+  pull-requests: write
+
 jobs:
   recreate-comment:
     runs-on: ubuntu-latest
