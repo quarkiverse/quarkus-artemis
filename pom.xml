@@ -9,7 +9,7 @@
 
     <groupId>io.quarkiverse.artemis</groupId>
     <artifactId>quarkus-artemis-parent</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>3.0.0.Alpha7</version>
     <name>Quarkus - Artemis - Parent</name>
 
     <packaging>pom</packaging>
@@ -75,4 +75,8 @@
             </plugins>
         </pluginManagement>
     </build>
+
+  <scm>
+    <tag>3.0.0.Alpha7</tag>
+  </scm>
 </project>
