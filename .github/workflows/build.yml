@@ -112,17 +112,12 @@ jobs:
           cache: 'maven'
         id: setup
 
-      # TODO: remove the "package" phase, as well as "-DskipTests" and "-Dno-format" from the maven build when
-      # https://github.com/quarkusio/quarkus/pull/31092 is merged and released (probably 3.0.0)
       - name: Populate Maven Cache
         id: populate
         if: ${{ steps.setup.outputs.cache-hit != 'true' }}
         run: |
           ./mvnw \
             --batch-mode \
-            --define skipTests \
-            --define no-format \
-            package \
             quarkus:go-offline \
             de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 
