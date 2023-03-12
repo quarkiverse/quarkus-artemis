@@ -129,7 +129,7 @@ public class ArtemisCoreProcessor {
             Collection<ClassInfo> connectorFactories) {
         for (ClassInfo ci : connectorFactories) {
             LOGGER.debug("Adding reflective class " + ci);
-            reflectiveClass.produce(new ReflectiveClassBuildItem(false, false, ci.toString()));
+            reflectiveClass.produce(ReflectiveClassBuildItem.builder(ci.toString()).methods(false).fields(false).build());
         }
     }
 
@@ -137,7 +137,7 @@ public class ArtemisCoreProcessor {
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
             Class<?>[] builtinConnectorFactories) {
         for (Class<?> c : builtinConnectorFactories) {
-            reflectiveClass.produce(new ReflectiveClassBuildItem(false, false, c));
+            reflectiveClass.produce(ReflectiveClassBuildItem.builder(c).methods(false).fields(false).build());
         }
     }
 
