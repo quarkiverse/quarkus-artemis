@@ -31,7 +31,7 @@ public class BeanProducer {
     @Produces
     @ApplicationScoped
     @Identifier("externally-defined")
-    public static ArtemisCoreProducerManager externallyAddedProducer(
+    ArtemisCoreProducerManager externallyAddedProducer(
             @Identifier("externally-defined") ServerLocator externallyAddedServerLocator)
             throws Exception {
         return new ArtemisCoreProducerManager(externallyAddedServerLocator, "test-core-externally-defined");

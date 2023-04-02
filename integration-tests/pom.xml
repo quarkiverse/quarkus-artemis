@@ -14,6 +14,7 @@
 
     <packaging>pom</packaging>
     <modules>
+        <module>camel-jms</module>
         <module>common</module>
         <module>common-parent</module>
         <module>core</module>
