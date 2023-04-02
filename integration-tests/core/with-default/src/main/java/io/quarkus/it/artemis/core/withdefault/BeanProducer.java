@@ -28,7 +28,7 @@ public class BeanProducer {
 
     @Produces
     @ApplicationScoped
-    public static ArtemisCoreProducerManager defaultProducer(
+    ArtemisCoreProducerManager defaultProducer(
             @SuppressWarnings("CdiInjectionPointsInspection") ServerLocator serverLocator) throws Exception {
         return new ArtemisCoreProducerManager(serverLocator, "test-core-default");
     }
@@ -36,7 +36,7 @@ public class BeanProducer {
     @Produces
     @ApplicationScoped
     @Identifier("named-1")
-    public static ArtemisCoreProducerManager namedOneProducer(
+    ArtemisCoreProducerManager namedOneProducer(
             @SuppressWarnings("CdiInjectionPointsInspection") @Identifier("named-1") ServerLocator namedOneServerLocator)
             throws Exception {
         return new ArtemisCoreProducerManager(namedOneServerLocator, "test-core-named-1");

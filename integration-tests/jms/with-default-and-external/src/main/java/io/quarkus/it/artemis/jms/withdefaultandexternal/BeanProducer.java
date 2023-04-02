@@ -49,7 +49,7 @@ public class BeanProducer {
 
     @Produces
     @ApplicationScoped
-    public ArtemisJmsXaProducerManager defaultProducer(
+    ArtemisJmsXaProducerManager defaultProducer(
             @SuppressWarnings("CdiInjectionPointsInspection") ConnectionFactory defaultConnectionFactory,
             @SuppressWarnings("CdiInjectionPointsInspection") XAConnectionFactory defaultXaConnectionFactory,
             @SuppressWarnings("CdiInjectionPointsInspection") TransactionManager tm) {
@@ -60,7 +60,7 @@ public class BeanProducer {
     @Produces
     @ApplicationScoped
     @Identifier("named-1")
-    public ArtemisJmsXaProducerManager namedOneProducer(
+    ArtemisJmsXaProducerManager namedOneProducer(
             @SuppressWarnings("CdiInjectionPointsInspection") @Identifier("named-1") ConnectionFactory namedOneConnectionFactory,
             @SuppressWarnings("CdiInjectionPointsInspection") @Identifier("named-1") XAConnectionFactory namedOneXaConnectionFactory,
             @SuppressWarnings("CdiInjectionPointsInspection") TransactionManager tm) {
@@ -74,7 +74,7 @@ public class BeanProducer {
     @Produces
     @ApplicationScoped
     @Identifier("externally-defined")
-    public ArtemisJmsXaProducerManager externallyDefinedProducer(
+    ArtemisJmsXaProducerManager externallyDefinedProducer(
             @Identifier("externally-defined") ConnectionFactory externallyDefinedConnectionFactory,
             @Identifier("externally-defined") XAConnectionFactory externallyDefinedXaConnectionFactory,
             @SuppressWarnings("CdiInjectionPointsInspection") TransactionManager tm) {

@@ -88,6 +88,8 @@ Once the BOM is added, simply add the `io.quarkiverse.artemis:quarkus-artemis-jm
 
 We recommend to set properties `quarkus.version` and `artemis.version` to the versions you are using/need to use. We also recommend to align `artemis.version` with the artemis server version used.
 
+If you are using `camel-quarkus`, we also recommend setting `camel-quarkus.platform.version` to the version of camel used.
+
 == Named configurations
 As with `quarkus.datasource`, we can configure multiple, named configuration. If a configuration is configured under the root `quarkus.artemis`, then this is the default or unnamed configuration.
 
@@ -258,7 +260,7 @@ NOTE: binding a property to an environment variable, like `quarkus.artemis.url=$
 
 TIP: If we want to configure a connection solely through the implicit environment variables `QUARKUS_ARTEMIS_...`, we should enable the configuration by setting `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true*. For example, if we want to configure connection `quarkus.artemis."named-1"` through the implicit environment variables, we would set `quarkus.artemis."named-1".enabled=true` and then configure the connection through environment variables `QUARKUS_ARTEMIS\__NAMED_1__...`.
 
-Please do not try to configure a configuration purely through environment variables, without having any indication of its present in the application's configuration file. We specifically rely on the present of some configuration fragment at build-time to detect configurations.
+Please do not try to configure a configuration purely through environment variables, without having any indication of its presence in the application's configuration file. We specifically rely on the presence of some configuration fragment at build-time to detect configurations.
 
 == XA Transactions
 XA Transactions  must be activated on a per-configuration basis, they are not enabled by default.
@@ -284,7 +286,7 @@ If we create `ServerLocator`- (extension `quarkus-artemis-core`) or `ConnectionF
 ----
 public class MyBeanProvider {
     @ApplicationScoped
-    @Identified("my-server-locator") // this annotation makes it so the bean is picked up by the health endpoint
+    @Identifier("my-server-locator") // this annotation makes it so the bean is picked up by the health endpoint
     public ServerLocator mySeverLocator(...) {
         ServerLocator myServerLocator = ...;
         ...
@@ -298,7 +300,7 @@ public class MyBeanProvider {
 ----
 public class MyBeanProvider {
     @ApplicationScoped
-    @Identified("my-connection-factory") // this annotation makes it so the bean is picked up by the health endpoint
+    @Identifier("my-connection-factory") // this annotation makes it so the bean is picked up by the health endpoint
     public ConnectionFactory myConnectionFactory(...) {
         ConnectionFactory myConnectionFactory = ...;
         ...
@@ -310,6 +312,53 @@ public class MyBeanProvider {
 If we do not want that beans created within our application is picked up by the health endpoint, we can set `quarkus.artemis.health.external.enabled` to *false*.
 
 IMPORTANT: Note that `ServerLocator` s / `ConnectionFactory` s are only picked up when `quarkus.artemis.health.enabled` is *true*.
+
+== Camel support
+All connection factories that are configured through `quarkus-artemis-jms` are automatically registered in the camel context, if the program uses camel. This allows us to reference the connection factories by name, e.g.:
+
+.Referencing `ConnectionFactory` s in a camel route by their bean name
+[source,java,subs=attributes+]
+----
+from(jms("queue:in").connectionFactory("<default>"))
+    .to(jms("queue:out").connectionFactory("named"));
+----
+
+In `camel-quarkus`, an externally defined `ConnectionFactory` can only be referenced by its name in a route configuration if it has either a `@Named(...)` or the `@Identifier(...)` annotation. However, as mentioned above, the usage of `@Identifier(...)` should be preferred when using this extension.
+
+.Defining an externally defined `ConnectionFactory`-bean through a `@Produces` method
+[source,java,subs=attributes+]
+----
+@Produces
+@Typed({ ConnectionFactory.class })
+@ApplicationScoped
+@Identifier("externally-defined")
+ActiveMQConnectionFactory externallyDefinedConnectionFactory(
+        @ConfigProperty(name = "artemis.externally-defined.url") String externallyDefinedUrl) {
+    return new ActiveMQConnectionFactory(externallyDefinedUrl);
+}
+----
+
+We can then use this `ConnectionFactory` as follows:
+
+.Referencing an externally defined `ConnectionFactory`-bean by its name
+[source,java,subs=attributes+]
+----
+from(jms("queue:in").connectionFactory("externally-defined"))
+    .to(jms("queue:out").connectionFactory("externally-defined"));
+----
+
+Finally, if only a single `ConnectionFactory` is defined through `quarkus-artemis-jms`, this `ConnectionFactory` is always registered as link:https://jakarta.ee/specifications/cdi/2.0/apidocs/javax/enterprise/inject/default[`@Default`] bean. This allows us to use this `ConnectionFactory` implicitly in a camel route, without setting it explicitly:
+
+.Implicitly use the only `ConnectionFactory`-bean defined in the application
+[source,java,subs=attributes+]
+----
+from(jms("queue:in"))
+    .to(jms("queue:out"));
+----
+
+This also works for an externally defined `ConnectionFactory`, as long as it is defined as `@Default` (remember that link:https://jakarta.ee/specifications/cdi/2.0/cdi-spec-2.0.html#builtin_qualifiers:[all beans that do not have any qualifier annotation are automatically `@Default` beans]).
+
+This mechanism stops working as soon as more than one `ConnectionFactory` bean is defined in the application.
 
 == Artemis DevServices
 Artemis DevServices are automatically enabled unless `quarkus.artemis.url` / `quarkus.artemis."named-configuration".url` is set or `quarkus.artemis.devservices.enabled` / `quarkus.artemis."named-configuration".enabled` is *false* explicitly. And if you still want to use `ArtemisTestResource` in the test, you need to disable artemis devservices.
@@ -336,8 +385,8 @@ This instance can be configured by placing a `broker-named-1.xml` in `src/test/r
 For an in-depth explanation of what can be configured in a `broker.xml`, please see the link:https://activemq.apache.org/components/artemis/documentation/latest/configuration-index.html:[official Artemis documentation].
 
 == Examples
-Examples can be found in the `integration-tests` module, e.g
-https://github.com/quarkiverse/quarkus-artemis/tree/2.0.0/integration-tests/core/with-default[The Apache ActiveMQ Artemis Core integration with default configuration tests module]
+Examples can be found in the `integration-tests` module, e.g.
+https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/core/with-default[The Apache ActiveMQ Artemis Core integration with default configuration tests module]
 
 [[extension-configuration-reference]]
 == Configuration Reference

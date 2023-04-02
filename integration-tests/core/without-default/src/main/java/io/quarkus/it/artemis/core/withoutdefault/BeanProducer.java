@@ -22,7 +22,7 @@ public class BeanProducer {
     @Produces
     @ApplicationScoped
     @Identifier("named-1")
-    public static ArtemisCoreProducerManager namedOneProducer(
+    ArtemisCoreProducerManager namedOneProducer(
             @SuppressWarnings("CdiInjectionPointsInspection") @Identifier("named-1") ServerLocator namedOneServerLocator)
             throws Exception {
         return new ArtemisCoreProducerManager(namedOneServerLocator, "test-core-named-1");
