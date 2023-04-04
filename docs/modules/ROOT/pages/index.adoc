@@ -216,7 +216,7 @@ When we override the properties `url`, `username` or `password` of a configurati
  - quarkus.artemis.url is set to 'tcp://localhost:61616' but it is build time fixed to 'tcp://dummy:12345'. Did you change the property quarkus.artemis.url after building the application?
 ----
 
-This is expected. We bind some properties twice: once as build-time property, once as run time property. We do so to analyze the (run time-)configuration at build time to get a list of named connections. The overwritten configuration will take effect. The correct behaviour is enforced by https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/core/with-default-change-url[two] different https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/jms/with-default-change-url[tests]. The above example is taken from the logs of those tests.
+This is expected. We bind some properties twice: once as build-time property, once as run time property. We do so to analyze the (run time-)configuration at build time to get a list of named connections. The overwritten configuration will take effect. The correct behaviour is enforced by https://github.com/quarkiverse/quarkus-artemis/tree/2.x/integration-tests/core/with-default-change-url[two] different https://github.com/quarkiverse/quarkus-artemis/tree/2.x/integration-tests/jms/with-default-change-url[tests]. The above example is taken from the logs of those tests.
 
 == Configuration detection at build-time
 We took special care so the configurations behave "as intuitively as possible". This means that if no connection-related configuration (`enabled`, `url`, `username`, `password`, `devservices...`, `health-exclude`, `xa-enabled`) is present at build-time, it is assumed that the  configuration is not used and disabled. Therefore, if we want to use any configuration, but not configure it, we should set `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true* to explicitly enable the configuration. Due to the fact how the configuration system works in quarkus, we are only able to analyze properties defined in the default profile, i.e. properties without a prefix (`%dev`, `%text`, ...). If in doubt, we recommend setting `quarkus.artemis.enabled`/`quarkus.artemis."named-configuration".enabled` to **true**.
@@ -266,7 +266,7 @@ a|
 ✔️
 |===
 
-Please do not try to configure a configuration purely through environment variables, without having any indication of its present in the application's configuration file. We specifically rely on the present of some configuration fragment at build-time to detect configurations.
+Please do not try to configure a configuration purely through environment variables, without having any indication of its present in the application's configuration file. We specifically rely on the presence of some configuration fragment at build-time to detect configurations.
 
 == XA Transactions
 XA Transactions  must be activated on a per-configuration basis, they are not enabled by default.
@@ -395,7 +395,7 @@ For an in-depth explanation of what can be configured in a `broker.xml`, please 
 
 == Examples
 Examples can be found in the `integration-tests` module, e.g.
-https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/core/with-default[The Apache ActiveMQ Artemis Core integration with default configuration tests module]
+https://github.com/quarkiverse/quarkus-artemis/tree/2.x/integration-tests/core/with-default[The Apache ActiveMQ Artemis Core integration with default configuration tests module]
 
 [[extension-configuration-reference]]
 == Configuration Reference
