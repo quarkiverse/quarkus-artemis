@@ -8,7 +8,11 @@ import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 
-import io.quarkus.artemis.core.runtime.*;
+import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
+import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
+import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfig;
+import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
+import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.quarkus.runtime.annotations.Recorder;
 
 @Recorder

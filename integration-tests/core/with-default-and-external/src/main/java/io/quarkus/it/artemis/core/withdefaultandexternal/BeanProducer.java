@@ -3,7 +3,8 @@ package io.quarkus.it.artemis.core.withdefaultandexternal;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
-import org.apache.activemq.artemis.api.core.client.*;
+import org.apache.activemq.artemis.api.core.client.ActiveMQClient;
+import org.apache.activemq.artemis.api.core.client.ServerLocator;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.quarkus.it.artemis.core.common.ArtemisCoreConsumerManager;

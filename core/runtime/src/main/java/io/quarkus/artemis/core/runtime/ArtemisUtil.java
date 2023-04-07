@@ -1,7 +1,9 @@
 package io.quarkus.artemis.core.runtime;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.inject.Any;
 
