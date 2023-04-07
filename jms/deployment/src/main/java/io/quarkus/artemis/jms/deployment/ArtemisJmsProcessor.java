@@ -12,8 +12,13 @@ import jakarta.jms.XAConnectionFactory;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
-import io.quarkus.artemis.core.deployment.*;
-import io.quarkus.artemis.core.runtime.*;
+import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
+import io.quarkus.artemis.core.deployment.ArtemisCoreProcessor;
+import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
+import io.quarkus.artemis.core.deployment.ShadowRunTimeConfigs;
+import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
+import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
+import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsRecorder;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
