@@ -1,6 +1,8 @@
 package io.quarkus.artemis.core.deployment;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,7 +10,11 @@ import jakarta.enterprise.inject.Default;
 
 import org.apache.activemq.artemis.api.core.ActiveMQBuffers;
 import org.apache.activemq.artemis.api.core.client.ServerLocator;
-import org.apache.activemq.artemis.api.core.client.loadbalance.*;
+import org.apache.activemq.artemis.api.core.client.loadbalance.ConnectionLoadBalancingPolicy;
+import org.apache.activemq.artemis.api.core.client.loadbalance.FirstElementConnectionLoadBalancingPolicy;
+import org.apache.activemq.artemis.api.core.client.loadbalance.RandomConnectionLoadBalancingPolicy;
+import org.apache.activemq.artemis.api.core.client.loadbalance.RandomStickyConnectionLoadBalancingPolicy;
+import org.apache.activemq.artemis.api.core.client.loadbalance.RoundRobinConnectionLoadBalancingPolicy;
 import org.apache.activemq.artemis.core.remoting.impl.netty.NettyConnectorFactory;
 import org.apache.activemq.artemis.spi.core.remoting.ConnectorFactory;
 import org.apache.activemq.artemis.utils.RandomUtil;
@@ -17,7 +23,11 @@ import org.jboss.jandex.DotName;
 import org.jboss.logging.Logger;
 
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
-import io.quarkus.artemis.core.runtime.*;
+import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
+import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
+import io.quarkus.artemis.core.runtime.ArtemisCoreRecorder;
+import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
+import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;

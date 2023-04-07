@@ -1,7 +1,10 @@
 package io.quarkus.artemis.core.deployment;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -11,7 +14,10 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
-import io.quarkus.artemis.core.runtime.*;
+import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
+import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
+import io.quarkus.artemis.core.runtime.ArtemisDevServicesBuildTimeConfig;
+import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.CuratedApplicationShutdownBuildItem;

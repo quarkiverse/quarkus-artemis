@@ -1,6 +1,10 @@
 package io.quarkus.it.artemis.core.withdefault.changeurl;
 
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
 import io.quarkus.it.artemis.core.common.ArtemisCoreConsumerManager;
