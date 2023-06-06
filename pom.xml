@@ -22,6 +22,13 @@
         <module>jms</module>
         <module>test-framework</module>
     </modules>
+
+    <scm>
+        <connection>:git:git@github.com:quarkiverse/quarkus-artemis.git</connection>
+        <developerConnection>scm:git:git@github.com:quarkiverse/quarkus-artemis.git</developerConnection>
+        <url>https://github.com/quarkiverse/quarkus-artemis</url>
+    </scm>
+
     <properties>
         <!-- Plugin versions -->
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
