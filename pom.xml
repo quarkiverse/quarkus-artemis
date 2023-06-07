@@ -27,6 +27,7 @@
         <connection>scm:git:git@github.com:quarkiverse/quarkus-artemis.git</connection>
         <developerConnection>scm:git:git@github.com:quarkiverse/quarkus-artemis.git</developerConnection>
         <url>https://github.com/quarkiverse/quarkus-artemis</url>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
