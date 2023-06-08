@@ -253,8 +253,8 @@ a|
 a|
 configuration property bound to environment variable
 a|
-* `quarkus.artemis."named".url=${ARTEMIS_NAMED_URL}`
-* `quarkus.artemis.password=${ARTEMIS_PASSWORD}`
+* `quarkus.artemis."named".url=pass:[${ARTEMIS_NAMED_URL}]`
+* `quarkus.artemis.password=pass:[${ARTEMIS_PASSWORD}]`
 a|
 ❌
 a|
