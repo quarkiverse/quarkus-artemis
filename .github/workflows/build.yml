@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: Publish Report
-        uses: turing85/publish-report@v1.0.6
+        uses: turing85/publish-report@v1.0.9
         with:
           checkout: 'true'
           recreate-comment: true
@@ -112,8 +112,6 @@ jobs:
           cache: 'maven'
         id: setup
 
-      # TODO: remove the "package" phase, as well as "-DskipTests" and "-Dno-format" from the maven build when
-      # https://github.com/quarkusio/quarkus/pull/31092 is merged and released (probably 3.0.0)
       - name: Populate Maven Cache
         id: populate
         if: ${{ steps.setup.outputs.cache-hit != 'true' }}
@@ -183,7 +181,7 @@ jobs:
 
     steps:
       - name: Publish Report
-        uses: turing85/publish-report@v1.0.6
+        uses: turing85/publish-report@v1.0.9
         with:
           checkout: 'true'
           download-artifact-name: test-report-jvm
@@ -253,7 +251,7 @@ jobs:
     steps:
       - name: Publish Report
         if: ${{ always() }}
-        uses: turing85/publish-report@v1.0.6
+        uses: turing85/publish-report@v1.0.9
         with:
           checkout: 'true'
           download-artifact-name: test-report-native
