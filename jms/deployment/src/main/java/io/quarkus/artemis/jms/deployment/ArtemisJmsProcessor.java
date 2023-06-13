@@ -112,7 +112,7 @@ public class ArtemisJmsProcessor {
         SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator;
         if (isXaEnable) {
             configurator = SyntheticBeanBuildItem.configure(ActiveMQConnectionFactory.class);
-            /**
+            /*
              * Since {@link ActiveMQConnectionFactory} implements both {@link ConnectionFactory} and
              * {@link XAConnectionFactory},
              * even with "quarkus.artemis.xa.enabled=true" we still need to export ConnectionFactory which is used by
