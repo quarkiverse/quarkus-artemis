@@ -65,6 +65,8 @@ quarkus.artemis.password=...
 
 This corresponding bean is registered as the `@Default` bean and can be injected without additional qualifiers.
 
+IMPORTANT: There must be some build-time configuration, otherwise the bean will not be available. Having only run-time configuration (e.g. environment variables) is not enough. Please see section <<build_time_config>> for details.
+
 .Injection of default `ServerLocator` when using `quarkus-artemis-core`
 [source,java,subs=attributes+]
 ----
@@ -213,7 +215,7 @@ When we override the properties `url`, `username` or `password` of a configurati
 
 This is expected. We bind some properties twice: once as build-time property, once as run time property. We do so to analyze the (run time-)configuration at build time to get a list of named connections. The overwritten configuration will take effect. The correct behaviour enforced by https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/core/with-default-change-url[two] different https://github.com/quarkiverse/quarkus-artemis/tree/main/integration-tests/jms/with-default-change-url[tests]. The above example is taken from the logs of our tests.
 
-== Configuration detection at build-time
+== Configuration detection at build-time [[build_time_config]]
 We took special care so the configurations behave "as intuitively as possible". This means that if no connection-related configuration (`enabled`, `url`, `username`, `password`, `devservices...`, `health-exclude`, `xa-enabled`) is present at build-time, it is assumed that the  configuration is not used and disabled. Therefore, if we want to use any configuration, but not configure it, we should set `quarkus.artemis.enabled` / `quarkus.artemis."named-configuration".enabled` to *true* to explicitly enable the configuration.
 
 NOTE: binding a property to an environment variable, like `quarkus.artemis.url=$\{ARTEMIS_URL}` is sufficient, so the extension can pick up the configuration at build-time.
