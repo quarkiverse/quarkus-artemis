@@ -1,5 +1,5 @@
 name: quarkus-artemis
-title: Quarkus Artemis
+title: Artemis
 version: dev
 nav:
   - modules/ROOT/nav.adoc
