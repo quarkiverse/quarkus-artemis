@@ -8,6 +8,42 @@ It provides configuration properties to configure the JMS client and native exec
 
 For general considerations about the JMS support in Quarkus, it is recommended to read the link:{quarkus-guides-url}/jms[JMS guide].
 
+== Compatibility
+
+.Compatibility Table
+[[table-visibility]]
+[cols=2*,options=header]
+|===
+| Quarkus version
+| Quarkus JMS version
+a|
+`2.x`
+a|
+latest `2.x`
+a|
+`3.0.x` +
+`3.1.x` +
+`3.2.x \<= 3.2.1`
+a|
+latest `3.0.x`
+a|
+(upcoming) `3.3.x`
+a|
+(upcoming) `3.1.x`
+|===
+
+.LTS Support
+[[table-visibility]]
+[cols=2*,options=header]
+|===
+| Quarkus LTS version
+| Quarkus JMS version
+a|
+`3.2.x`
+a|
+`3.0.x`
+|===
+
 == Installation
 
 To benefit from a consistent definition of the Artemis dependencies (including `artemis-server` often used in the tests),
