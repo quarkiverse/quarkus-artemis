@@ -33,7 +33,7 @@ a|
 |===
 
 .LTS Support
-[[table-visibility]]
+[[table-lts]]
 [cols=2*,options=header]
 |===
 | Quarkus LTS version
