@@ -11,7 +11,7 @@ For general considerations about the JMS support in Quarkus, it is recommended t
 == Compatibility
 
 .Compatibility Table
-[[table-visibility]]
+[[table-compatibility]]
 [cols=2*,options=header]
 |===
 | Quarkus version
