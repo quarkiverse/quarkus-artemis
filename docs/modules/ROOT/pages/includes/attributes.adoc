@@ -1,4 +1,4 @@
-:quarkus-version: 3.1.2.Final
+:quarkus-version: 3.2.6.Final
 :quarkus-artemis-version: 3.0.1
 
 :quarkus-org-url: https://github.com/quarkusio
