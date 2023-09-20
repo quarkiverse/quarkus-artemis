@@ -27,9 +27,9 @@ a|
 a|
 latest `3.0.x`
 a|
-(upcoming) `3.3.x`
+`3.3.x`
 a|
-(upcoming) `3.1.x`
+`3.1.x`
 |===
 
 .LTS Support
@@ -306,10 +306,11 @@ a|
 
 Please do not try to configure a configuration purely through environment variables, without having any indication of its present in the application's configuration file. We specifically rely on the presence of some configuration fragment at build-time to detect configurations.
 
-== XA Transactions
-XA Transactions  must be activated on a per-configuration basis, they are not enabled by default.
+== XA-capable Connection Factories
 
-To activate XA transactions, we can set `quarkus.artemis.xa-enabled` / `quarkus.artemis."named-configuration".xa-enabled` to *true*.
+To get XA-capable connection factories, we can set `quarkus.artemis.xa-enabled` / `quarkus.artemis."named-configuration".xa-enabled` to *true*. We can then inject the corresponding bean as `XAConnectionFactory`.
+
+To use XA transactions and integrate with a transaction manager, we recommend using the link:https://github.com/quarkiverse/quarkus-pooled-jms[quarkus-pooled-jms quarkiverse extension].
 
 == URL as optional configuration
 The `url` configuration property is optional. But in general, without a `url` property, we cannot create a connection. In case of tests with embedded resources or devservices, the corresponding annotation/service injects a url. But if  the application starts up and no `url` property is found, the creation of the bean will throw a `RuntimeException` with a corresponding error message. Notice that this will happen when the bean is created. If the bean is never used (and thus never created), the exception will not occur.
