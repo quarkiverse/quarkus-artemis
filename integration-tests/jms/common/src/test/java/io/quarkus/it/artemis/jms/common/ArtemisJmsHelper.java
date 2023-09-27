@@ -69,4 +69,40 @@ public class ArtemisJmsHelper {
             Assertions.assertNull(message);
         }
     }
+
+    public void sendAndVerifyXACommit(JMSContext context, String queueName, String xaEndpoint, String endpoint) {
+        String body = createBody();
+        try (JMSContext autoClosedContext = context) {
+            context.createProducer().send(context.createQueue(queueName), body);
+        }
+
+        // Consume the message in xa transaction
+        Response response = RestAssured.with().get(xaEndpoint);
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(body, response.getBody().asString());
+
+        // Receive from queue again to confirm nothing is received i.e. message was consumed
+        // and now there is no message in the queue
+        response = RestAssured.with().get(endpoint);
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                response.statusCode());
+    }
+
+    public void sendAndVerifyXARollback(JMSContext context, String queueName, String xaEndpoint, String endpoint) {
+        String body = createBody();
+        try (JMSContext autoClosedContext = context) {
+            context.createProducer().send(context.createQueue(queueName), body);
+        }
+
+        // Consume the message but in rollback transaction
+        Response response = RestAssured.with().get(xaEndpoint);
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
+        Assertions.assertEquals(body, response.getBody().asString());
+
+        // Receive from queue again to confirm message is received i.e. message wasn't consumed
+        // and rollback occurred
+        response = RestAssured.with().get(endpoint);
+        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(),
+                response.statusCode());
+    }
 }

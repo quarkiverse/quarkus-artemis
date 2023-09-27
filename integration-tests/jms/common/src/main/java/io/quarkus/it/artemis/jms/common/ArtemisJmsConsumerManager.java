@@ -18,7 +18,7 @@ public class ArtemisJmsConsumerManager {
         try (JMSContext context = connectionFactory.createContext(JMSContext.AUTO_ACKNOWLEDGE);
                 JMSConsumer consumer = context.createConsumer(context.createQueue(queueName))) {
             return consumer.receive(1000L).getBody(String.class);
-        } catch (JMSException e) {
+        } catch (JMSException | NullPointerException e) {
             throw new RuntimeException("Could not receive message", e);
         }
     }
