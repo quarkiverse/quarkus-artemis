@@ -8,7 +8,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
-import io.quarkus.it.artemis.jms.common.ArtemisJmsConsumerManager;
+import io.quarkus.it.artemis.jms.common.ArtemisJmsXaConsumerManager;
 import io.quarkus.it.artemis.jms.common.ArtemisJmsXaProducerManager;
 import io.smallrye.common.annotation.Identifier;
 
@@ -17,15 +17,15 @@ import io.smallrye.common.annotation.Identifier;
 @Produces(MediaType.TEXT_PLAIN)
 public class ArtemisEndpoint {
     private final ArtemisJmsXaProducerManager defaultProducer;
-    private final ArtemisJmsConsumerManager defaultConsumer;
+    private final ArtemisJmsXaConsumerManager defaultConsumer;
     private final ArtemisJmsXaProducerManager namedOneProducer;
-    private final ArtemisJmsConsumerManager namedOneConsumer;
+    private final ArtemisJmsXaConsumerManager namedOneConsumer;
 
     public ArtemisEndpoint(
             ArtemisJmsXaProducerManager defaultProducer,
-            ArtemisJmsConsumerManager defaultConsumer,
+            ArtemisJmsXaConsumerManager defaultConsumer,
             @Identifier("named-1") ArtemisJmsXaProducerManager namedOneProducer,
-            @Identifier("named-1") ArtemisJmsConsumerManager namedOneConsumer) {
+            @Identifier("named-1") ArtemisJmsXaConsumerManager namedOneConsumer) {
         this.defaultProducer = defaultProducer;
         this.defaultConsumer = defaultConsumer;
         this.namedOneProducer = namedOneProducer;
@@ -66,5 +66,33 @@ public class ArtemisEndpoint {
     @Transactional
     public void namedOnePostXA(String message) throws Exception {
         namedOneProducer.sendXA(message);
+    }
+
+    @GET
+    @Path("/xa")
+    @Transactional
+    public String defaultGetXACommit() throws Exception {
+        return defaultConsumer.receiveXA(false);
+    }
+
+    @GET
+    @Path("/xa-rollback")
+    @Transactional
+    public String defaultGetXARollback() throws Exception {
+        return defaultConsumer.receiveXA(true);
+    }
+
+    @GET
+    @Path("named-1/xa")
+    @Transactional
+    public String namedOneGetXACommit() throws Exception {
+        return namedOneConsumer.receiveXA(false);
+    }
+
+    @GET
+    @Path("named-1/xa-rollback")
+    @Transactional
+    public String namedOneGetXARollback() throws Exception {
+        return namedOneConsumer.receiveXA(true);
     }
 }
