@@ -23,7 +23,7 @@ public class ArtemisCoreProducerManager {
             try (ClientProducer producer = session.createProducer(queueName)) {
                 producer.send(message);
             }
-        } catch (ActiveMQException e) {
+        } catch (ActiveMQException | NullPointerException e) {
             throw new RuntimeException("Could not send message", e);
         }
     }

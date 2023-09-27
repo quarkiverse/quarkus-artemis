@@ -16,4 +16,19 @@ class EmbeddedConsumerTest extends ArtemisJmsHelper {
                 "test-jms-externally-defined",
                 "/artemis/externally-defined");
     }
+
+    @Test
+    void testExternallyDefinedXACommit() {
+        sendAndVerifyXACommit(createExternallyDefinedContext("artemis.externally-defined.url"), "test-jms-externally-defined",
+                "/artemis/externally-defined/xa",
+                "/artemis/externally-defined/");
+    }
+
+    @Test
+    void testExternallyDefinedXARollback() {
+        sendAndVerifyXARollback(createExternallyDefinedContext("artemis.externally-defined.url"),
+                "test-jms-externally-defined",
+                "/artemis/externally-defined/xa-rollback",
+                "/artemis/externally-defined/");
+    }
 }

@@ -9,4 +9,15 @@ public abstract class BaseArtemisConsumerTest extends ArtemisJmsHelper {
     void testNamedOne() {
         sendAndVerify(createNamedOneContext(), "test-jms-named-1", "/artemis/named-1");
     }
+
+    @Test
+    void testNamedOneXACommit() {
+        sendAndVerifyXACommit(createNamedOneContext(), "test-jms-named-1", "/artemis/named-1/xa", "/artemis/named-1/");
+    }
+
+    @Test
+    void testNamedOneXARollback() {
+        sendAndVerifyXARollback(createNamedOneContext(), "test-jms-named-1", "/artemis/named-1/xa-rollback",
+                "/artemis/named-1/");
+    }
 }
