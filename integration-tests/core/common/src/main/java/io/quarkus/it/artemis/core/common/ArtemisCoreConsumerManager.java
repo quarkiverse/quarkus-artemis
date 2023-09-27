@@ -24,7 +24,7 @@ public class ArtemisCoreConsumerManager {
                 message.acknowledge();
                 return message.getBodyBuffer().readString();
             }
-        } catch (ActiveMQException e) {
+        } catch (ActiveMQException | NullPointerException e) {
             throw new RuntimeException("Could not receive message", e);
         }
     }

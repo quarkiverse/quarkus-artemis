@@ -8,7 +8,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
-import io.quarkus.it.artemis.jms.common.ArtemisJmsConsumerManager;
+import io.quarkus.it.artemis.jms.common.ArtemisJmsXaConsumerManager;
 import io.quarkus.it.artemis.jms.common.ArtemisJmsXaProducerManager;
 import io.smallrye.common.annotation.Identifier;
 
@@ -17,11 +17,11 @@ import io.smallrye.common.annotation.Identifier;
 @Produces(MediaType.TEXT_PLAIN)
 public class ArtemisEndpoint {
     private final ArtemisJmsXaProducerManager externallyDefinedProducer;
-    private final ArtemisJmsConsumerManager externallyDefinedConsumer;
+    private final ArtemisJmsXaConsumerManager externallyDefinedConsumer;
 
     public ArtemisEndpoint(
             @Identifier("externally-defined") ArtemisJmsXaProducerManager externallyDefinedProducer,
-            @Identifier("externally-defined") ArtemisJmsConsumerManager externallyDefinedConsumer) {
+            @Identifier("externally-defined") ArtemisJmsXaConsumerManager externallyDefinedConsumer) {
         this.externallyDefinedProducer = externallyDefinedProducer;
         this.externallyDefinedConsumer = externallyDefinedConsumer;
     }
@@ -43,5 +43,19 @@ public class ArtemisEndpoint {
     @Path("externally-defined")
     public String externallyDefinedGet() {
         return externallyDefinedConsumer.receive();
+    }
+
+    @GET
+    @Path("externally-defined/xa")
+    @Transactional
+    public String externallyDefinedXACommit() throws Exception {
+        return externallyDefinedConsumer.receiveXA(false);
+    }
+
+    @GET
+    @Path("externally-defined/xa-rollback")
+    @Transactional
+    public String externallyDefinedXARollback() throws Exception {
+        return externallyDefinedConsumer.receiveXA(true);
     }
 }

@@ -6,7 +6,7 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.XAConnectionFactory;
 import jakarta.transaction.TransactionManager;
 
-import io.quarkus.it.artemis.jms.common.ArtemisJmsConsumerManager;
+import io.quarkus.it.artemis.jms.common.ArtemisJmsXaConsumerManager;
 import io.quarkus.it.artemis.jms.common.ArtemisJmsXaProducerManager;
 import io.smallrye.common.annotation.Identifier;
 
@@ -14,9 +14,11 @@ public class BeanProducer {
     @Produces
     @ApplicationScoped
     @Identifier("named-1")
-    ArtemisJmsConsumerManager namedOneConsumerManager(
-            @SuppressWarnings("CdiInjectionPointsInspection") @Identifier("named-1") ConnectionFactory namedOneConnectionFactory) {
-        return new ArtemisJmsConsumerManager(namedOneConnectionFactory, "test-jms-named-1");
+    ArtemisJmsXaConsumerManager namedOneConsumerManager(
+            @SuppressWarnings("CdiInjectionPointsInspection") @Identifier("named-1") ConnectionFactory namedOneConnectionFactory,
+            @SuppressWarnings("CdiInjectionPointsInspection") @Identifier("named-1") XAConnectionFactory namedOneXaConnectionFactory,
+            @SuppressWarnings("CdiInjectionPointsInspection") TransactionManager tm) {
+        return new ArtemisJmsXaConsumerManager(namedOneConnectionFactory, namedOneXaConnectionFactory, tm, "test-jms-named-1");
     }
 
     @Produces

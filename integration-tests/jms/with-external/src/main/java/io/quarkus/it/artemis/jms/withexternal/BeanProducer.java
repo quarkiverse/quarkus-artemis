@@ -10,7 +10,7 @@ import jakarta.transaction.TransactionManager;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import io.quarkus.it.artemis.jms.common.ArtemisJmsConsumerManager;
+import io.quarkus.it.artemis.jms.common.ArtemisJmsXaConsumerManager;
 import io.quarkus.it.artemis.jms.common.ArtemisJmsXaProducerManager;
 import io.smallrye.common.annotation.Identifier;
 
@@ -27,9 +27,15 @@ public class BeanProducer {
     @Produces
     @ApplicationScoped
     @Identifier("externally-defined")
-    ArtemisJmsConsumerManager externallyDefinedManager(
-            @Identifier("externally-defined") ConnectionFactory namedOneConnectionFactory) {
-        return new ArtemisJmsConsumerManager(namedOneConnectionFactory, "test-jms-externally-defined");
+    ArtemisJmsXaConsumerManager externallyDefinedManager(
+            @Identifier("externally-defined") ConnectionFactory externallyDefinedConnectionFactory,
+            @Identifier("externally-defined") XAConnectionFactory externallyDefinedXaConnectionFactory,
+            @SuppressWarnings("CdiInjectionPointsInspection") TransactionManager tm) {
+        return new ArtemisJmsXaConsumerManager(
+                externallyDefinedConnectionFactory,
+                externallyDefinedXaConnectionFactory,
+                tm,
+                "test-jms-externally-defined");
     }
 
     @Produces
