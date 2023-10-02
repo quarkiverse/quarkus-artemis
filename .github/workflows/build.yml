@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Publish Report
-        uses: turing85/publish-report@v1.0.9
+        uses: turing85/publish-report@v1
         with:
           checkout: 'true'
           recreate-comment: true
@@ -179,7 +179,7 @@ jobs:
 
     steps:
       - name: Publish Report
-        uses: turing85/publish-report@v1.0.9
+        uses: turing85/publish-report@v1
         with:
           checkout: 'true'
           download-artifact-name: test-report-jvm
@@ -249,7 +249,7 @@ jobs:
     steps:
       - name: Publish Report
         if: ${{ always() }}
-        uses: turing85/publish-report@v1.0.9
+        uses: turing85/publish-report@v1
         with:
           checkout: 'true'
           download-artifact-name: test-report-native
