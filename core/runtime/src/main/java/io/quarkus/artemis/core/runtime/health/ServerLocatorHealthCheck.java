@@ -16,6 +16,7 @@ import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import org.eclipse.microprofile.health.Readiness;
 
 import io.quarkus.arc.Arc;
+import io.quarkus.arc.InstanceHandle;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
@@ -27,8 +28,8 @@ public class ServerLocatorHealthCheck implements HealthCheck {
     private final HashMap<String, ServerLocator> serverLocators = new HashMap<>();
 
     public ServerLocatorHealthCheck(
-            @SuppressWarnings("CdiInjectionPointsInspection") ArtemisRuntimeConfigs runtimeConfigs,
-            @SuppressWarnings("CdiInjectionPointsInspection") ArtemisBuildTimeConfigs buildTimeConfigs,
+            ArtemisRuntimeConfigs runtimeConfigs,
+            ArtemisBuildTimeConfigs buildTimeConfigs,
             @SuppressWarnings("CdiInjectionPointsInspection") ArtemisHealthSupport support) {
         HashSet<String> includedNames = new HashSet<>(support.getConfiguredNames());
         includedNames.removeAll(support.getExcludedNames());
@@ -38,14 +39,17 @@ public class ServerLocatorHealthCheck implements HealthCheck {
 
     private void processKnownBeans(ArtemisRuntimeConfigs runtimeConfigs, HashSet<String> includedNames) {
         for (String name : includedNames) {
-            if (runtimeConfigs.getAllConfigs().get(name) != null) {
+            if (runtimeConfigs.configs().get(name).isHealthInclude()) {
                 Annotation identifier;
                 if (ArtemisUtil.isDefault(name)) {
                     identifier = Default.Literal.INSTANCE;
                 } else {
                     identifier = Identifier.Literal.of(name);
                 }
-                ServerLocator locator = Arc.container().instance(ServerLocator.class, identifier).get();
+                ServerLocator locator;
+                try (InstanceHandle<ServerLocator> handle = Arc.container().instance(ServerLocator.class, identifier)) {
+                    locator = handle.get();
+                }
                 if (locator != null) {
                     serverLocators.put(name, locator);
                 }
@@ -55,8 +59,8 @@ public class ServerLocatorHealthCheck implements HealthCheck {
 
     private void processArcBeans(ArtemisRuntimeConfigs runtimeConfigs, ArtemisBuildTimeConfigs buildTimeConfigs) {
         if (runtimeConfigs.getHealthExternalEnabled()) {
-            HashSet<String> namesToIgnore = new HashSet<>(runtimeConfigs.getAllConfigs().keySet());
-            namesToIgnore.addAll(buildTimeConfigs.getAllConfigs().keySet());
+            HashSet<String> namesToIgnore = new HashSet<>(runtimeConfigs.configs().keySet());
+            namesToIgnore.addAll(buildTimeConfigs.configs().keySet());
             Map<String, ServerLocator> locatorNamesFromArc = ArtemisUtil.extractIdentifiers(ServerLocator.class, namesToIgnore);
             for (var entry : locatorNamesFromArc.entrySet()) {
                 ServerLocator locator = entry.getValue();

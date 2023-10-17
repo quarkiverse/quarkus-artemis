@@ -63,7 +63,7 @@ public class DevServicesArtemisProcessor {
             DockerStatusBuildItem dockerStatusBuildItem,
             LaunchModeBuildItem launchMode,
             ArtemisBootstrappedBuildItem bootstrap,
-            ShadowRunTimeConfigs shadowRunTimeConfigs,
+            ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildConfigs,
             List<DevServicesSharedNetworkBuildItem> devServicesSharedNetworkBuildItem,
             Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
@@ -72,8 +72,7 @@ public class DevServicesArtemisProcessor {
             GlobalDevServicesConfig devServicesConfig) {
         ArrayList<DevServicesResultBuildItem> results = new ArrayList<>();
         for (String name : bootstrap.getConfigurationNames()) {
-            ArtemisBuildTimeConfig buildTimeConfig = buildConfigs.getAllConfigs().getOrDefault(name,
-                    new ArtemisBuildTimeConfig());
+            ArtemisBuildTimeConfig buildTimeConfig = buildConfigs.configs().get(name);
             boolean isUrlEmpty = shadowRunTimeConfigs.isUrlEmpty(name);
             if (!shadowRunTimeConfigs.getNames().contains(name) && buildTimeConfig.isEmpty()) {
                 LOGGER.debugf(
@@ -120,29 +119,28 @@ public class DevServicesArtemisProcessor {
             cfgs.clear();
         }
 
-        StartupLogCompressor compressor = new StartupLogCompressor(
-                (launchMode.isTest() ? "(test) " : "") + "ActiveMQ Artemis Dev Services Starting:",
-                consoleInstalledBuildItem, loggingSetupBuildItem);
         if (configuration != null) {
-            try {
-                // devServices
-                RunningDevService service = startArtemis(
-                        name,
-                        dockerStatusBuildItem,
-                        configuration,
-                        launchMode,
-                        devServicesConfig.timeout);
-                if (service != null) {
-                    devServices.put(name, service);
-                }
-                if (devServices.get(name) == null) {
+            try (StartupLogCompressor compressor = new StartupLogCompressor(
+                    (launchMode.isTest() ? "(test) " : "") + "ActiveMQ Artemis Dev Services Starting:",
+                    consoleInstalledBuildItem, loggingSetupBuildItem)) {
+                try {
+                    // devServices
+                    RunningDevService service = startArtemis(
+                            name,
+                            dockerStatusBuildItem,
+                            configuration,
+                            launchMode,
+                            devServicesConfig.timeout);
+                    if (service != null) {
+                        devServices.put(name, service);
+                    }
+                    if (devServices.get(name) == null) {
+                        compressor.closeAndDumpCaptured();
+                    }
+                } catch (Throwable t) {
                     compressor.closeAndDumpCaptured();
-                } else {
-                    compressor.close();
+                    throw t instanceof RuntimeException ? (RuntimeException) t : new RuntimeException(t);
                 }
-            } catch (Throwable t) {
-                compressor.closeAndDumpCaptured();
-                throw t instanceof RuntimeException ? (RuntimeException) t : new RuntimeException(t);
             }
         }
 
@@ -287,7 +285,7 @@ public class DevServicesArtemisProcessor {
 
         public ArtemisDevServiceCfg(ArtemisBuildTimeConfig config, String name, boolean isUrlEmpty) {
             ArtemisDevServicesBuildTimeConfig devServicesConfig = config.getDevservices();
-            this.devServicesEnabled = devServicesConfig.enabled.orElse(isUrlEmpty);
+            this.devServicesEnabled = devServicesConfig.enabled().orElse(isUrlEmpty);
             this.imageName = devServicesConfig.getImageName();
             this.fixedExposedPort = devServicesConfig.getPort();
             this.shared = devServicesConfig.isShared();

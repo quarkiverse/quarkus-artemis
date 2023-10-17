@@ -1,4 +1,4 @@
-package io.quarkus.it.artemis.jms.withdefault;
+package io.quarkus.it.artemis.camel.jms.withdefault;
 
 import java.util.Set;
 
@@ -9,11 +9,11 @@ import io.quarkus.it.artemis.common.ArtemisHealthCheckHelper;
 public abstract class BaseArtemisHealthCheckTest {
     @Test
     void testHealth() {
-        ArtemisHealthCheckHelper.testJms("/q/health", Set.of("named-1"));
+        ArtemisHealthCheckHelper.testJms("/q/health", Set.of("<default>"));
     }
 
     @Test
     void testReady() {
-        ArtemisHealthCheckHelper.testJms("/q/health/ready", Set.of("named-1"));
+        ArtemisHealthCheckHelper.testJms("/q/health/ready", Set.of("<default>"));
     }
 }
