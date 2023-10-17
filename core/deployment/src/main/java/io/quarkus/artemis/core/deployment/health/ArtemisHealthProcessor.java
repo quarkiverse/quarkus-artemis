@@ -10,7 +10,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
-import io.quarkus.artemis.core.deployment.ShadowRunTimeConfigs;
+import io.quarkus.artemis.core.deployment.ShadowRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
@@ -24,7 +24,6 @@ import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.smallrye.health.deployment.spi.HealthBuildItem;
 
-@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ArtemisHealthProcessor {
     @SuppressWarnings("unused")
     @Record(ExecutionTime.STATIC_INIT)
@@ -32,7 +31,7 @@ public class ArtemisHealthProcessor {
     ArtemisHealthSupportBuildItem healthSupport(
             Capabilities capabilities,
             ArtemisBootstrappedBuildItem bootstrap,
-            ShadowRunTimeConfigs shadowRunTimeConfigs,
+            ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer,
             ArtemisHealthSupportRecorder recorder) {
@@ -52,22 +51,20 @@ public class ArtemisHealthProcessor {
 
     private static Set<String> processConfigs(
             Set<String> names,
-            ShadowRunTimeConfigs shadowRunTimeConfigs,
+            ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs) {
         Set<String> excluded = new HashSet<>();
-        Map<String, ArtemisBuildTimeConfig> allBuildTimeConfigs = Optional.ofNullable(buildTimeConfigs.getAllConfigs())
-                .orElse(Map.of());
+        Map<String, ArtemisBuildTimeConfig> allBuildTimeConfigs = buildTimeConfigs.configs();
         for (String name : names) {
-            ArtemisBuildTimeConfig buildTimeConfig = allBuildTimeConfigs.getOrDefault(name, new ArtemisBuildTimeConfig());
-            if ((ArtemisUtil.isDefault(name) && !shadowRunTimeConfigs.getNames().contains(name) && buildTimeConfig.isEmpty())
-                    || buildTimeConfig.isHealthExclude()) {
+            ArtemisBuildTimeConfig buildTimeConfig = allBuildTimeConfigs.get(name);
+            if ((ArtemisUtil.isDefault(name) && !shadowRunTimeConfigs.getNames().contains(name) && buildTimeConfig.isEmpty())) {
                 excluded.add(name);
             }
         }
         return excluded;
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({ "OptionalUsedAsFieldOrParameterType", "unused" })
     @BuildStep
     HealthBuildItem healthChecks(
             Capabilities capabilities,

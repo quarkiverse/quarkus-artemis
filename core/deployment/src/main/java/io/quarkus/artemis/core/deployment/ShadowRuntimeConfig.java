@@ -3,7 +3,6 @@ package io.quarkus.artemis.core.deployment;
 import java.util.Optional;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
 
 /**
  * This class is a build-time mirror/shadow of {@link io.quarkus.artemis.core.runtime.ArtemisRuntimeConfig} to make the
@@ -15,27 +14,52 @@ import io.quarkus.runtime.annotations.ConfigItem;
  * {@link jakarta.jms.ConnectionFactory} beans. Most importantly, we only query the presence of keys and/or values,
  * we do not access values, since they could change at runtime.
  */
-@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @ConfigGroup
-public class ShadowRuntimeConfig {
-    @ConfigItem(generateDocumentation = false)
-    protected Optional<String> url = Optional.empty();
+public interface ShadowRuntimeConfig {
+    /**
+     * Artemis connection url
+     *
+     * @deprecated since 3.1.3, to suppress doc generation
+     */
+    @Deprecated(since = "3.1.3")
+    Optional<String> url();
 
-    @ConfigItem(generateDocumentation = false)
-    protected Optional<String> username = Optional.empty();
+    /**
+     * Username for authentication, only used with JMS
+     *
+     * @deprecated since 3.1.3, to suppress doc generation
+     */
+    @Deprecated(since = "3.1.3")
+    Optional<String> username();
 
-    @ConfigItem(generateDocumentation = false)
-    protected Optional<String> password = Optional.empty();
+    /**
+     * Password for authentication, only used with JMS
+     *
+     * @deprecated since 3.1.3, to suppress doc generation
+     */
+    @Deprecated(since = "3.1.3")
+    Optional<String> password();
 
-    boolean isUrlEmpty() {
-        return url.isEmpty();
+    /**
+     * Whether this particular data source should be excluded from the health check if
+     * the general health check for data sources is enabled.
+     * <p>
+     * By default, the health check includes all configured data sources (if it is enabled).
+     *
+     * @deprecated since 3.1.3, to suppress doc generation
+     */
+    @Deprecated(since = "3.1.3")
+    Optional<Boolean> healthExclude();
+
+    default boolean isUrlEmpty() {
+        return url().isEmpty();
     }
 
-    public boolean isEmpty() {
-        return url.isEmpty() && username.isEmpty() && password.isEmpty();
+    default boolean isEmpty() {
+        return url().isEmpty() && username().isEmpty() && password().isEmpty() && healthExclude().isEmpty();
     }
 
-    public boolean isPresent() {
+    default boolean isPresent() {
         return !isEmpty();
     }
 }

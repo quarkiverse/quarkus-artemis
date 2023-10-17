@@ -15,8 +15,7 @@ import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisCoreProcessor;
 import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
-import io.quarkus.artemis.core.deployment.ShadowRunTimeConfigs;
-import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
+import io.quarkus.artemis.core.deployment.ShadowRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsRecorder;
@@ -50,7 +49,7 @@ public class ArtemisJmsProcessor {
     ArtemisJmsConfiguredBuildItem configure(
             ArtemisJmsRecorder recorder,
             ArtemisRuntimeConfigs runtimeConfigs,
-            ShadowRunTimeConfigs shadowRunTimeConfigs,
+            ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             ArtemisBootstrappedBuildItem bootstrap,
             Optional<ConnectionFactoryWrapperBuildItem> wrapperItem,
@@ -63,8 +62,7 @@ public class ArtemisJmsProcessor {
         Set<String> configurationNames = bootstrap.getConfigurationNames();
         boolean isSoleConnectionFactory = configurationNames.size() == 1;
         for (String name : configurationNames) {
-            if (!shadowRunTimeConfigs.getNames().contains(name) && buildTimeConfigs.getAllConfigs().getOrDefault(name,
-                    new ArtemisBuildTimeConfig()).isEmpty()) {
+            if (!shadowRunTimeConfigs.getNames().contains(name) && buildTimeConfigs.configs().get(name).isEmpty()) {
                 continue;
             }
             Supplier<ConnectionFactory> connectionFactorySupplier = recorder.getConnectionFactoryProducer(
@@ -76,8 +74,7 @@ public class ArtemisJmsProcessor {
                     connectionFactorySupplier,
                     name,
                     isSoleConnectionFactory,
-                    buildTimeConfigs.getAllConfigs().getOrDefault(name,
-                            new ArtemisBuildTimeConfig()).isXaEnabled()));
+                    buildTimeConfigs.configs().get(name).isXaEnabled()));
         }
         return new ArtemisJmsConfiguredBuildItem();
     }

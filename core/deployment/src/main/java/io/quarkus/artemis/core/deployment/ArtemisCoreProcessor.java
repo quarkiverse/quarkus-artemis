@@ -23,7 +23,6 @@ import org.jboss.jandex.DotName;
 import org.jboss.logging.Logger;
 
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
-import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisCoreRecorder;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
@@ -77,7 +76,7 @@ public class ArtemisCoreProcessor {
     ArtemisBootstrappedBuildItem build(
             CombinedIndexBuildItem indexBuildItem,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-            ShadowRunTimeConfigs shadowRunTimeConfigs,
+            ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs) {
         Collection<ClassInfo> connectorFactories = indexBuildItem.getIndex()
                 .getAllKnownImplementors(DotName.createSimple(ConnectorFactory.class.getName()));
@@ -90,12 +89,12 @@ public class ArtemisCoreProcessor {
         addBuiltinReflectiveBuildItems(reflectiveClass, BUILTIN_LOADBALANCING_POLICIES);
         HashSet<String> names = new HashSet<>(shadowRunTimeConfigs.getNames());
         HashSet<String> disabled = new HashSet<>();
-        for (var entry : buildTimeConfigs.getAllConfigs().entrySet()) {
+        for (var entry : buildTimeConfigs.configs().entrySet()) {
             if (entry.getValue().isDisabled()) {
                 disabled.add(entry.getKey());
             }
         }
-        names.addAll(buildTimeConfigs.getAllConfigs().keySet());
+        names.addAll(buildTimeConfigs.getNames());
         names.removeAll(disabled);
         return new ArtemisBootstrappedBuildItem(names);
     }
@@ -106,7 +105,7 @@ public class ArtemisCoreProcessor {
     ArtemisCoreConfiguredBuildItem configure(
             ArtemisCoreRecorder recorder,
             ArtemisRuntimeConfigs runtimeConfigs,
-            ShadowRunTimeConfigs shadowRunTimeConfigs,
+            ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             ArtemisBootstrappedBuildItem bootstrap,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer,
@@ -121,7 +120,7 @@ public class ArtemisCoreProcessor {
         boolean isSoleServerLocator = bootstrap.getConfigurationNames().size() == 1;
         for (String name : bootstrap.getConfigurationNames()) {
             if (!shadowRunTimeConfigs.getNames().contains(name)
-                    && buildTimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisBuildTimeConfig()).isEmpty()) {
+                    && buildTimeConfigs.configs().get(name).isEmpty()) {
                 continue;
             }
             Supplier<ServerLocator> supplier = recorder.getServerLocatorSupplier(
