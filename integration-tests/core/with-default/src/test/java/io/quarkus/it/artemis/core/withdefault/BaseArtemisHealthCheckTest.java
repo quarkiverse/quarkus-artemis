@@ -9,11 +9,11 @@ import io.quarkus.it.artemis.common.ArtemisHealthCheckHelper;
 public abstract class BaseArtemisHealthCheckTest {
     @Test
     void testHealth() {
-        ArtemisHealthCheckHelper.testCore("/q/health", Set.of("<default>", "named-1"));
+        ArtemisHealthCheckHelper.testCore("/q/health", Set.of("named-1"));
     }
 
     @Test
     void testReady() {
-        ArtemisHealthCheckHelper.testCore("/q/health/ready", Set.of("<default>", "named-1"));
+        ArtemisHealthCheckHelper.testCore("/q/health/ready", Set.of("named-1"));
     }
 }

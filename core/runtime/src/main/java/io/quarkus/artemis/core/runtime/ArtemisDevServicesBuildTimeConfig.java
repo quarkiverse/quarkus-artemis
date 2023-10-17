@@ -3,33 +3,28 @@ package io.quarkus.artemis.core.runtime;
 import java.util.Optional;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
 
-@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @ConfigGroup
-public class ArtemisDevServicesBuildTimeConfig {
+public interface ArtemisDevServicesBuildTimeConfig {
     /**
      * Enable or disable Dev Services explicitly. Dev Services are automatically enabled unless
      * {@code quarkus.artemis.url} is set.
      */
-    @ConfigItem
-    public Optional<Boolean> enabled = Optional.empty();
+    Optional<Boolean> enabled();
 
     /**
      * Optional fixed port the dev service will listen to.
      * <p>
      * If not defined, the port will be chosen randomly.
      */
-    @ConfigItem
-    public Optional<Integer> port = Optional.empty();
+    Optional<Integer> port();
 
     /**
      * The ActiveMQ Artemis container image to use.
      * <p>
      * Defaults to {@code quay.io/artemiscloud/activemq-artemis-broker:artemis.2.31.0}
      */
-    @ConfigItem
-    public Optional<String> imageName = Optional.empty();
+    Optional<String> imageName();
 
     /**
      * Indicates if the ActiveMQ Artemis broker managed by Quarkus Dev Services is shared.
@@ -43,8 +38,7 @@ public class ArtemisDevServicesBuildTimeConfig {
      * <p>
      * Container sharing is only used in dev mode.
      */
-    @ConfigItem
-    public Optional<Boolean> shared = Optional.empty();
+    Optional<Boolean> shared();
 
     /**
      * The value of the {@code quarkus-dev-service-artemis} label attached to the started container.
@@ -56,68 +50,64 @@ public class ArtemisDevServicesBuildTimeConfig {
      * <p>
      * This property is used when you need multiple shared ActiveMQ Artemis brokers.
      */
-    @ConfigItem
-    public Optional<String> serviceName = Optional.empty();
+    Optional<String> serviceName();
 
     /**
      * User to start artemis broker. Defaults to {@code admin} if not set.
      */
-    @ConfigItem
-    public Optional<String> user = Optional.empty();
+    Optional<String> user();
 
     /**
      * Password to start artemis broker. Defaults to {@code admin} whne not set.
      */
-    @ConfigItem
-    public Optional<String> password = Optional.empty();
+    Optional<String> password();
 
     /**
      * The value of the {@code AMQ_EXTRA_ARGS} environment variable to pass to the container. Defaults to
      * {@code --no-autotune --mapped --no-fsync} when not set.
      */
-    @ConfigItem
-    public Optional<String> extraArgs = Optional.empty();
+    Optional<String> extraArgs();
 
-    public boolean isEnabled() {
-        return enabled.orElse(true);
+    default boolean isEnabled() {
+        return enabled().orElse(true);
     }
 
-    public int getPort() {
-        return port.orElse(0);
+    default int getPort() {
+        return port().orElse(0);
     }
 
-    public String getImageName() {
-        return imageName.orElse("quay.io/artemiscloud/activemq-artemis-broker:artemis.2.31.0");
+    default String getImageName() {
+        return imageName().orElse("quay.io/artemiscloud/activemq-artemis-broker:artemis.2.31.0");
     }
 
-    public boolean isShared() {
-        return shared.orElse(true);
+    default boolean isShared() {
+        return shared().orElse(true);
     }
 
-    public String getServiceName() {
-        return serviceName.orElse("artemis");
+    default String getServiceName() {
+        return serviceName().orElse("artemis");
     }
 
-    public String getUser() {
-        return user.orElse("admin");
+    default String getUser() {
+        return user().orElse("admin");
     }
 
-    public String getPassword() {
-        return password.orElse("admin");
+    default String getPassword() {
+        return password().orElse("admin");
     }
 
-    public String getExtraArgs() {
-        return extraArgs.orElse("--no-autotune --mapped --no-fsync");
+    default String getExtraArgs() {
+        return extraArgs().orElse("--no-autotune --mapped --no-fsync");
     }
 
-    public boolean isEmpty() {
-        return enabled.isEmpty()
-                && port.isEmpty()
-                && imageName.isEmpty()
-                && shared.isEmpty()
-                && serviceName.isEmpty()
-                && user.isEmpty()
-                && password.isEmpty()
-                && extraArgs.isEmpty();
+    default boolean isEmpty() {
+        return enabled().isEmpty()
+                && port().isEmpty()
+                && imageName().isEmpty()
+                && shared().isEmpty()
+                && serviceName().isEmpty()
+                && user().isEmpty()
+                && password().isEmpty()
+                && extraArgs().isEmpty();
     }
 }

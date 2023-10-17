@@ -27,9 +27,8 @@ public class ArtemisJmsRecorder {
             ArtemisRuntimeConfigs runtimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             Function<ConnectionFactory, Object> wrapper) {
-        ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.getAllConfigs().getOrDefault(name, new ArtemisRuntimeConfig());
-        ArtemisBuildTimeConfig buildTimeConfig = buildTimeConfigs.getAllConfigs().getOrDefault(name,
-                new ArtemisBuildTimeConfig());
+        ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.configs().get(name);
+        ArtemisBuildTimeConfig buildTimeConfig = buildTimeConfigs.configs().get(name);
         ArtemisUtil.validateIntegrity(name, runtimeConfig, buildTimeConfig);
         final ConnectionFactory connectionFactory = Objects.requireNonNull(extractConnectionFactory(runtimeConfig, wrapper));
         return () -> connectionFactory;
