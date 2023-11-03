@@ -1,5 +1,7 @@
 package io.quarkus.it.artemis.jms.common;
 
+import static org.hamcrest.Matchers.is;
+
 import java.util.Random;
 
 import jakarta.jms.JMSConsumer;
@@ -77,15 +79,18 @@ public class ArtemisJmsHelper {
         }
 
         // Consume the message in xa transaction
-        Response response = RestAssured.with().get(xaEndpoint);
-        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
-        Assertions.assertEquals(body, response.getBody().asString());
-
+        // @formatter:off
+        RestAssured
+                .when().get(xaEndpoint)
+                .then()
+                    .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
+                    .body(is(body));
+        // @formatter:on
         // Receive from queue again to confirm nothing is received i.e. message was consumed
         // and now there is no message in the queue
-        response = RestAssured.with().get(endpoint);
-        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                response.statusCode());
+        RestAssured
+                .when().get(endpoint)
+                .then().statusCode(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode());
     }
 
     public void sendAndVerifyXARollback(JMSContext context, String queueName, String xaEndpoint, String endpoint) {
