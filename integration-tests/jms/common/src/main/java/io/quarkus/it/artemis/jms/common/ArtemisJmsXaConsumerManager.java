@@ -1,5 +1,7 @@
 package io.quarkus.it.artemis.jms.common;
 
+import java.util.Optional;
+
 import jakarta.jms.*;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.Synchronization;
@@ -9,7 +11,7 @@ import jakarta.transaction.TransactionManager;
 public class ArtemisJmsXaConsumerManager extends ArtemisJmsConsumerManager {
     private final XAConnectionFactory xaConnectionFactory;
     private final TransactionManager tm;
-    private String queueName;
+    private final String queueName;
 
     /**
      * This constructor exists solely for CDI ("You need to manually add a non-private no-args constructor").
@@ -37,6 +39,7 @@ public class ArtemisJmsXaConsumerManager extends ArtemisJmsConsumerManager {
         tm.getTransaction().registerSynchronization(new Synchronization() {
             @Override
             public void beforeCompletion() {
+                // Nothing to do
             }
 
             @Override
@@ -49,7 +52,12 @@ public class ArtemisJmsXaConsumerManager extends ArtemisJmsConsumerManager {
             tm.setRollbackOnly();
         }
         try {
-            return consumer.receive(1000L).getBody(String.class);
+            Optional<Message> maybeMessage = Optional.ofNullable(consumer.receive(1000L));
+            if (maybeMessage.isPresent()) {
+                return maybeMessage.get().getBody(String.class);
+            } else {
+                return null;
+            }
         } catch (JMSException | NullPointerException e) {
             throw new RuntimeException("Could not receive message", e);
         }
