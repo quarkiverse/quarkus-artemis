@@ -1,9 +1,12 @@
 package io.quarkus.it.artemis.jms.common;
 
+import java.util.Optional;
+
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
+import jakarta.jms.Message;
 
 public class ArtemisJmsConsumerManager {
     private final ConnectionFactory connectionFactory;
@@ -17,8 +20,13 @@ public class ArtemisJmsConsumerManager {
     public String receive() {
         try (JMSContext context = connectionFactory.createContext(JMSContext.AUTO_ACKNOWLEDGE);
                 JMSConsumer consumer = context.createConsumer(context.createQueue(queueName))) {
-            return consumer.receive(1000L).getBody(String.class);
-        } catch (JMSException | NullPointerException e) {
+            Optional<Message> maybeMessage = Optional.ofNullable(consumer.receive(1000L));
+            if (maybeMessage.isPresent()) {
+                return maybeMessage.get().getBody(String.class);
+            } else {
+                return null;
+            }
+        } catch (JMSException e) {
             throw new RuntimeException("Could not receive message", e);
         }
     }

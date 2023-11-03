@@ -1,5 +1,8 @@
 package io.quarkus.it.artemis.core.common;
 
+import java.util.Optional;
+
+import org.apache.activemq.artemis.api.core.ActiveMQBuffer;
 import org.apache.activemq.artemis.api.core.ActiveMQException;
 import org.apache.activemq.artemis.api.core.client.ClientConsumer;
 import org.apache.activemq.artemis.api.core.client.ClientMessage;
@@ -20,11 +23,15 @@ public class ArtemisCoreConsumerManager {
         try (ClientSession session = sessionFactory.createSession()) {
             session.start();
             try (ClientConsumer consumer = session.createConsumer(queueName)) {
-                ClientMessage message = consumer.receive(1000L);
-                message.acknowledge();
-                return message.getBodyBuffer().readString();
+                Optional<ClientMessage> maybeMessage = Optional.ofNullable(consumer.receive(1000L));
+                if (maybeMessage.isPresent()) {
+                    maybeMessage.get().acknowledge();
+                }
+                return maybeMessage.map(ClientMessage::getBodyBuffer)
+                        .map(ActiveMQBuffer::readString)
+                        .orElse(null);
             }
-        } catch (ActiveMQException | NullPointerException e) {
+        } catch (ActiveMQException e) {
             throw new RuntimeException("Could not receive message", e);
         }
     }
