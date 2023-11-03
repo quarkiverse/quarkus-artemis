@@ -12,8 +12,11 @@ public interface BaseSendAndReceiveTest {
     @Test
     default void test() {
         String body = "body";
-        RestAssured.given().body(body)
+        // @formatter:off
+        RestAssured
+                .given().body(body)
                 .when().post()
                 .then().statusCode(is(Response.Status.OK.getStatusCode())).body(is(body));
+        // @formatter:on
     }
 }
