@@ -1,5 +1,7 @@
 package io.quarkus.it.artemis.common;
 
+import static org.hamcrest.Matchers.is;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +24,16 @@ public class ArtemisHealthCheckHelper {
     }
 
     private static void test(String endpoint, Set<String> expectedConfigurations, String healthCheckMessage) {
-        Response response = RestAssured.with().get(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
-
+        // @formatter:off
+        Response response = RestAssured
+                .when().get(endpoint)
+                .then()
+                    .statusCode(javax.ws.rs.core.Response.Status.OK.getStatusCode())
+                    .body("status", is("UP"))
+                    .extract().response();
+        // @formatter:on
         Map<String, Object> body = response.as(new TypeRef<>() {
         });
-        Assertions.assertEquals("UP", body.get("status"));
 
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> checks = (List<Map<String, Object>>) body.get("checks");

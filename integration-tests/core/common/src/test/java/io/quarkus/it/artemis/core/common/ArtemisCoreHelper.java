@@ -1,6 +1,10 @@
 package io.quarkus.it.artemis.core.common;
 
+import static org.hamcrest.Matchers.is;
+
 import java.util.Random;
+
+import javax.ws.rs.core.Response;
 
 import org.apache.activemq.artemis.api.core.ActiveMQException;
 import org.apache.activemq.artemis.api.core.client.ActiveMQClient;
@@ -10,7 +14,6 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.Assertions;
 
 import io.restassured.RestAssured;
-import io.restassured.response.Response;
 
 public class ArtemisCoreHelper {
     private static final Random RANDOM = new Random();
@@ -37,15 +40,21 @@ public class ArtemisCoreHelper {
             autoClosedSession.createProducer(addressName).send(message);
         }
 
-        Response response = RestAssured.with().get(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
-        Assertions.assertEquals(body, response.getBody().asString());
+        // @formatter:off
+        RestAssured
+                .when().get(endpoint)
+                .then()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .body(is(body));
+        // @formatter:on
     }
 
     public void receiveAndVerify(String endpoint, ClientSession session, String queueName) throws ActiveMQException {
         String body = createBody();
-        Response response = RestAssured.with().body(body).post(endpoint);
-        Assertions.assertEquals(javax.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+        RestAssured
+                .given().body(body)
+                .when().post(endpoint)
+                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
 
         try (ClientSession autoClosedSession = session) {
             session.start();
