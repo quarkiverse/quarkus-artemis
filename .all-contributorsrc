@@ -53,6 +53,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "DreamPearl",
+      "name": "Rakhi Kumari",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16265285?v=4",
+      "profile": "https://www.linkedin.com/in/dreampearl/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
