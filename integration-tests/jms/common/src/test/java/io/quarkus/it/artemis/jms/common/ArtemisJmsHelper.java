@@ -8,13 +8,13 @@ import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
+import jakarta.ws.rs.core.Response;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.Assertions;
 
 import io.restassured.RestAssured;
-import io.restassured.response.Response;
 
 public class ArtemisJmsHelper {
     private static final Random RANDOM = new Random();
@@ -44,15 +44,21 @@ public class ArtemisJmsHelper {
             context.createProducer().send(context.createQueue(queueName), body);
         }
 
-        Response response = RestAssured.with().get(endpoint);
-        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
-        Assertions.assertEquals(body, response.getBody().asString());
+        // @formatter:off
+        RestAssured
+                .when().get(endpoint)
+                .then()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .body(is(body));
+        // @formatter:on
     }
 
     public void receiveAndVerify(String endpoint, JMSContext context, String queueName) throws JMSException {
         String body = createBody();
-        Response response = RestAssured.with().body(body).post(endpoint);
-        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+        RestAssured
+                .given().body(body)
+                .when().post(endpoint)
+                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
 
         try (JMSContext autoClosedContext = context) {
             JMSConsumer consumer = autoClosedContext.createConsumer(autoClosedContext.createQueue(queueName));
@@ -62,8 +68,10 @@ public class ArtemisJmsHelper {
     }
 
     public void testRollback(String endpoint, JMSContext context, String queueName) {
-        Response response = RestAssured.with().body("fail").post(endpoint);
-        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode(), response.statusCode());
+        RestAssured
+                .given().body("fail")
+                .when().post(endpoint)
+                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
 
         try (JMSContext autoClosedContext = context) {
             JMSConsumer consumer = autoClosedContext.createConsumer(autoClosedContext.createQueue(queueName));
@@ -75,7 +83,7 @@ public class ArtemisJmsHelper {
     public void sendAndVerifyXACommit(JMSContext context, String queueName, String xaEndpoint, String endpoint) {
         String body = createBody();
         try (JMSContext autoClosedContext = context) {
-            context.createProducer().send(context.createQueue(queueName), body);
+            autoClosedContext.createProducer().send(context.createQueue(queueName), body);
         }
 
         // Consume the message in xa transaction
@@ -83,31 +91,34 @@ public class ArtemisJmsHelper {
         RestAssured
                 .when().get(xaEndpoint)
                 .then()
-                    .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
+                    .statusCode(Response.Status.OK.getStatusCode())
                     .body(is(body));
         // @formatter:on
         // Receive from queue again to confirm nothing is received i.e. message was consumed
         // and now there is no message in the queue
         RestAssured
                 .when().get(endpoint)
-                .then().statusCode(jakarta.ws.rs.core.Response.Status.NO_CONTENT.getStatusCode());
+                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
     }
 
     public void sendAndVerifyXARollback(JMSContext context, String queueName, String xaEndpoint, String endpoint) {
         String body = createBody();
         try (JMSContext autoClosedContext = context) {
-            context.createProducer().send(context.createQueue(queueName), body);
+            autoClosedContext.createProducer().send(context.createQueue(queueName), body);
         }
 
         // Consume the message but in rollback transaction
-        Response response = RestAssured.with().get(xaEndpoint);
-        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(), response.statusCode());
-        Assertions.assertEquals(body, response.getBody().asString());
-
+        // @formatter:off
+        RestAssured
+                .when().get(xaEndpoint)
+                .then()
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .body(is(body));
+        // @formatter:on
         // Receive from queue again to confirm message is received i.e. message wasn't consumed
         // and rollback occurred
-        response = RestAssured.with().get(endpoint);
-        Assertions.assertEquals(jakarta.ws.rs.core.Response.Status.OK.getStatusCode(),
-                response.statusCode());
+        RestAssured
+                .when().get(endpoint)
+                .then().statusCode(Response.Status.OK.getStatusCode());
     }
 }
