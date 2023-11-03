@@ -1,6 +1,6 @@
 # Quarkus Artemis
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Version](https://img.shields.io/maven-central/v/io.quarkiverse.artemis/quarkus-artemis-jms?logo=apache-maven&style=flat-square)](https://search.maven.org/artifact/io.quarkiverse.artemis/quarkus-artemis-jms)
@@ -35,6 +35,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://zhfeng.github.io/"><img src="https://avatars.githubusercontent.com/u/1246139?v=4?s=100" width="100px;" alt="Zheng Feng"/><br /><sub><b>Zheng Feng</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=zhfeng" title="Code">💻</a> <a href="#maintenance-zhfeng" title="Maintenance">🚧</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/louisa-fr"><img src="https://avatars.githubusercontent.com/u/126324666?v=4?s=100" width="100px;" alt="louisa-fr"/><br /><sub><b>louisa-fr</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=louisa-fr" title="Code">💻</a> <a href="#maintenance-louisa-fr" title="Maintenance">🚧</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://fxnn.de/"><img src="https://avatars.githubusercontent.com/u/6599417?v=4?s=100" width="100px;" alt="Felix Neumann"/><br /><sub><b>Felix Neumann</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=fxnn" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/dreampearl/"><img src="https://avatars.githubusercontent.com/u/16265285?v=4?s=100" width="100px;" alt="Rakhi Kumari"/><br /><sub><b>Rakhi Kumari</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=DreamPearl" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
