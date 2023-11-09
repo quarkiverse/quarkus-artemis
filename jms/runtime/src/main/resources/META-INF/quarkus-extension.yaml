@@ -7,6 +7,12 @@ metadata:
   - "artemis"
   categories:
   - "messaging"
-  guide: https://quarkiverse.github.io/quarkiverse-docs/quarkus-artemis/dev/index.html
+  guide: "https://docs.quarkiverse.io/quarkus-artemis/dev/index.html"
   config:
   - "quarkus.artemis."
+  short-name: "artemis-jms"
+  status: "stable"
+  sponsors:
+  - "Red Hat"
+  - "Consol Software GmbH"
+  url: "https://github.com/quarkiverse/quarkus-artemis"
