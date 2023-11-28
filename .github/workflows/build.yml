@@ -158,6 +158,7 @@ jobs:
             --projects \
               "core/deployment, \
               jms/deployment, \
+              ra/deployment, \
               ${{ matrix.integration-test-module }}" \
             verify
 
@@ -227,6 +228,7 @@ jobs:
             --projects \
               "core/deployment, \
               jms/deployment, \
+              ra/deployment, \
               ${{ matrix.integration-test-module }}" \
             verify
 

@@ -28,6 +28,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>io.quarkiverse.ironjacamar</groupId>
+                <artifactId>quarkus-ironjacamar</artifactId>
+                <version>${quarkus-ironjacamar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkiverse.ironjacamar</groupId>
+                <artifactId>quarkus-ironjacamar-deployment</artifactId>
+                <version>${quarkus-ironjacamar.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
