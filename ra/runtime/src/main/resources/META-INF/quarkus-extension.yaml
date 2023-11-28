@@ -1,0 +1,17 @@
+---
+artifact: ${project.groupId}:${project.artifactId}:${project.version}
+name: "Artemis JMS Resource Adapter"
+metadata:
+  keywords:
+  - "artemis-jms-ra"
+  - "artemis"
+  - "jca"
+  categories:
+  - "messaging"
+  guide: "https://docs.quarkiverse.io/quarkus-artemis/dev/index.html"
+  short-name: "artemis-jms-ra"
+  status: "stable"
+  sponsors:
+  - "Red Hat"
+  - "Consol Software GmbH"
+  url: "https://github.com/quarkiverse/quarkus-artemis"

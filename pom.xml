@@ -19,6 +19,7 @@
         <module>core</module>
         <module>docs</module>
         <module>jms</module>
+        <module>ra</module>
         <module>test-framework</module>
     </modules>
 
@@ -40,6 +41,7 @@
         <artemis.version>2.31.2</artemis.version>
         <camel-quarkus.platform.version>3.2.9.Final</camel-quarkus.platform.version>
         <quarkus.version>3.2.9.Final</quarkus.version>
+        <quarkus-ironjacamar.version>1.0.3</quarkus-ironjacamar.version>
 
         <!-- Project setup -->
         <maven.compiler.parameters>true</maven.compiler.parameters>

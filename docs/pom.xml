@@ -87,5 +87,10 @@
             <artifactId>quarkus-artemis-jms-deployment</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-artemis-jms-ra-deployment</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
