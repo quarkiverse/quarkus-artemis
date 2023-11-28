@@ -40,6 +40,11 @@
 
         <dependency>
             <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-netty-deployment</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-health-spi</artifactId>
         </dependency>
 
