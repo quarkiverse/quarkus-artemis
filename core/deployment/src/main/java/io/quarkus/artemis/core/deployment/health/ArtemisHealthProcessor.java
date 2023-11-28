@@ -1,6 +1,7 @@
 package io.quarkus.artemis.core.deployment.health;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -34,12 +35,19 @@ public class ArtemisHealthProcessor {
             ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer,
+            List<ExtraArtemisHealthCheckBuildItem> extras,
             ArtemisHealthSupportRecorder recorder) {
         if (!buildTimeConfigs.isHealthEnabled()) {
             return null;
         }
-        Set<String> names = bootstrap.getConfigurationNames();
+        Set<String> names = new HashSet<>(bootstrap.getConfigurationNames());
         Set<String> excludedNames = processConfigs(names, shadowRunTimeConfigs, buildTimeConfigs);
+        for (ExtraArtemisHealthCheckBuildItem extra : extras) {
+            String name = extra.getName();
+            if (!excludedNames.contains(name)) {
+                names.add(name);
+            }
+        }
         syntheticBeanProducer.produce(SyntheticBeanBuildItem
                 .configure(ArtemisHealthSupport.class)
                 .supplier(recorder.getArtemisSupportBuilder(names, excludedNames))
