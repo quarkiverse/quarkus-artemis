@@ -19,6 +19,7 @@
         <module>common-parent</module>
         <module>core</module>
         <module>jms</module>
+        <module>ra</module>
     </modules>
 
     <build>

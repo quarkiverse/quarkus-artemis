@@ -17,12 +17,11 @@ public class ArtemisCoreRecorder {
         ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.configs().get(name);
         ArtemisBuildTimeConfig buildTimeConfig = buildTimeConfigs.configs().get(name);
         ArtemisUtil.validateIntegrity(name, runtimeConfig, buildTimeConfig);
-        ServerLocator serverLocator = Objects.requireNonNull(getServerLocator(runtimeConfig));
+        ServerLocator serverLocator = Objects.requireNonNull(getServerLocator(runtimeConfig.getUrl()));
         return () -> serverLocator;
     }
 
-    private static ServerLocator getServerLocator(ArtemisRuntimeConfig runtimeConfig) {
-        String url = runtimeConfig.getUrl();
+    protected static ServerLocator getServerLocator(String url) {
         if (url != null) {
             try {
                 return ActiveMQClient.createServerLocator(url);
