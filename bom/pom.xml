@@ -36,6 +36,16 @@
             </dependency>
             <dependency>
                 <groupId>io.quarkiverse.artemis</groupId>
+                <artifactId>quarkus-artemis-jms-ra</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkiverse.artemis</groupId>
+                <artifactId>quarkus-artemis-jms-ra-deployment</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkiverse.artemis</groupId>
                 <artifactId>quarkus-test-artemis</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -94,6 +104,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-jakarta-ra</artifactId>
+                <version>${artemis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
                 <artifactId>artemis-server</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
@@ -138,6 +153,17 @@
             <dependency>
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>artemis-amqp-protocol</artifactId>
+                <version>${artemis.version}</version>
+                <exclusions>
+                    <exclusion>
+                       <groupId>org.apache.activemq</groupId>
+                       <artifactId>artemis-server</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-hqclient-protocol</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
                     <exclusion>

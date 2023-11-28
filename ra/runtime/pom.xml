@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.quarkiverse.artemis</groupId>
+        <artifactId>quarkus-artemis-jms-ra-parent</artifactId>
+        <version>999-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>quarkus-artemis-jms-ra</artifactId>
+    <name>Quarkus - Artemis - JMS Resource Adapter - Runtime</name>
+    <description>Use JMS ActiveMQ Artemis RA with Quarkus JCA</description>
+
+    <build>
+        <!-- Mark this as a runtime dependency, so to make sure it's included on the final classpath during native-image -->
+        <plugins>
+            <plugin>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-extension-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>io.smallrye</groupId>
+                <artifactId>jandex-maven-plugin</artifactId>
+                <version>${jandex-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>make-index</id>
+                        <goals>
+                            <goal>jandex</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>io.quarkus</groupId>
+                            <artifactId>quarkus-extension-processor</artifactId>
+                            <version>${quarkus.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-artemis-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.ironjacamar</groupId>
+            <artifactId>quarkus-ironjacamar</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>artemis-jakarta-ra</artifactId>
+        </dependency>
+    </dependencies>
+</project>
