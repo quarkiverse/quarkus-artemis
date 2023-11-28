@@ -213,9 +213,9 @@ jobs:
       - name: Set up GraalVM 17
         uses: graalvm/setup-graalvm@v1
         with:
+          distribution: 'mandrel'
           version: 'latest'
           java-version: 17
-          components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Test
