@@ -210,10 +210,10 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Set up GraalVM 17
+      - name: Set up Mandrel GraalVM 17
         uses: graalvm/setup-graalvm@v1
         with:
-          version: 'latest'
+          version: 'mandrel-23.0.2.1-Final'
           java-version: 17
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
