@@ -213,7 +213,7 @@ jobs:
       - name: Set up Mandrel GraalVM 17
         uses: graalvm/setup-graalvm@v1
         with:
-          version: 'mandrel-23.0.2.1-Final'
+          version: 'mandrel-latest'
           java-version: 17
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
