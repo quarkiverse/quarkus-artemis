@@ -3,10 +3,12 @@ package io.quarkus.artemis.jms.ra.deployment;
 import java.util.Collection;
 import java.util.stream.Stream;
 
+import org.apache.activemq.artemis.api.core.ActiveMQBuffers;
 import org.apache.activemq.artemis.api.core.client.loadbalance.ConnectionLoadBalancingPolicy;
 import org.apache.activemq.artemis.core.remoting.impl.netty.NettyConnectorFactory;
 import org.apache.activemq.artemis.ra.ActiveMQResourceAdapter;
 import org.apache.activemq.artemis.spi.core.remoting.ClientProtocolManagerFactory;
+import org.apache.activemq.artemis.utils.RandomUtil;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
@@ -60,7 +62,9 @@ public class ArtemisResourceAdapterProcessor {
 
     @BuildStep
     void runtimeInitializedClasses(BuildProducer<RuntimeInitializedClassBuildItem> runtimeInitializedClasses) {
-        runtimeInitializedClasses.produce(
-                new RuntimeInitializedClassBuildItem("org.apache.activemq.artemis.utils.RandomUtil"));
+        Stream.of(RandomUtil.class, ActiveMQBuffers.class)
+                .map(Class::getName)
+                .map(RuntimeInitializedClassBuildItem::new)
+                .forEach(runtimeInitializedClasses::produce);
     }
 }
