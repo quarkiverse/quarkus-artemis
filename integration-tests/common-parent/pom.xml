@@ -132,11 +132,6 @@
             <artifactId>artemis-server</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>commons-logging-jboss-logging</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <profiles>
