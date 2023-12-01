@@ -31,8 +31,13 @@ import io.quarkiverse.ironjacamar.runtime.endpoint.MessageEndpointWrapper;
 public class ArtemisResourceAdapterFactory implements ResourceAdapterFactory {
 
     @Override
-    public String getDescription() {
-        return String.format("%s %s", ActiveMQResourceAdapter.PRODUCT_NAME, VersionLoader.getVersion().getFullVersion());
+    public String getProductName() {
+        return ActiveMQResourceAdapter.PRODUCT_NAME;
+    }
+
+    @Override
+    public String getProductVersion() {
+        return VersionLoader.getVersion().getFullVersion();
     }
 
     @Override
