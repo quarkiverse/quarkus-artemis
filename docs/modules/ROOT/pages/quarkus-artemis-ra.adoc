@@ -95,7 +95,7 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
 
-@ResourceEndpoint
+@ResourceEndpoint(activationSpecConfigKey="myqueue")
 @Identifier("other") <1>
 public class MyResourceEndpoint implements MessageListener {
 
