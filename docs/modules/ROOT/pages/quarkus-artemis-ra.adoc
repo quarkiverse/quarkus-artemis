@@ -1,0 +1,120 @@
+= Quarkus Artemis Resource Adapter
+
+include::./includes/attributes.adoc[]
+
+This extension enables the use of the Apache ActiveMQ Artemis JMS Resource Adapter in Quarkus.
+
+And it leverages on link:https://docs.quarkiverse.io/quarkus-ironjacamar/dev/index.html[Quarkus IronJacamar]
+
+== Installation
+
+To benefit from a consistent definition of the Artemis dependencies (including `artemis-server` often used in the tests),
+it is recommended to add the following BOM to your project, *below the Quarkus BOM*:
+
+[source,xml,subs=attributes+]
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkus.platform</groupId>
+            <artifactId>quarkus-bom</artifactId>
+            <version>${quarkus.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-artemis-bom</artifactId>
+            <version>{quarkus-artemis-version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
+
+Once the BOM is added, simply add the `io.quarkiverse.artemis:quarkus-artemis-ra` extension:
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+    <groupId>io.quarkiverse.artemis</groupId>
+    <artifactId>quarkus-artemis-ra</artifactId>
+</dependency>
+----
+
+We recommend to set properties `quarkus.version` and `artemis.version` to the versions you are using/need to use. We also recommend to align `artemis.version` with the artemis server version used.
+
+== Configuration
+
+=== In your application
+
+[source,properties,subs=attributes+]
+----
+quarkus.ironjacamar.ra.kind=artemis <1>
+
+quarkus.ironjacamar.ra.config.connection-parameters=host=localhost;port=5445;protocols=HORNETQ <2>
+quarkus.ironjacamar.ra.config.protocol-manager-factory=org.apache.activemq.artemis.core.protocol.hornetq.client.HornetQClientProtocolManagerFactory
+quarkus.ironjacamar.ra.config.user=guest
+quarkus.ironjacamar.ra.config.password=guest
+
+quarkus.ironjacamar.activation-spec.myqueue.config.destination-type=jakarta.jms.Queue <3>
+quarkus.ironjacamar.activation-spec.myqueue.config.destination=jms.queue.MyQueue
+quarkus.ironjacamar.activation-spec.myqueue.config.max-session=2
+quarkus.ironjacamar.activation-spec.myqueue.config.rebalance-connections=true
+
+----
+
+<1> This is the resource adapter kind.
+It must match the value of the `@ResourceAdapterKind` annotation in the `ResourceAdapterFactory` implementation.
+<2> (Optional) You can specify the resource adapter configuration that will be passed to your `ResourceAdapterFactory#createResourceAdapter` implementation method.
+<3> (Optional) You can specify optional activation spec configuration `ResourceAdapterFactory#createActivationSpec` implementation method.
+
+== Multiple Resource Adapters
+
+You can configure more than one `ResourceAdapter` instance in your application.
+Just name the resource adapter in the configuration:
+
+[source,properties,subs=attributes+]
+----
+quarkus.ironjacamar.main.ra.kind=artemis <1>
+quarkus.ironjacamar.other.ra.kind=artemis
+----
+
+To reference in the code, you must use the `@io.smallrye.common.annotation.Identifier` annotation:
+
+[source,java,subs=attributes+]
+----
+
+import io.quarkiverse.ironjacamar.ResourceEndpoint;
+import io.smallrye.common.annotation.Identifier;
+
+import jakarta.inject.Inject;
+
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
+
+@ResourceEndpoint(activationSpecConfigKey="myqueue")
+@Identifier("other") <1>
+public class MyResourceEndpoint implements MessageListener {
+
+    @Inject
+    @Identifier("main")
+    ConnectionFactory connectionFactory; <2>
+
+    @Override
+    public void onMessage(Message message) {
+        //...
+    }
+}
+----
+
+<1> This MessageListener will be activated by the `other` resource adapter configured above.
+<2> This `ConnectionFactory` will be the one configured in the `main` resource adapter.
+
+
+[[extension-configuration-reference]]
+== Configuration Reference
+
+For more details about Quarkus IronJacamar Configuration, please refer to the link:https://docs.quarkiverse.io/quarkus-ironjacamar/dev/index.html#extension-configuration-reference[documents].
