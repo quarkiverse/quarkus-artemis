@@ -1,1 +1,2 @@
-* xref:index.adoc[Quarkus - Artemis]
+* xref:quarkus-artemis-jms.adoc[Quarkus - Artemis JMS]
+* xref:quarkus-artemis-ra.adoc[Quarkus - Artemis Resource Adapter]
