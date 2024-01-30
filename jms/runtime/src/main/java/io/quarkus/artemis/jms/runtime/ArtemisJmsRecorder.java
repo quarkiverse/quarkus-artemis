@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
+import org.apache.activemq.artemis.jms.client.ActiveMQXAConnectionFactory;
 
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
@@ -31,18 +32,26 @@ public class ArtemisJmsRecorder {
         ArtemisBuildTimeConfig buildTimeConfig = buildTimeConfigs.getAllConfigs().getOrDefault(name,
                 new ArtemisBuildTimeConfig());
         ArtemisUtil.validateIntegrity(name, runtimeConfig, buildTimeConfig);
-        final ConnectionFactory connectionFactory = Objects.requireNonNull(extractConnectionFactory(runtimeConfig, wrapper));
+        final ConnectionFactory connectionFactory = Objects
+                .requireNonNull(extractConnectionFactory(buildTimeConfig.isXaEnabled(), runtimeConfig, wrapper));
         return () -> connectionFactory;
     }
 
-    private ConnectionFactory extractConnectionFactory(ArtemisRuntimeConfig runtimeConfig,
+    private ConnectionFactory extractConnectionFactory(boolean isXAenabled, ArtemisRuntimeConfig runtimeConfig,
             Function<ConnectionFactory, Object> wrapper) {
         String url = runtimeConfig.getUrl();
         if (url != null) {
-            return (ConnectionFactory) wrapper.apply(new ActiveMQConnectionFactory(
-                    url,
-                    runtimeConfig.getUsername(),
-                    runtimeConfig.getPassword()));
+            if (isXAenabled) {
+                return (ConnectionFactory) wrapper.apply(new ActiveMQXAConnectionFactory(
+                        url,
+                        runtimeConfig.getUsername(),
+                        runtimeConfig.getPassword()));
+            } else {
+                return (ConnectionFactory) wrapper.apply(new ActiveMQConnectionFactory(
+                        url,
+                        runtimeConfig.getUsername(),
+                        runtimeConfig.getPassword()));
+            }
         } else {
             return null;
         }

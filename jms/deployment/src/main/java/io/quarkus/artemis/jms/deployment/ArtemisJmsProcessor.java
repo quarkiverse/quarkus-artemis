@@ -10,6 +10,7 @@ import javax.jms.ConnectionFactory;
 import javax.jms.XAConnectionFactory;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
+import org.apache.activemq.artemis.jms.client.ActiveMQXAConnectionFactory;
 
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
@@ -111,7 +112,8 @@ public class ArtemisJmsProcessor {
     private static SyntheticBeanBuildItem.ExtendedBeanConfigurator initializeConfigurator(boolean isXaEnable) {
         SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator;
         if (isXaEnable) {
-            configurator = SyntheticBeanBuildItem.configure(ActiveMQConnectionFactory.class);
+            configurator = SyntheticBeanBuildItem.configure(ActiveMQXAConnectionFactory.class);
+            configurator.addType(ActiveMQConnectionFactory.class);
             /*
              * Since {@link ActiveMQConnectionFactory} implements both {@link ConnectionFactory} and
              * {@link XAConnectionFactory},
