@@ -14,7 +14,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.en
 
 [.description]
 --
-Whether to enable this configuration. 
+Whether to enable this configuration.
 Is enabled by default.
 
 ifdef::add-copy-button-to-env-var[]
@@ -47,7 +47,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 
 [.description]
 --
-Optional fixed port the dev service will listen to. 
+Optional fixed port the dev service will listen to.
 If not defined, the port will be chosen randomly.
 
 ifdef::add-copy-button-to-env-var[]
@@ -64,8 +64,8 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 
 [.description]
 --
-The ActiveMQ Artemis container image to use. 
-Defaults to `quay.io/artemiscloud/activemq-artemis-broker:artemis.2.31.0`
+The ActiveMQ Artemis container image to use.
+Defaults to `quay.io/artemiscloud/activemq-artemis-broker:artemis.2.32.0`
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_IMAGE_NAME+++[]
@@ -81,8 +81,8 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 
 [.description]
 --
-Indicates if the ActiveMQ Artemis broker managed by Quarkus Dev Services is shared. When shared, Quarkus looks for running containers using label-based service discovery. If a matching container is found, it is used, and so a second one is not started. Otherwise, Dev Services for ActiveMQ Artemis starts a new container. Is activated by default when not set. 
-The discovery uses the `quarkus-dev-service-artemis` label. The value is configured using the `service-name` property. 
+Indicates if the ActiveMQ Artemis broker managed by Quarkus Dev Services is shared. When shared, Quarkus looks for running containers using label-based service discovery. If a matching container is found, it is used, and so a second one is not started. Otherwise, Dev Services for ActiveMQ Artemis starts a new container. Is activated by default when not set.
+The discovery uses the `quarkus-dev-service-artemis` label. The value is configured using the `service-name` property.
 Container sharing is only used in dev mode.
 
 ifdef::add-copy-button-to-env-var[]
@@ -99,7 +99,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.de
 
 [.description]
 --
-The value of the `quarkus-dev-service-artemis` label attached to the started container. This property is used when `shared` is set to `true`. It defaults to `artemis` when not set. In this case, before starting a container, Dev Services for ActiveMQ Artemis looks for a container with the `quarkus-dev-service-artemis` label set to the configured value. If found, it will use this container instead of starting a new one. Otherwise it starts a new container with the `quarkus-dev-service-artemis` label set to the specified value. 
+The value of the `quarkus-dev-service-artemis` label attached to the started container. This property is used when `shared` is set to `true`. It defaults to `artemis` when not set. In this case, before starting a container, Dev Services for ActiveMQ Artemis looks for a container with the `quarkus-dev-service-artemis` label set to the configured value. If found, it will use this container instead of starting a new one. Otherwise it starts a new container with the `quarkus-dev-service-artemis` label set to the specified value.
 This property is used when you need multiple shared ActiveMQ Artemis brokers.
 
 ifdef::add-copy-button-to-env-var[]
@@ -164,7 +164,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.he
 
 [.description]
 --
-Whether this particular data source should be excluded from the health check if the general health check for data sources is enabled. 
+Whether this particular data source should be excluded from the health check if the general health check for data sources is enabled.
 By default, the health check includes all configured data sources (if it is enabled).
 
 ifdef::add-copy-button-to-env-var[]
@@ -173,7 +173,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS_HEALTH_EXCLUDE+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--|boolean
 |
 
 
@@ -197,7 +197,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.he
 
 [.description]
 --
-Whether a health check is published in case the smallrye-health extension is present. 
+Whether a health check is published in case the smallrye-health extension is present.
 This is a global setting and is not specific to a datasource.
 
 ifdef::add-copy-button-to-env-var[]
@@ -206,7 +206,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS_HEALTH_ENABLED+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--|boolean
 |`true`
 
 
@@ -214,7 +214,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.ca
 
 [.description]
 --
-Whether camel context enhancement should be enabled. 
+Whether camel context enhancement should be enabled.
 If enabled, all `javax.jms.ConnectionFactory` s annotated with `io.smallrye.common.annotation.Identifier` are registered as named beans in the camel context.
 
 ifdef::add-copy-button-to-env-var[]
@@ -223,7 +223,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS_CAMEL_QUARKUS_ENHANCE_ENABLED+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--|boolean
 |`false`
 
 
@@ -287,7 +287,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS_HEALTH_EXTERNAL_ENABLED+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--|boolean
 |
 
 
@@ -300,7 +300,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.-c
 
 [.description]
 --
-Whether to enable this configuration. 
+Whether to enable this configuration.
 Is enabled by default.
 
 ifdef::add-copy-button-to-env-var[]
@@ -309,7 +309,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__ENABLED+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--|boolean
 |
 
 
@@ -325,7 +325,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__DEVSERVICES_ENABLED+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--|boolean
 |
 
 
@@ -333,7 +333,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.-c
 
 [.description]
 --
-Optional fixed port the dev service will listen to. 
+Optional fixed port the dev service will listen to.
 If not defined, the port will be chosen randomly.
 
 ifdef::add-copy-button-to-env-var[]
@@ -342,7 +342,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__DEVSERVICES_PORT+++`
 endif::add-copy-button-to-env-var[]
---|int 
+--|int
 |
 
 
@@ -350,8 +350,8 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.-c
 
 [.description]
 --
-The ActiveMQ Artemis container image to use. 
-Defaults to `quay.io/artemiscloud/activemq-artemis-broker:artemis.2.31.0`
+The ActiveMQ Artemis container image to use.
+Defaults to `quay.io/artemiscloud/activemq-artemis-broker:artemis.2.32.0`
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__DEVSERVICES_IMAGE_NAME+++[]
@@ -359,7 +359,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__DEVSERVICES_IMAGE_NAME+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--|string
 |
 
 
@@ -367,8 +367,8 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.-c
 
 [.description]
 --
-Indicates if the ActiveMQ Artemis broker managed by Quarkus Dev Services is shared. When shared, Quarkus looks for running containers using label-based service discovery. If a matching container is found, it is used, and so a second one is not started. Otherwise, Dev Services for ActiveMQ Artemis starts a new container. Is activated by default when not set. 
-The discovery uses the `quarkus-dev-service-artemis` label. The value is configured using the `service-name` property. 
+Indicates if the ActiveMQ Artemis broker managed by Quarkus Dev Services is shared. When shared, Quarkus looks for running containers using label-based service discovery. If a matching container is found, it is used, and so a second one is not started. Otherwise, Dev Services for ActiveMQ Artemis starts a new container. Is activated by default when not set.
+The discovery uses the `quarkus-dev-service-artemis` label. The value is configured using the `service-name` property.
 Container sharing is only used in dev mode.
 
 ifdef::add-copy-button-to-env-var[]
@@ -377,7 +377,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__DEVSERVICES_SHARED+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--|boolean
 |
 
 
@@ -385,7 +385,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.-c
 
 [.description]
 --
-The value of the `quarkus-dev-service-artemis` label attached to the started container. This property is used when `shared` is set to `true`. It defaults to `artemis` when not set. In this case, before starting a container, Dev Services for ActiveMQ Artemis looks for a container with the `quarkus-dev-service-artemis` label set to the configured value. If found, it will use this container instead of starting a new one. Otherwise it starts a new container with the `quarkus-dev-service-artemis` label set to the specified value. 
+The value of the `quarkus-dev-service-artemis` label attached to the started container. This property is used when `shared` is set to `true`. It defaults to `artemis` when not set. In this case, before starting a container, Dev Services for ActiveMQ Artemis looks for a container with the `quarkus-dev-service-artemis` label set to the configured value. If found, it will use this container instead of starting a new one. Otherwise it starts a new container with the `quarkus-dev-service-artemis` label set to the specified value.
 This property is used when you need multiple shared ActiveMQ Artemis brokers.
 
 ifdef::add-copy-button-to-env-var[]
@@ -394,7 +394,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__DEVSERVICES_SERVICE_NAME+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--|string
 |
 
 
@@ -410,7 +410,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__DEVSERVICES_USER+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--|string
 |
 
 
@@ -426,7 +426,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__DEVSERVICES_PASSWORD+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--|string
 |
 
 
@@ -442,7 +442,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__DEVSERVICES_EXTRA_ARGS+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--|string
 |
 
 
@@ -450,7 +450,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.-c
 
 [.description]
 --
-Whether this particular data source should be excluded from the health check if the general health check for data sources is enabled. 
+Whether this particular data source should be excluded from the health check if the general health check for data sources is enabled.
 By default, the health check includes all configured data sources (if it is enabled).
 
 ifdef::add-copy-button-to-env-var[]
@@ -459,7 +459,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__HEALTH_EXCLUDE+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--|boolean
 |
 
 
@@ -496,7 +496,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__URL+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--|string
 |
 
 
@@ -512,7 +512,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__USERNAME+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--|string
 |
 
 
@@ -528,7 +528,7 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS__CONFIGURATION_NAME__PASSWORD+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--|string
 |
 
 |===
