@@ -163,7 +163,7 @@ jobs:
             verify
 
       - name: Upload JVM Test Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
           name: test-report-jvm
@@ -233,7 +233,7 @@ jobs:
             verify
 
       - name: Upload Native Test Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
           name: test-report-native
