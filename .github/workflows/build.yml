@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Publish Report
-        uses: turing85/publish-report@v1
+        uses: turing85/publish-report@v2
         with:
           checkout: 'true'
           recreate-comment: true
@@ -152,7 +152,9 @@ jobs:
           cache: 'maven'
 
       - name: Build and Test
+        id: build-and-test-jvm
         run: |
+          artifact_path=${{ matrix.integration-test-module }}
           ./mvnw \
             --batch-mode \
             --also-make \
@@ -161,14 +163,15 @@ jobs:
               "core/deployment, \
               jms/deployment, \
               ra/deployment, \
-              ${{ matrix.integration-test-module }}" \
+              ${artifact_path}" \
             verify
+          echo "artifact_suffix=${artifact_path//\//_}" >> "${GITHUB_OUTPUT}"
 
       - name: Upload JVM Test Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
-          name: test-report-jvm
+          name: test-report-jvm-${{ steps.build-and-test-jvm.outputs.artifact_suffix }}
           path: '**/target/*-reports/TEST*.xml'
           if-no-files-found: error
           retention-days: 2
@@ -182,10 +185,11 @@ jobs:
 
     steps:
       - name: Publish Report
-        uses: turing85/publish-report@v1
+        uses: turing85/publish-report@v2
         with:
           checkout: 'true'
-          download-artifact-name: test-report-jvm
+          download-artifact-pattern: test-report-jvm-*
+          download-artifact-merge-multiple: true
           report-name: JUnit JVM Test
           report-path: '**/target/surefire-reports/TEST*.xml'
 
@@ -221,7 +225,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Test
+        id: build-and-test-native
         run: |
+          artifact_path=${{ matrix.integration-test-module }}
           ./mvnw \
             --batch-mode  \
             --also-make \
@@ -231,14 +237,15 @@ jobs:
               "core/deployment, \
               jms/deployment, \
               ra/deployment, \
-              ${{ matrix.integration-test-module }}" \
+              ${artifact_path}" \
             verify
+          echo "artifact_suffix=${artifact_path//\//_}" >> "${GITHUB_OUTPUT}"
 
       - name: Upload Native Test Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
-          name: test-report-native
+          name: test-report-native-${{ steps.build-and-test-native.outputs.artifact_suffix }}
           path: '**/target/*-reports/TEST*.xml'
           if-no-files-found: error
           retention-days: 2
@@ -253,9 +260,10 @@ jobs:
     steps:
       - name: Publish Report
         if: ${{ always() }}
-        uses: turing85/publish-report@v1
+        uses: turing85/publish-report@v2
         with:
           checkout: 'true'
-          download-artifact-name: test-report-native
+          download-artifact-pattern: test-report-native-*
+          download-artifact-merge-multiple: true
           report-name: JUnit Native Test
           report-path: '**/target/*-reports/TEST*.xml'
