@@ -12,14 +12,17 @@ For general considerations about the JMS support in Quarkus, it is recommended t
 
 .Compatibility Table
 [[table-compatibility]]
-[cols=2*,options=header]
+[cols=3*,options=header]
 |===
 | Quarkus version
 | Quarkus JMS version
+| End of Life
 a|
 `2.x`
 a|
 latest `2.x`
+a|
+2024-04-30
 a|
 `3.0.x` +
 `3.1.x` +
@@ -27,24 +30,44 @@ a|
 a|
 latest `3.0.x`
 a|
+TBD
+a|
 `3.3.x` +
 `3.4.x` +
 `3.5.x` +
-`3.6.x`
+`3.6.x` +
+`3.7.x` +
 a|
 `3.1.x`
+a|
+TBD
+a|
+`3.8.x`
+a|
+`3.2.x`
+a|
+TBD
 |===
 
 .LTS Support
 [[table-lts]]
-[cols=2*,options=header]
+[cols=3*,options=header]
 |===
 | Quarkus LTS version
 | Quarkus JMS version
+| End of Life
 a|
 `3.2.x`
 a|
 `3.0.x`
+a|
+TBD
+a|
+`3.8.x`
+a|
+`3.2.x`
+a|
+TBD
 |===
 
 == Installation
