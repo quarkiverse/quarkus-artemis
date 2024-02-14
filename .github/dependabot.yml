@@ -18,6 +18,17 @@ updates:
     ignore:
       - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
       - dependency-name: "io.quarkus:quarkus-bom"
+        versions: "[3.8,)"
+      - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
+        versions: "[3.8,)"
+    target-branch: "3.1.x"
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
+      - dependency-name: "io.quarkus:quarkus-bom"
         versions: "[3.3,)"
       - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
         versions: "[3.3,)"
