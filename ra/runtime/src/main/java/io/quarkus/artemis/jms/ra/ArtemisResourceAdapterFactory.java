@@ -70,8 +70,13 @@ public class ArtemisResourceAdapterFactory implements ResourceAdapterFactory {
         activationSpec.setDestinationType(config.get("destination-type"));
         activationSpec.setDestination(config.get("destination"));
         activationSpec.setMaxSession(Integer.valueOf(config.getOrDefault("max-session", "5")));
+        activationSpec.setMessageSelector(config.get("message-selector"));
+        activationSpec.setShareSubscriptions(Boolean.valueOf(config.getOrDefault("share-subscriptions", "false")));
+        activationSpec.setSubscriptionDurability(config.get("durability"));
+        activationSpec.setSubscriptionName(config.get("subscription-name"));
         activationSpec.setRebalanceConnections(Boolean.valueOf(config.getOrDefault("rebalance-connections", "true")));
         activationSpec.setUseJNDI(false);
+
         return activationSpec;
     }
 
