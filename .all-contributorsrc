@@ -62,6 +62,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "gtudan",
+      "name": "Gregor Tudan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/419425?v=4",
+      "profile": "https://github.com/gtudan",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
