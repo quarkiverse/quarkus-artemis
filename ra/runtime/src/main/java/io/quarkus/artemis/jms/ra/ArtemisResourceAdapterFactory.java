@@ -49,6 +49,7 @@ public class ArtemisResourceAdapterFactory implements ResourceAdapterFactory {
         adapter.setUseJNDI(false);
         adapter.setUserName(config.get("user"));
         adapter.setPassword(config.get("password"));
+        adapter.setClientID(config.get("client-id"));
         adapter.setIgnoreJTA(false);
         return adapter;
     }
