@@ -57,6 +57,7 @@ quarkus.ironjacamar.ra.config.connection-parameters=host=localhost;port=5445;pro
 quarkus.ironjacamar.ra.config.protocol-manager-factory=org.apache.activemq.artemis.core.protocol.hornetq.client.HornetQClientProtocolManagerFactory
 quarkus.ironjacamar.ra.config.user=guest
 quarkus.ironjacamar.ra.config.password=guest
+quarkus.ironjacamar.ra.config.client-id=Quarkus
 
 quarkus.ironjacamar.activation-spec.myqueue.config.destination-type=jakarta.jms.Queue <3>
 quarkus.ironjacamar.activation-spec.myqueue.config.destination=jms.queue.MyQueue
