@@ -10,7 +10,7 @@ h|[[quarkus-artemis-core_configuration]]link:#quarkus-artemis-core_configuration
 h|Type
 h|Default
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.health.enabled]]`link:#quarkus-artemis-core_quarkus.artemis.health.enabled[quarkus.artemis.health.enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-health-enabled]]`link:#quarkus-artemis-core_quarkus-artemis-health-enabled[quarkus.artemis.health.enabled]`
 
 
 [.description]
@@ -29,7 +29,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-artemis-core_quarkus.artemis.health.external.enabled]]`link:#quarkus-artemis-core_quarkus.artemis.health.external.enabled[quarkus.artemis.health.external.enabled]`
+a| [[quarkus-artemis-core_quarkus-artemis-health-external-enabled]]`link:#quarkus-artemis-core_quarkus-artemis-health-external-enabled[quarkus.artemis.health.external.enabled]`
 
 
 [.description]
@@ -46,14 +46,14 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-h|[[quarkus-artemis-core_quarkus.artemis.configs-configurations]]link:#quarkus-artemis-core_quarkus.artemis.configs-configurations[Configurations]
+h|[[quarkus-artemis-core_quarkus-artemis-configs-configurations]]link:#quarkus-artemis-core_quarkus-artemis-configs-configurations[Configurations]
 
 h|Type
 h|Default
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.enabled]]`link:#quarkus-artemis-core_quarkus.artemis.enabled[quarkus.artemis.enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-enabled]]`link:#quarkus-artemis-core_quarkus-artemis-enabled[quarkus.artemis.enabled]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.enabled[quarkus.artemis."configuration-name".enabled]`
+`link:#quarkus-artemis-core_quarkus-artemis-enabled[quarkus.artemis."configuration-name".enabled]`
 
 
 [.description]
@@ -72,9 +72,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.devservices.enabled]]`link:#quarkus-artemis-core_quarkus.artemis.devservices.enabled[quarkus.artemis.devservices.enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-enabled]]`link:#quarkus-artemis-core_quarkus-artemis-devservices-enabled[quarkus.artemis.devservices.enabled]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.devservices.enabled[quarkus.artemis."configuration-name".devservices.enabled]`
+`link:#quarkus-artemis-core_quarkus-artemis-devservices-enabled[quarkus.artemis."configuration-name".devservices.enabled]`
 
 
 [.description]
@@ -91,9 +91,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.devservices.port]]`link:#quarkus-artemis-core_quarkus.artemis.devservices.port[quarkus.artemis.devservices.port]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-port]]`link:#quarkus-artemis-core_quarkus-artemis-devservices-port[quarkus.artemis.devservices.port]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.devservices.port[quarkus.artemis."configuration-name".devservices.port]`
+`link:#quarkus-artemis-core_quarkus-artemis-devservices-port[quarkus.artemis."configuration-name".devservices.port]`
 
 
 [.description]
@@ -112,9 +112,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.devservices.image-name]]`link:#quarkus-artemis-core_quarkus.artemis.devservices.image-name[quarkus.artemis.devservices.image-name]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-image-name]]`link:#quarkus-artemis-core_quarkus-artemis-devservices-image-name[quarkus.artemis.devservices.image-name]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.devservices.image-name[quarkus.artemis."configuration-name".devservices.image-name]`
+`link:#quarkus-artemis-core_quarkus-artemis-devservices-image-name[quarkus.artemis."configuration-name".devservices.image-name]`
 
 
 [.description]
@@ -133,9 +133,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.devservices.shared]]`link:#quarkus-artemis-core_quarkus.artemis.devservices.shared[quarkus.artemis.devservices.shared]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-shared]]`link:#quarkus-artemis-core_quarkus-artemis-devservices-shared[quarkus.artemis.devservices.shared]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.devservices.shared[quarkus.artemis."configuration-name".devservices.shared]`
+`link:#quarkus-artemis-core_quarkus-artemis-devservices-shared[quarkus.artemis."configuration-name".devservices.shared]`
 
 
 [.description]
@@ -156,9 +156,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.devservices.service-name]]`link:#quarkus-artemis-core_quarkus.artemis.devservices.service-name[quarkus.artemis.devservices.service-name]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-service-name]]`link:#quarkus-artemis-core_quarkus-artemis-devservices-service-name[quarkus.artemis.devservices.service-name]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.devservices.service-name[quarkus.artemis."configuration-name".devservices.service-name]`
+`link:#quarkus-artemis-core_quarkus-artemis-devservices-service-name[quarkus.artemis."configuration-name".devservices.service-name]`
 
 
 [.description]
@@ -177,9 +177,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.devservices.user]]`link:#quarkus-artemis-core_quarkus.artemis.devservices.user[quarkus.artemis.devservices.user]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-user]]`link:#quarkus-artemis-core_quarkus-artemis-devservices-user[quarkus.artemis.devservices.user]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.devservices.user[quarkus.artemis."configuration-name".devservices.user]`
+`link:#quarkus-artemis-core_quarkus-artemis-devservices-user[quarkus.artemis."configuration-name".devservices.user]`
 
 
 [.description]
@@ -196,9 +196,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.devservices.password]]`link:#quarkus-artemis-core_quarkus.artemis.devservices.password[quarkus.artemis.devservices.password]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-password]]`link:#quarkus-artemis-core_quarkus-artemis-devservices-password[quarkus.artemis.devservices.password]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.devservices.password[quarkus.artemis."configuration-name".devservices.password]`
+`link:#quarkus-artemis-core_quarkus-artemis-devservices-password[quarkus.artemis."configuration-name".devservices.password]`
 
 
 [.description]
@@ -215,9 +215,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.devservices.extra-args]]`link:#quarkus-artemis-core_quarkus.artemis.devservices.extra-args[quarkus.artemis.devservices.extra-args]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-extra-args]]`link:#quarkus-artemis-core_quarkus-artemis-devservices-extra-args[quarkus.artemis.devservices.extra-args]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.devservices.extra-args[quarkus.artemis."configuration-name".devservices.extra-args]`
+`link:#quarkus-artemis-core_quarkus-artemis-devservices-extra-args[quarkus.artemis."configuration-name".devservices.extra-args]`
 
 
 [.description]
@@ -234,9 +234,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus.artemis.xa-enabled]]`link:#quarkus-artemis-core_quarkus.artemis.xa-enabled[quarkus.artemis.xa-enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-xa-enabled]]`link:#quarkus-artemis-core_quarkus-artemis-xa-enabled[quarkus.artemis.xa-enabled]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.xa-enabled[quarkus.artemis."configuration-name".xa-enabled]`
+`link:#quarkus-artemis-core_quarkus-artemis-xa-enabled[quarkus.artemis."configuration-name".xa-enabled]`
 
 
 [.description]
@@ -253,9 +253,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-artemis-core_quarkus.artemis.url]]`link:#quarkus-artemis-core_quarkus.artemis.url[quarkus.artemis.url]`
+a| [[quarkus-artemis-core_quarkus-artemis-url]]`link:#quarkus-artemis-core_quarkus-artemis-url[quarkus.artemis.url]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.url[quarkus.artemis."configuration-name".url]`
+`link:#quarkus-artemis-core_quarkus-artemis-url[quarkus.artemis."configuration-name".url]`
 
 
 [.description]
@@ -272,9 +272,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-artemis-core_quarkus.artemis.username]]`link:#quarkus-artemis-core_quarkus.artemis.username[quarkus.artemis.username]`
+a| [[quarkus-artemis-core_quarkus-artemis-username]]`link:#quarkus-artemis-core_quarkus-artemis-username[quarkus.artemis.username]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.username[quarkus.artemis."configuration-name".username]`
+`link:#quarkus-artemis-core_quarkus-artemis-username[quarkus.artemis."configuration-name".username]`
 
 
 [.description]
@@ -291,9 +291,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-artemis-core_quarkus.artemis.password]]`link:#quarkus-artemis-core_quarkus.artemis.password[quarkus.artemis.password]`
+a| [[quarkus-artemis-core_quarkus-artemis-password]]`link:#quarkus-artemis-core_quarkus-artemis-password[quarkus.artemis.password]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.password[quarkus.artemis."configuration-name".password]`
+`link:#quarkus-artemis-core_quarkus-artemis-password[quarkus.artemis."configuration-name".password]`
 
 
 [.description]
@@ -310,9 +310,9 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-artemis-core_quarkus.artemis.health-exclude]]`link:#quarkus-artemis-core_quarkus.artemis.health-exclude[quarkus.artemis.health-exclude]`
+a| [[quarkus-artemis-core_quarkus-artemis-health-exclude]]`link:#quarkus-artemis-core_quarkus-artemis-health-exclude[quarkus.artemis.health-exclude]`
 
-`link:#quarkus-artemis-core_quarkus.artemis.health-exclude[quarkus.artemis."configuration-name".health-exclude]`
+`link:#quarkus-artemis-core_quarkus-artemis-health-exclude[quarkus.artemis."configuration-name".health-exclude]`
 
 
 [.description]
