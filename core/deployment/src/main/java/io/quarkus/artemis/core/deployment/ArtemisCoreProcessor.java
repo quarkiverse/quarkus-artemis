@@ -21,6 +21,8 @@ import org.apache.activemq.artemis.utils.RandomUtil;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.logging.Logger;
+import org.jgroups.Version;
+import org.jgroups.util.Util;
 
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
@@ -68,6 +70,8 @@ public class ArtemisCoreProcessor {
         return NativeImageConfigBuildItem.builder()
                 .addRuntimeInitializedClass(ActiveMQBuffers.class.getCanonicalName())
                 .addRuntimeInitializedClass(RandomUtil.class.getCanonicalName())
+                .addRuntimeInitializedClass(Util.class.getCanonicalName())
+                .addRuntimeInitializedClass(Version.class.getCanonicalName())
                 .build();
     }
 
