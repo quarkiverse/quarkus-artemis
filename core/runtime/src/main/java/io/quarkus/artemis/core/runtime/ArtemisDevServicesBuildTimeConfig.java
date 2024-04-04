@@ -26,7 +26,7 @@ public class ArtemisDevServicesBuildTimeConfig {
     /**
      * The ActiveMQ Artemis container image to use.
      * <p>
-     * Defaults to {@code quay.io/artemiscloud/activemq-artemis-broker:artemis.2.32.0}
+     * Defaults to {@code quay.io/artemiscloud/activemq-artemis-broker:artemis.2.33.0}
      */
     @ConfigItem
     public Optional<String> imageName = Optional.empty();
@@ -87,7 +87,7 @@ public class ArtemisDevServicesBuildTimeConfig {
     }
 
     public String getImageName() {
-        return imageName.orElse("quay.io/artemiscloud/activemq-artemis-broker:artemis.2.32.0");
+        return imageName.orElse("quay.io/artemiscloud/activemq-artemis-broker:artemis.2.33.0");
     }
 
     public boolean isShared() {
