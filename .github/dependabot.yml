@@ -17,12 +17,15 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
-      - dependency-name: "io.quarkus:quarkus-bom"
-        versions: "[3.9,)"
+      - dependency-name: "io.quarkus:*"
+        versions:
+          - "[3.9,)"
       - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
-        versions: "[3.9,)"
+        versions:
+          - "[3.9,)"
       - dependency-name: "org.apache.activemq:*"
-        versions: "[2.33.0,)"
+        versions:
+          - "[2.33.0,)"
     target-branch: "3.2.x"
   - package-ecosystem: "maven"
     directory: "/"
@@ -30,12 +33,15 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
-      - dependency-name: "io.quarkus:quarkus-bom"
-        versions: "[3.8,)"
+      - dependency-name: "io.quarkus:*"
+        versions:
+          - "[3.8,)"
       - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
-        versions: "[3.8,)"
+        versions:
+          - "[3.8,)"
       - dependency-name: "io.quarkiverse.ironjacamar:*"
-        versions: "[1.2.0,)"
+        versions:
+          - "[1.2.0,)"
     target-branch: "3.1.x"
   - package-ecosystem: "maven"
     directory: "/"
@@ -43,14 +49,18 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
-      - dependency-name: "io.quarkus:quarkus-bom"
-        versions: "[3.3,)"
+      - dependency-name: "io.quarkus:*"
+        versions:
+          - "[3.3,)"
       - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
-        versions: "[3.3,)"
+        versions:
+          - "[3.3,)"
       - dependency-name: "org.apache.activemq:*"
-        versions: "[2.33.0,)"
+        versions:
+          - "[2.33.0,)"
       - dependency-name: "io.quarkiverse.ironjacamar:*"
-        versions: "[1.2.0,)"
+        versions:
+          - "[1.2.0,)"
     target-branch: "3.0.x"
   - package-ecosystem: "maven"
     directory: "/"
@@ -58,10 +68,13 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
-      - dependency-name: "io.quarkus:quarkus-bom"
-        versions: "[3.0,)"
+      - dependency-name: "io.quarkus:*"
+        versions:
+          - "[3.0,)"
       - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
-        versions: "[3.0,)"
+        versions:
+          - "[3.0,)"
       - dependency-name: "io.quarkiverse:quarkiverse-parent"
-        versions: "[16,)"
+        versions:
+          - "[16,)"
     target-branch: "2.x"
