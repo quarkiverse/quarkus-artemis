@@ -139,7 +139,7 @@ public class DevServicesArtemisProcessor {
                     }
                 } catch (Throwable t) {
                     compressor.closeAndDumpCaptured();
-                    throw t instanceof RuntimeException ? (RuntimeException) t : new RuntimeException(t);
+                    throw t instanceof RuntimeException runtimeException ? runtimeException : new RuntimeException(t);
                 }
             }
         }
@@ -188,8 +188,8 @@ public class DevServicesArtemisProcessor {
         if (devServices.get(name) != null) {
             try {
                 devServices.get(name).close();
-            } catch (Throwable e) {
-                LOGGER.error("Failed to stop the ActiveMQ Artemis broker", e);
+            } catch (Throwable t) {
+                LOGGER.error("Failed to stop the ActiveMQ Artemis broker", t);
             } finally {
                 devServices.remove(name);
             }

@@ -1,9 +1,9 @@
 package io.quarkus.it.artemis.ra;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
 import jakarta.jms.JMSProducer;
 import jakarta.jms.Queue;
 import jakarta.jms.TextMessage;
@@ -21,10 +21,11 @@ import io.quarkus.narayana.jta.QuarkusTransaction;
 @Path("/jca")
 @ApplicationScoped
 public class JcaResource {
-    // add some rest methods here
+    private final ConnectionFactory factory;
 
-    @Inject
-    ConnectionFactory factory;
+    public JcaResource(@SuppressWarnings("CdiInjectionPointsInspection") ConnectionFactory factory) {
+        this.factory = factory;
+    }
 
     @GET
     @Transactional
@@ -46,7 +47,7 @@ public class JcaResource {
     @POST
     @Transactional
     @Path("/sales")
-    public void sendToSalesQueue(@FormParam("name") String name) throws Exception {
+    public void sendToSalesQueue(@FormParam("name") String name) throws JMSException {
         try (JMSContext context = factory.createContext()) {
             JMSProducer producer = context.createProducer();
             TextMessage msg = context.createTextMessage(name);
@@ -72,7 +73,7 @@ public class JcaResource {
     @GET
     @Path("/transacted")
     @Transactional
-    public boolean Transacted() {
+    public boolean transacted() {
         return isTransacted();
     }
 

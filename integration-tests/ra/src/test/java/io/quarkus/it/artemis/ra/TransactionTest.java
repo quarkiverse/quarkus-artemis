@@ -17,23 +17,21 @@ import io.restassured.RestAssured;
 
 @QuarkusTest
 @QuarkusTestResource(ArtemisTestResource.class)
-public class TransactionTest {
-
+class TransactionTest {
     @Inject
+    @SuppressWarnings("CdiInjectionPointsInspection")
     ConnectionFactory factory;
 
     @Inject
     SalesEndpoint endpoint;
 
     @Test
-    public void retryMessagesOnRollback() {
+    void retryMessagesOnRollback() {
         // @formatter:off
         RestAssured
-                .given()
-                .formParam("name", "George")
+                .given().formParam("name", "George")
                 .when().post("/jca/sales")
-                .then()
-                    .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         // @formatter:on
 
         try (JMSContext context = factory.createContext()) {

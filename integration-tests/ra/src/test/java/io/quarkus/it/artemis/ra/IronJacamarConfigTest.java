@@ -13,22 +13,20 @@ import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
 @TestProfile(DisableDataBaseService.class)
-public class IronJacamarConfigTest {
-
+class IronJacamarConfigTest {
     @Inject
     IronJacamarRuntimeConfig runtimeConfig;
 
     @Test
     void shouldReadConfig() {
         assertThat(runtimeConfig.resourceAdapters().get("<default>").ra()).satisfies(
-                ra -> {
-                    assertThat(ra.config()).hasEntrySatisfying("connection-parameters", cp -> {
-                        assertThat(cp).matches("host=localhost;port=[0-9]+;protocols=AMQP");
-                    });
-                });
-        assertThat(runtimeConfig.activationSpecs().map().get("myqueue").config()).hasEntrySatisfying("destination", d -> {
-            assertThat(d).endsWith("MyQueue");
-        });
+                ra -> assertThat(ra.config())
+                        .hasEntrySatisfying(
+                                "connection-parameters",
+                                cp -> assertThat(cp)
+                                        .matches("host=localhost;port=[0-9]+;protocols=AMQP")));
+        assertThat(runtimeConfig.activationSpecs().map().get("myqueue").config())
+                .hasEntrySatisfying("destination", d -> assertThat(d).endsWith("MyQueue"));
 
     }
 }
