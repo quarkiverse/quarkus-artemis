@@ -2,7 +2,6 @@ package io.quarkus.it.artemis.ra;
 
 import static org.hamcrest.Matchers.is;
 
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,26 +14,21 @@ import io.restassured.RestAssured;
 
 @QuarkusTest
 @QuarkusTestResource(ArtemisTestResource.class)
-public class JcaResourceTest {
-
+class JcaResourceTest {
     @BeforeEach
-    @Transactional
     void setup() {
         // @formatter:off
         RestAssured
                 .when().delete("/jca/gifts")
-                .then()
-                .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         RestAssured
                 .when().put("/myqueue/reset")
-                .then()
-                    .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         // @formatter:on
     }
 
     @Test
-    @Transactional
-    public void testProducer() {
+    void testProducer() {
         // @formatter:off
         RestAssured
                 .when().get("/jca?name=George")
@@ -55,14 +49,13 @@ public class JcaResourceTest {
     }
 
     @Test
-    @Transactional
-    public void testProducerRollback() {
+    void testProducerRollback() {
         // @formatter:off
         RestAssured
                 .when().get("/jca?name=rollback")
                 .then()
                     .statusCode(Response.Status.OK.getStatusCode())
-                .   body(is("Hello rollback"));
+                    .body(is("Hello rollback"));
         RestAssured
                 .when().get("/jca/gifts/count")
                 .then()
@@ -71,12 +64,13 @@ public class JcaResourceTest {
         RestAssured
                 .when().get("/myqueue")
                 .then()
-                    .statusCode(Response.Status.OK.getStatusCode()).body(is("0"));
+                    .statusCode(Response.Status.OK.getStatusCode())
+                    .body(is("0"));
         // @formatter:on
     }
 
     @Test
-    public void testTransacted() {
+    void testTransacted() {
         // @formatter:off
         RestAssured
                 .when().get("/jca/transacted")
@@ -87,7 +81,7 @@ public class JcaResourceTest {
     }
 
     @Test
-    public void testNotTransacted() {
+    void testNotTransacted() {
         // @formatter:off
         RestAssured
                 .when().get("/jca/not-transacted")

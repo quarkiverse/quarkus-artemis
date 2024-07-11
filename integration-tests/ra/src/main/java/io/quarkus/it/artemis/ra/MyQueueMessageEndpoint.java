@@ -18,8 +18,7 @@ import io.quarkus.narayana.jta.QuarkusTransaction;
 @ResourceEndpoint(activationSpecConfigKey = "myqueue")
 @Path("/myqueue")
 public class MyQueueMessageEndpoint implements MessageListener {
-
-    AtomicInteger counter = new AtomicInteger(0);
+    private final AtomicInteger counter = new AtomicInteger(0);
 
     @Override
     @Transactional

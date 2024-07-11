@@ -15,18 +15,18 @@ import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
 @TestProfile(DisableAllServices.class)
-public class InjectionTest {
-
+class InjectionTest {
     @Inject
+    @SuppressWarnings("CdiInjectionPointsInspection")
     ConnectionFactory connectionFactory;
 
     @Test
-    public void testProducer() {
+    void testProducer() {
         assertThat(Arc.container().listAll(IronJacamarContainer.class)).hasSize(1);
     }
 
     @Test
-    public void shouldInjectConnectionFactory() {
+    void shouldInjectConnectionFactory() {
         assertThat(Arc.container().listAll(ConnectionFactory.class)).hasSize(1);
         assertThat(connectionFactory).isNotNull();
     }

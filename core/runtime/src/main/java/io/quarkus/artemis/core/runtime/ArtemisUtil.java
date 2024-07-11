@@ -51,8 +51,7 @@ public class ArtemisUtil {
 
     private static String extractIdentifier(InstanceHandle<?> handle) {
         for (Annotation qualifier : handle.getBean().getQualifiers()) {
-            if (qualifier instanceof Identifier) {
-                Identifier identifier = (Identifier) qualifier;
+            if (qualifier instanceof Identifier identifier) {
                 return identifier.value();
             }
         }
