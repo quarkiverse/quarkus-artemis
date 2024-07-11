@@ -36,11 +36,11 @@ public class ArtemisJmsRecorder {
         return () -> connectionFactory;
     }
 
-    private ConnectionFactory extractConnectionFactory(boolean isXAenabled, ArtemisRuntimeConfig runtimeConfig,
+    private ConnectionFactory extractConnectionFactory(boolean isXaEnabled, ArtemisRuntimeConfig runtimeConfig,
             Function<ConnectionFactory, Object> wrapper) {
         String url = runtimeConfig.getUrl();
         if (url != null) {
-            if (isXAenabled) {
+            if (isXaEnabled) {
                 return (ConnectionFactory) wrapper.apply(new ActiveMQXAConnectionFactory(
                         url,
                         runtimeConfig.getUsername(),

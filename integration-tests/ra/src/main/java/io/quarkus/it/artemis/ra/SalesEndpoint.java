@@ -3,7 +3,6 @@ package io.quarkus.it.artemis.ra;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSContext;
 import jakarta.jms.Message;
@@ -17,11 +16,14 @@ import io.quarkus.narayana.jta.QuarkusTransaction;
 @ApplicationScoped
 @ResourceEndpoint(activationSpecConfigKey = "sales")
 public class SalesEndpoint implements MessageListener {
+    private final ConnectionFactory connectionFactory;
+    private final AtomicInteger count;
 
-    @Inject
-    ConnectionFactory connectionFactory;
-
-    AtomicInteger count = new AtomicInteger(0);
+    public SalesEndpoint(
+            @SuppressWarnings("CdiInjectionPointsInspection") ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+        count = new AtomicInteger(0);
+    }
 
     @Override
     @Transactional

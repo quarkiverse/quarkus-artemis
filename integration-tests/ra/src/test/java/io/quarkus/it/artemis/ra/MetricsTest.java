@@ -13,15 +13,14 @@ import io.restassured.RestAssured;
 
 @QuarkusTest
 @TestProfile(DisableAllServices.class)
-public class MetricsTest {
-
+class MetricsTest {
     @Test
     void shouldHaveMetrics() {
         // @formatter:off
         RestAssured
                 .when().get("/q/metrics")
                 .then()
-                .log().ifValidationFails()
+                    .log().ifValidationFails()
                     .statusCode(Response.Status.OK.getStatusCode())
                     .body(containsString("ironjacamar_pool_in_use_count_total{resourceAdapter=\"<default>\"}"));
         // @formatter:on

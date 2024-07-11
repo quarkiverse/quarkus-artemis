@@ -58,7 +58,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
     Optional<String> user();
 
     /**
-     * Password to start artemis broker. Defaults to {@code admin} whne not set.
+     * Password to start artemis broker. Defaults to {@code admin} when not set.
      */
     Optional<String> password();
 
