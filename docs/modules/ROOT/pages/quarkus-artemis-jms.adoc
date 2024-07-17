@@ -419,7 +419,7 @@ This mechanism stops working as soon as more than one `ConnectionFactory` bean i
 Artemis DevServices are automatically enabled unless `quarkus.artemis.url` / `quarkus.artemis."named-configuration".url` is set or `quarkus.artemis.devservices.enabled` / `quarkus.artemis."named-configuration".enabled` is *false* explicitly. And if you still want to use `ArtemisTestResource` in the test, you need to disable artemis devservices.
 
 == Test framework
-To facilitate testing, we provide a dedicated testing framework that can start an in-memory artemis instance  For the default configuration, we can start an in-memory instance of artemis by annotating our tests with `@QuarkusTestResource(ArtemisTestResource.class)`. The embedded artemis can be configured through a `broker.xml`, located under `src/test/resources`.
+To facilitate testing, we provide a dedicated testing framework that can start an in-memory artemis instance  For the default configuration, we can start an in-memory instance of artemis by annotating our tests with `@WithTestResource(ArtemisTestResource.class)`. The embedded artemis can be configured through a `broker.xml`, located under `src/test/resources`.
 
 To start an in-memory artemis for a named configuration, we can define our own test annotation by extending `ArtemisTestResource.class`:
 
@@ -433,7 +433,7 @@ public class NamedOneArtemisTestResource extends ArtemisTestResource {
 }
 ----
 
-We can then annotate our test with `@QuarkusTestResource(NamedOneArtemisTestResource.class)`.
+We can then annotate our test with `@WithTestResource(NamedOneArtemisTestResource.class)`.
 
 This instance can be configured by placing a `broker-named-1.xml` in `src/test/resources`. In general, for a configuration with name `<name>`, we can configure the corresponding in-memory artemis through file `src/test/resources/broker-<name>.xml`.
 

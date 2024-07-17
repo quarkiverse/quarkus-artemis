@@ -5,11 +5,11 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.it.artemis.common.ArtemisHealthCheckHelper;
-import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@QuarkusTestResource(ExternallyDefinedArtemisTestResource.class)
+@WithTestResource(ExternallyDefinedArtemisTestResource.class)
 class EmbeddedHealthCheckTest {
     @Test
     void testHealth() {

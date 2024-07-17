@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.artemis.test.ArtemisTestResource;
 import io.quarkus.it.artemis.core.withdefaultandexternal.BaseArtemisConsumerTest;
-import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@QuarkusTestResource(ArtemisTestResource.class)
-@QuarkusTestResource(NamedOneArtemisTestResource.class)
-@QuarkusTestResource(ExternallyDefinedArtemisTestResource.class)
+@WithTestResource(ArtemisTestResource.class)
+@WithTestResource(NamedOneArtemisTestResource.class)
+@WithTestResource(ExternallyDefinedArtemisTestResource.class)
 class EmbeddedConsumerTest extends BaseArtemisConsumerTest {
     @Test
     void testExternallyDefined() throws Exception {
