@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.artemis.test.ArtemisTestResource;
 import io.quarkus.it.artemis.jms.common.ArtemisJmsHelper;
-import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@QuarkusTestResource(ArtemisTestResource.class)
-@QuarkusTestResource(NamedOneArtemisTestResource.class)
+@WithTestResource(ArtemisTestResource.class)
+@WithTestResource(NamedOneArtemisTestResource.class)
 class EmbeddedProducerTest extends ArtemisJmsHelper {
     @Test
     void testDefault() throws Exception {
