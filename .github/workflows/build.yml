@@ -118,6 +118,7 @@ jobs:
         run: |
           ./mvnw \
             --batch-mode \
+            --define maven.buildNumber.skip \
             quarkus:go-offline \
             de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 
@@ -156,6 +157,7 @@ jobs:
             --batch-mode \
             --also-make \
             --define no-format \
+            --define maven.buildNumber.skip \
             --projects \
               "core/deployment, \
               jms/deployment, \
@@ -228,6 +230,7 @@ jobs:
           ./mvnw \
             --batch-mode  \
             --also-make \
+            --define maven.buildNumber.skip \
             --define native \
             --define native.surefire.skip \
             --projects \
