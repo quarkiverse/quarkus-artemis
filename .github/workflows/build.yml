@@ -104,10 +104,10 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'temurin'
           cache: 'maven'
         id: setup
@@ -141,10 +141,10 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'temurin'
           cache: 'maven'
 
@@ -209,16 +209,16 @@ jobs:
       - name: Get Maven Cache
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Set up GraalVM 17
+      - name: Set up GraalVM 21
         uses: graalvm/setup-graalvm@v1
         with:
           distribution: 'mandrel'
           version: 'latest'
-          java-version: 17
+          java-version: 21
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Test
