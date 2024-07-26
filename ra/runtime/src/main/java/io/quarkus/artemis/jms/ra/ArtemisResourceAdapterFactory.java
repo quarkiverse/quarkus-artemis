@@ -1,6 +1,8 @@
 package io.quarkus.artemis.jms.ra;
 
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Message;
@@ -43,8 +45,14 @@ public class ArtemisResourceAdapterFactory implements ResourceAdapterFactory {
     @Override
     public ActiveMQResourceAdapter createResourceAdapter(String id, Map<String, String> config) {
         ActiveMQResourceAdapter adapter = new ActiveMQResourceAdapter();
-        adapter.setConnectorClassName(NettyConnectorFactory.class.getName());
-        adapter.setConnectionParameters(config.get("connection-parameters"));
+        String connectionParameters = config.get("connection-parameters");
+        int hosts = Math.max(1, count(connectionParameters, "host="));
+        // Repeat the NettyConnectorFactory class name for each host
+        String connectorClassName = NettyConnectorFactory.class.getName();
+        adapter.setConnectorClassName(IntStream.rangeClosed(1, hosts)
+                .mapToObj(unused -> connectorClassName)
+                .collect(Collectors.joining(",")));
+        adapter.setConnectionParameters(connectionParameters);
         adapter.setProtocolManagerFactoryStr(config.get("protocol-manager-factory"));
         adapter.setUseJNDI(false);
         adapter.setUserName(config.get("user"));
@@ -84,6 +92,15 @@ public class ArtemisResourceAdapterFactory implements ResourceAdapterFactory {
     @Override
     public MessageEndpoint wrap(MessageEndpoint endpoint, Object resourceEndpoint) {
         return new JMSMessageEndpoint(endpoint, (MessageListener) resourceEndpoint);
+    }
+
+    private static int count(String text, String find) {
+        int count = 0;
+        final int length = find.length();
+        for (int index = 0; (index = text.indexOf(find, index)) != -1; index += length) {
+            count++;
+        }
+        return count;
     }
 
     private static class JMSMessageEndpoint extends MessageEndpointWrapper implements MessageListener {
