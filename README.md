@@ -1,6 +1,6 @@
 # Quarkus Artemis
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Version](https://img.shields.io/maven-central/v/io.quarkiverse.artemis/quarkus-artemis-jms?logo=apache-maven&style=flat-square)](https://search.maven.org/artifact/io.quarkiverse.artemis/quarkus-artemis-jms)
@@ -40,6 +40,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="http://gastaldi.wordpress.com"><img src="https://avatars.githubusercontent.com/u/54133?v=4?s=100" width="100px;" alt="George Gastaldi"/><br /><sub><b>George Gastaldi</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=gastaldi" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vsevel"><img src="https://avatars.githubusercontent.com/u/6041620?v=4?s=100" width="100px;" alt="Vincent Sevel"/><br /><sub><b>Vincent Sevel</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/issues?q=author%3Avsevel" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
