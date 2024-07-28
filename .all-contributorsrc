@@ -80,6 +80,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "vsevel",
+      "name": "Vincent Sevel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6041620?v=4",
+      "profile": "https://github.com/vsevel",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
