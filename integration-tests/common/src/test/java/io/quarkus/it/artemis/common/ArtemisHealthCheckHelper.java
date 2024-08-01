@@ -23,6 +23,10 @@ public class ArtemisHealthCheckHelper {
         test(endpoint, expectedConfigurations, "Artemis JMS health check");
     }
 
+    public static void testJmsRA(String endpoint, Set<String> expectedConfigurations) {
+        test(endpoint, expectedConfigurations, "Artemis JMS Resource Adaptor health check");
+    }
+
     private static void test(String endpoint, Set<String> expectedConfigurations, String healthCheckMessage) {
         // @formatter:off
         Response response = RestAssured
