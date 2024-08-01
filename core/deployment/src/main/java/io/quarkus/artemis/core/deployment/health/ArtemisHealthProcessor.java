@@ -11,6 +11,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
+import io.quarkus.artemis.core.deployment.ArtemisJmsRABuildItem;
 import io.quarkus.artemis.core.deployment.ShadowRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
@@ -77,8 +78,9 @@ public class ArtemisHealthProcessor {
     HealthBuildItem healthChecks(
             Capabilities capabilities,
             Optional<ArtemisJmsBuildItem> artemisJms,
+            Optional<ArtemisJmsRABuildItem> ra,
             Optional<ArtemisHealthSupportBuildItem> artemisHealthSupportBuildItem) {
-        if (artemisJms.isPresent()) {
+        if (artemisJms.isPresent() || ra.isPresent()) {
             return null;
         }
         if (artemisHealthSupportBuildItem.isEmpty()) {

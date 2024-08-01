@@ -55,8 +55,9 @@ public class ArtemisCoreProcessor {
 
     @SuppressWarnings("unused")
     @BuildStep
-    FeatureBuildItem feature(Optional<ArtemisJmsBuildItem> artemisJms) {
-        if (artemisJms.isEmpty()) {
+    FeatureBuildItem feature(Optional<ArtemisJmsBuildItem> artemisJms,
+            Optional<ArtemisJmsRABuildItem> ra) {
+        if (artemisJms.isEmpty() && ra.isEmpty()) {
             return new FeatureBuildItem(FEATURE);
         }
         return null;
@@ -109,8 +110,9 @@ public class ArtemisCoreProcessor {
             ArtemisBuildTimeConfigs buildTimeConfigs,
             ArtemisBootstrappedBuildItem bootstrap,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer,
-            Optional<ArtemisJmsBuildItem> artemisJms) {
-        if (artemisJms.isPresent()) {
+            Optional<ArtemisJmsBuildItem> artemisJms,
+            Optional<ArtemisJmsRABuildItem> ra) {
+        if (artemisJms.isPresent() || ra.isPresent()) {
             return null;
         }
         if (shadowRunTimeConfigs.isEmpty() && buildTimeConfigs.isEmpty()) {
