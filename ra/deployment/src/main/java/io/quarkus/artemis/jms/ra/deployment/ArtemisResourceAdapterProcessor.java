@@ -11,6 +11,7 @@ import io.quarkiverse.ironjacamar.runtime.IronJacamarBuildtimeConfig;
 import io.quarkiverse.ironjacamar.runtime.IronJacamarBuildtimeConfig.ResourceAdapterOuterNamedConfig;
 import io.quarkiverse.ironjacamar.runtime.IronJacamarRuntimeConfig;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
+import io.quarkus.artemis.core.deployment.ArtemisJmsRABuildItem;
 import io.quarkus.artemis.core.deployment.health.ExtraArtemisHealthCheckBuildItem;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.quarkus.artemis.jms.ra.ArtemisResourceAdapterRecorder;
@@ -27,6 +28,11 @@ public class ArtemisResourceAdapterProcessor {
     @BuildStep
     FeatureBuildItem feature() {
         return new FeatureBuildItem(FEATURE);
+    }
+
+    @BuildStep
+    void load(BuildProducer<ArtemisJmsRABuildItem> ra) {
+        ra.produce(new ArtemisJmsRABuildItem());
     }
 
     @Record(ExecutionTime.RUNTIME_INIT)
