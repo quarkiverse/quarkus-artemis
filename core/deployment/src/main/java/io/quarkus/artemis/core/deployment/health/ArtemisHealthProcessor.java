@@ -1,10 +1,10 @@
 package io.quarkus.artemis.core.deployment.health;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -13,9 +13,7 @@ import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisJmsRABuildItem;
 import io.quarkus.artemis.core.deployment.ShadowRuntimeConfigs;
-import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
-import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupport;
 import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupportRecorder;
 import io.quarkus.artemis.core.runtime.health.ServerLocatorHealthCheck;
@@ -41,36 +39,18 @@ public class ArtemisHealthProcessor {
         if (!buildTimeConfigs.isHealthEnabled()) {
             return null;
         }
-        Set<String> names = new HashSet<>(bootstrap.getConfigurationNames());
-        Set<String> excludedNames = processConfigs(names, shadowRunTimeConfigs, buildTimeConfigs);
-        for (ExtraArtemisHealthCheckBuildItem extra : extras) {
-            String name = extra.getName();
-            if (!excludedNames.contains(name)) {
-                names.add(name);
-            }
-        }
+        Set<String> names = Stream
+                .concat(
+                        bootstrap.getConfigurationNames().stream(),
+                        extras.stream().map(ExtraArtemisHealthCheckBuildItem::getName))
+                .collect(Collectors.toSet());
         syntheticBeanProducer.produce(SyntheticBeanBuildItem
                 .configure(ArtemisHealthSupport.class)
-                .supplier(recorder.getArtemisSupportBuilder(names, excludedNames))
+                .supplier(recorder.getArtemisHealthSupportBuilder(names))
                 .scope(ApplicationScoped.class)
                 .defaultBean()
                 .done());
         return new ArtemisHealthSupportBuildItem();
-    }
-
-    private static Set<String> processConfigs(
-            Set<String> names,
-            ShadowRuntimeConfigs shadowRunTimeConfigs,
-            ArtemisBuildTimeConfigs buildTimeConfigs) {
-        Set<String> excluded = new HashSet<>();
-        Map<String, ArtemisBuildTimeConfig> allBuildTimeConfigs = buildTimeConfigs.configs();
-        for (String name : names) {
-            ArtemisBuildTimeConfig buildTimeConfig = allBuildTimeConfigs.get(name);
-            if ((ArtemisUtil.isDefault(name) && !shadowRunTimeConfigs.getNames().contains(name) && buildTimeConfig.isEmpty())) {
-                excluded.add(name);
-            }
-        }
-        return excluded;
     }
 
     @SuppressWarnings({ "OptionalUsedAsFieldOrParameterType", "unused" })

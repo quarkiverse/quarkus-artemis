@@ -7,9 +7,7 @@ import io.quarkus.runtime.annotations.Recorder;
 
 @Recorder
 public class ArtemisHealthSupportRecorder {
-    public Supplier<ArtemisHealthSupport> getArtemisSupportBuilder(
-            Set<String> names,
-            Set<String> excludedNames) {
-        return () -> new ArtemisHealthSupport(names, excludedNames);
+    public Supplier<ArtemisHealthSupport> getArtemisHealthSupportBuilder(Set<String> names) {
+        return () -> new ArtemisHealthSupport(names);
     }
 }
