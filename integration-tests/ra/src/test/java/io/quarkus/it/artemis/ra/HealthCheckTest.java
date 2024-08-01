@@ -17,11 +17,11 @@ import io.quarkus.test.junit.TestProfile;
 class HealthCheckTest {
     @Test
     void testHealth() {
-        ArtemisHealthCheckHelper.testCore("/q/health", Set.of("<default>"));
+        ArtemisHealthCheckHelper.testJmsRA("/q/health", Set.of("<default>"));
     }
 
     @Test
     void testReady() {
-        ArtemisHealthCheckHelper.testCore("/q/health/ready", Set.of("<default>"));
+        ArtemisHealthCheckHelper.testJmsRA("/q/health/ready", Set.of("<default>"));
     }
 }
