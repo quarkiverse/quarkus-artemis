@@ -1,12 +1,13 @@
 package io.quarkus.artemis.core.runtime.health;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Instance;
 
 import org.apache.activemq.artemis.api.core.client.ClientSessionFactory;
 import org.apache.activemq.artemis.api.core.client.ServerLocator;
@@ -15,68 +16,34 @@ import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import org.eclipse.microprofile.health.Readiness;
 
-import io.quarkus.arc.Arc;
-import io.quarkus.arc.InstanceHandle;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
-import io.smallrye.common.annotation.Identifier;
 
 @Readiness
 @ApplicationScoped
 public class ServerLocatorHealthCheck implements HealthCheck {
-    private final HashMap<String, ServerLocator> serverLocators = new HashMap<>();
+    private final Instance<ServerLocator> serverLocators;
+    private final Set<String> serverLocatorNames;
 
     public ServerLocatorHealthCheck(
             ArtemisRuntimeConfigs runtimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
-            @SuppressWarnings("CdiInjectionPointsInspection") ArtemisHealthSupport support) {
-        HashSet<String> includedNames = new HashSet<>(support.getConfiguredNames());
-        includedNames.removeAll(support.getExcludedNames());
-        processKnownBeans(runtimeConfigs, includedNames);
-        processArcBeans(runtimeConfigs, buildTimeConfigs);
-    }
-
-    private void processKnownBeans(ArtemisRuntimeConfigs runtimeConfigs, HashSet<String> includedNames) {
-        for (String name : includedNames) {
-            if (runtimeConfigs.configs().get(name).isHealthInclude()) {
-                Annotation identifier;
-                if (ArtemisUtil.isDefault(name)) {
-                    identifier = Default.Literal.INSTANCE;
-                } else {
-                    identifier = Identifier.Literal.of(name);
-                }
-                ServerLocator locator;
-                try (InstanceHandle<ServerLocator> handle = Arc.container().instance(ServerLocator.class, identifier)) {
-                    locator = handle.get();
-                }
-                if (locator != null) {
-                    serverLocators.put(name, locator);
-                }
-            }
-        }
-    }
-
-    private void processArcBeans(ArtemisRuntimeConfigs runtimeConfigs, ArtemisBuildTimeConfigs buildTimeConfigs) {
-        if (runtimeConfigs.getHealthExternalEnabled()) {
-            HashSet<String> namesToIgnore = new HashSet<>(runtimeConfigs.configs().keySet());
-            namesToIgnore.addAll(buildTimeConfigs.configs().keySet());
-            Map<String, ServerLocator> locatorNamesFromArc = ArtemisUtil.extractIdentifiers(ServerLocator.class, namesToIgnore);
-            for (var entry : locatorNamesFromArc.entrySet()) {
-                ServerLocator locator = entry.getValue();
-                if (locator != null) {
-                    serverLocators.put(entry.getKey(), locator);
-                }
-            }
-        }
+            @SuppressWarnings("CdiInjectionPointsInspection") ArtemisHealthSupport support,
+            @Any Instance<ServerLocator> serverLocators) {
+        this.serverLocators = serverLocators;
+        serverLocatorNames = support.getConfiguredNames().stream()
+                .filter(name -> runtimeConfigs.configs().get(name).isHealthInclude())
+                .collect(Collectors.toCollection(HashSet::new));
+        serverLocatorNames.addAll(ArtemisUtil.getExternalNames(ServerLocator.class, runtimeConfigs, buildTimeConfigs));
     }
 
     @Override
     public HealthCheckResponse call() {
         HealthCheckResponseBuilder builder = HealthCheckResponse.named("Artemis Core health check").up();
-        for (var entry : serverLocators.entrySet()) {
-            String name = entry.getKey();
-            try (ClientSessionFactory ignored = entry.getValue().createSessionFactory()) {
+        for (String name : serverLocatorNames) {
+            Annotation identifier = ArtemisUtil.toIdentifier(name);
+            try (ClientSessionFactory ignored = serverLocators.select(identifier).get().createSessionFactory()) {
                 builder.withData(name, "UP");
             } catch (Exception e) {
                 builder.withData(name, "DOWN").down();

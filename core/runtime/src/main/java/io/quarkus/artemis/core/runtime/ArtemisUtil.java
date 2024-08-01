@@ -1,11 +1,11 @@
 package io.quarkus.artemis.core.runtime;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
 
 import io.quarkus.arc.Arc;
 import io.quarkus.arc.InstanceHandle;
@@ -38,15 +38,15 @@ public class ArtemisUtil {
         }
     }
 
-    public static <T> Map<String, T> extractIdentifiers(Class<T> clazz, Set<String> namesToIgnore) {
-        HashMap<String, T> connectionFactoryNamesFromArc = new HashMap<>();
+    public static <T> Set<String> extractIdentifiers(Class<T> clazz, Set<String> namesToIgnore) {
+        Set<String> names = new HashSet<>();
         for (InstanceHandle<T> handle : Arc.container().listAll(clazz, Any.Literal.INSTANCE)) {
             String name = extractIdentifier(handle);
             if (name != null && !namesToIgnore.contains(name)) {
-                connectionFactoryNamesFromArc.put(name, handle.get());
+                names.add(name);
             }
         }
-        return connectionFactoryNamesFromArc;
+        return names;
     }
 
     private static String extractIdentifier(InstanceHandle<?> handle) {
@@ -56,5 +56,24 @@ public class ArtemisUtil {
             }
         }
         return null;
+    }
+
+    public static <T> Set<String> getExternalNames(Class<T> type, ArtemisRuntimeConfigs runtimeConfigs,
+            ArtemisBuildTimeConfigs buildTimeConfigs) {
+        Set<String> externalNames = new HashSet<>();
+        if (runtimeConfigs.getHealthExternalEnabled()) {
+            HashSet<String> namesToIgnore = new HashSet<>(runtimeConfigs.getNames());
+            namesToIgnore.addAll(buildTimeConfigs.getNames());
+            externalNames.addAll(ArtemisUtil.extractIdentifiers(type, namesToIgnore));
+        }
+        return externalNames;
+    }
+
+    public static Annotation toIdentifier(String name) {
+        if (isDefault(name)) {
+            return Default.Literal.INSTANCE;
+        } else {
+            return Identifier.Literal.of(name);
+        }
     }
 }
