@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.quarkiverse.artemis</groupId>
         <artifactId>quarkus-artemis-core-parent</artifactId>
-        <version>999-SNAPSHOT</version>
+        <version>3.4.1</version>
     </parent>
 
     <artifactId>quarkus-artemis-core-deployment</artifactId>
