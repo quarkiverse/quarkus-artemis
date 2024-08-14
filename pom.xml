@@ -39,8 +39,8 @@
 
         <!-- Dependency versions -->
         <artemis.version>2.36.0</artemis.version>
-        <camel-quarkus.platform.version>3.13.2</camel-quarkus.platform.version>
-        <quarkus.version>3.13.2</quarkus.version>
+        <camel-quarkus.platform.version>3.14.0.CR1</camel-quarkus.platform.version>
+        <quarkus.version>3.14.0.CR1</quarkus.version>
         <quarkus-ironjacamar.version>1.3.2</quarkus-ironjacamar.version>
 
         <!-- Project setup -->
@@ -83,6 +83,11 @@
                             </configuration>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>io.quarkus</groupId>
+                    <artifactId>quarkus-config-doc-maven-plugin</artifactId>
+                    <version>${quarkus.version}</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
