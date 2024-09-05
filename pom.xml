@@ -40,7 +40,7 @@
         <!-- Dependency versions -->
         <artemis.version>2.37.0</artemis.version>
         <camel-quarkus.platform.version>3.14.1</camel-quarkus.platform.version>
-        <quarkus.version>3.14.1</quarkus.version>
+        <quarkus.version>3.14.2</quarkus.version>
         <quarkus-ironjacamar.version>1.4.0</quarkus-ironjacamar.version>
 
         <!-- Project setup -->
