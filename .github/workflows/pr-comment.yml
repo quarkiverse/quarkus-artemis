@@ -1,0 +1,35 @@
+name: Comment on PR
+
+on:
+  pull_request_target:
+    paths-ignore:
+      - '.gitignore'
+      - 'CODEOWNERS'
+      - 'LICENSE'
+      - '*.md'
+      - '*.adoc'
+      - '*.txt'
+      - '.all-contributorsrc'
+
+permissions:
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  comment:
+    name: Create PR comment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: (Re)create comment
+        uses: turing85/publish-report@v2
+        with:
+          github-token: ${{ github.token }}
+          comment-message-recreate: |
+            ## 🚦Reports 🚦
+            Reports will be posted here as they get available.
+          comment-message-pr-number: ${{ github.event.number }}
+          recreate-comment: true

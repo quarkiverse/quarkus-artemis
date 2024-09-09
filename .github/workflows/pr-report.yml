@@ -1,0 +1,78 @@
+name: Post test reports to PR
+
+on:
+  workflow_run:
+    workflows:
+      - "build"
+    types:
+      - completed
+
+permissions:
+  checks: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  report:
+    name: Post Test reports
+    if: ${{ github.event.workflow_run.event == 'pull_request' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download PR number
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          name: pr-number
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Set PR number
+        id: set-pr-number
+        run: |
+          echo "pr-number=$(cat pr-number.txt)" >> "${GITHUB_OUTPUT}"
+
+      - name: Override comment
+        if: ${{ always() }}
+        uses: turing85/publish-report@v2
+        with:
+          override-comment: true
+          comment-message-override: |
+            ## 🚦Reports for run [#${{ github.event.workflow_run.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }})🚦
+            Reports will be posted here as they get available.
+          comment-message-pr-number: ${{ steps.set-pr-number.outputs.pr-number }}
+
+      - name: Tabula rasa
+        if: ${{ always() }}
+        run: rm -rf *
+
+      - name: Publish Report JVM
+        if: ${{ always() }}
+        uses: turing85/publish-report@v2
+
+        with:
+          checkout: true
+          comment-message-pr-number: ${{ steps.set-pr-number.outputs.pr-number }}
+          download-artifact-pattern: test-report-jvm-*
+          download-artifact-merge-multiple: true
+          download-artifact-run-id: ${{ github.event.workflow_run.id }}
+          report-name: JUnit JVM Test
+          report-path: '**/target/*-reports/TEST*.xml'
+
+      - name: Tabula rasa
+        if: ${{ always() }}
+        run: rm -rf *
+
+      - name: Publish Report Native
+        if: ${{ always() }}
+        uses: turing85/publish-report@v2
+        with:
+          checkout: true
+          comment-message-pr-number: ${{ steps.set-pr-number.outputs.pr-number }}
+          download-artifact-pattern: test-report-native-*
+          download-artifact-merge-multiple: true
+          download-artifact-run-id: ${{ github.event.workflow_run.id }}
+          report-name: JUnit Native Test
+          report-path: '**/target/*-reports/TEST*.xml'
