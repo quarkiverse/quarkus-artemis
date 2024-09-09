@@ -17,7 +17,6 @@
         <module>bom</module>
         <module>build-parent</module>
         <module>core</module>
-        <module>docs</module>
         <module>jms</module>
         <module>ra</module>
         <module>test-framework</module>
@@ -97,6 +96,18 @@
         </pluginManagement>
     </build>
     <profiles>
+        <profile>
+            <id>docs</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>!true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>docs</module>
+            </modules>
+        </profile>
         <profile>
             <id>it</id>
             <activation>
