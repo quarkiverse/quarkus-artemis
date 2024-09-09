@@ -24,21 +24,27 @@ on:
       - '*.txt'
       - '.all-contributorsrc'
 
-permissions:
-  actions: write
-  checks: write
-  pull-requests: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  recreate-comment:
+  upload-pr-number:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Publish Report
-        uses: turing85/publish-report@v2
+      - name: Get
+        id: get-pr-number
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        run: |
+          echo "${{ github.event.number }}" > "pr-number.txt"
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        if: ${{ always() && github.event_name == 'pull_request' }}
         with:
-          checkout: 'true'
-          recreate-comment: true
+          name: pr-number
+          path: pr-number.txt
 
   generate-matrix:
     runs-on: ubuntu-latest
@@ -175,23 +181,6 @@ jobs:
           if-no-files-found: error
           retention-days: 2
 
-  test-report-jvm:
-    runs-on: ubuntu-latest
-
-    needs:
-      - recreate-comment
-      - build-and-test-jvm
-
-    steps:
-      - name: Publish Report
-        uses: turing85/publish-report@v2
-        with:
-          checkout: 'true'
-          download-artifact-pattern: test-report-jvm-*
-          download-artifact-merge-multiple: true
-          report-name: JUnit JVM Test
-          report-path: '**/target/surefire-reports/TEST*.xml'
-
   build-and-test-native:
     runs-on: ubuntu-latest
 
@@ -249,21 +238,3 @@ jobs:
           path: '**/target/*-reports/TEST*.xml'
           if-no-files-found: error
           retention-days: 2
-
-  test-report-native:
-    runs-on: ubuntu-latest
-
-    needs:
-      - recreate-comment
-      - build-and-test-native
-
-    steps:
-      - name: Publish Report
-        if: ${{ always() }}
-        uses: turing85/publish-report@v2
-        with:
-          checkout: 'true'
-          download-artifact-pattern: test-report-native-*
-          download-artifact-merge-multiple: true
-          report-name: JUnit Native Test
-          report-path: '**/target/*-reports/TEST*.xml'
