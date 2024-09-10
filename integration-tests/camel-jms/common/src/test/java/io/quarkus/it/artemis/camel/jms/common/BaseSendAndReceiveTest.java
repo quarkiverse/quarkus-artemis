@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.RestAssured;
 
 public interface BaseSendAndReceiveTest {
+
     @Test
     default void test() {
         String body = "body";
