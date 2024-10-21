@@ -262,7 +262,7 @@ public class DevServicesArtemisProcessor {
                         containerAddress.getId(),
                         null,
                         urlPropertyName,
-                        containerAddress.getUrl()))
+                        String.format("tcp://%s", containerAddress.getUrl())))
                 .orElseGet(defaultArtemisBrokerSupplier);
     }
 
