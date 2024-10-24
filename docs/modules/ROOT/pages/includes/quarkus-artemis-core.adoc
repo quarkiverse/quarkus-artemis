@@ -8,7 +8,7 @@ h|[.header-title]##Configuration property##
 h|Type
 h|Default
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-health-enabled]] [.property-path]##`quarkus.artemis.health.enabled`##
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-health-enabled]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-health-enabled[`quarkus.artemis.health.enabled`]##
 
 [.description]
 --
@@ -27,7 +27,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |
 
-a| [[quarkus-artemis-core_quarkus-artemis-health-external-enabled]] [.property-path]##`quarkus.artemis.health.external.enabled`##
+a| [[quarkus-artemis-core_quarkus-artemis-health-external-enabled]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-health-external-enabled[`quarkus.artemis.health.external.enabled`]##
 
 [.description]
 --
@@ -44,11 +44,11 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |
 
-h|[[quarkus-artemis-core_section_quarkus-artemis]] [.section-name.section-level0]##Configurations##
+h|[[quarkus-artemis-core_section_quarkus-artemis]] [.section-name.section-level0]##link:#quarkus-artemis-core_section_quarkus-artemis[Configurations]##
 h|Type
 h|Default
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-enabled]] [.property-path]##`quarkus.artemis.enabled`##
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-enabled]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-enabled[`quarkus.artemis.enabled`]##
 
 `quarkus.artemis."configuration-name".enabled`
 
@@ -69,7 +69,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-enabled]] [.property-path]##`quarkus.artemis.devservices.enabled`##
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-enabled]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-enabled[`quarkus.artemis.devservices.enabled`]##
 
 `quarkus.artemis."configuration-name".devservices.enabled`
 
@@ -88,7 +88,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-port]] [.property-path]##`quarkus.artemis.devservices.port`##
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-port]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-port[`quarkus.artemis.devservices.port`]##
 
 `quarkus.artemis."configuration-name".devservices.port`
 
@@ -109,7 +109,7 @@ endif::add-copy-button-to-env-var[]
 |int
 |
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-image-name]] [.property-path]##`quarkus.artemis.devservices.image-name`##
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-image-name]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-image-name[`quarkus.artemis.devservices.image-name`]##
 
 `quarkus.artemis."configuration-name".devservices.image-name`
 
@@ -117,7 +117,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-de
 --
 The ActiveMQ Artemis container image to use.
 
-Defaults to `quay.io/artemiscloud/activemq-artemis-broker:artemis.2.36.0`
+Defaults to `quay.io/artemiscloud/activemq-artemis-broker:artemis.2.37.0`
 
 
 ifdef::add-copy-button-to-env-var[]
@@ -130,7 +130,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-shared]] [.property-path]##`quarkus.artemis.devservices.shared`##
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-shared]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-shared[`quarkus.artemis.devservices.shared`]##
 
 `quarkus.artemis."configuration-name".devservices.shared`
 
@@ -153,7 +153,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-service-name]] [.property-path]##`quarkus.artemis.devservices.service-name`##
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-service-name]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-service-name[`quarkus.artemis.devservices.service-name`]##
 
 `quarkus.artemis."configuration-name".devservices.service-name`
 
@@ -174,7 +174,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-user]] [.property-path]##`quarkus.artemis.devservices.user`##
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-user]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-user[`quarkus.artemis.devservices.user`]##
 
 `quarkus.artemis."configuration-name".devservices.user`
 
@@ -193,7 +193,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-password]] [.property-path]##`quarkus.artemis.devservices.password`##
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-password]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-password[`quarkus.artemis.devservices.password`]##
 
 `quarkus.artemis."configuration-name".devservices.password`
 
@@ -212,7 +212,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-extra-args]] [.property-path]##`quarkus.artemis.devservices.extra-args`##
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-extra-args]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-extra-args[`quarkus.artemis.devservices.extra-args`]##
 
 `quarkus.artemis."configuration-name".devservices.extra-args`
 
@@ -231,7 +231,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-xa-enabled]] [.property-path]##`quarkus.artemis.xa-enabled`##
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-xa-enabled]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-xa-enabled[`quarkus.artemis.xa-enabled`]##
 
 `quarkus.artemis."configuration-name".xa-enabled`
 
@@ -250,7 +250,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |
 
-a| [[quarkus-artemis-core_quarkus-artemis-url]] [.property-path]##`quarkus.artemis.url`##
+a| [[quarkus-artemis-core_quarkus-artemis-url]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-url[`quarkus.artemis.url`]##
 
 `quarkus.artemis."configuration-name".url`
 
@@ -269,7 +269,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a| [[quarkus-artemis-core_quarkus-artemis-username]] [.property-path]##`quarkus.artemis.username`##
+a| [[quarkus-artemis-core_quarkus-artemis-username]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-username[`quarkus.artemis.username`]##
 
 `quarkus.artemis."configuration-name".username`
 
@@ -288,7 +288,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a| [[quarkus-artemis-core_quarkus-artemis-password]] [.property-path]##`quarkus.artemis.password`##
+a| [[quarkus-artemis-core_quarkus-artemis-password]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-password[`quarkus.artemis.password`]##
 
 `quarkus.artemis."configuration-name".password`
 
@@ -307,7 +307,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a| [[quarkus-artemis-core_quarkus-artemis-health-exclude]] [.property-path]##`quarkus.artemis.health-exclude`##
+a| [[quarkus-artemis-core_quarkus-artemis-health-exclude]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-health-exclude[`quarkus.artemis.health-exclude`]##
 
 `quarkus.artemis."configuration-name".health-exclude`
 
