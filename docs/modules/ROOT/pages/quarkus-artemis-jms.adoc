@@ -18,6 +18,12 @@ For general considerations about the JMS support in Quarkus, it is recommended t
 | Quarkus JMS version
 | End of Life
 a|
+`3.16.x`
+a|
+`3.6.x`
+a|
+TBA
+a|
 `3.15.x`
 a|
 `3.5.x`
