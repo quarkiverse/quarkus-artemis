@@ -89,6 +89,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "fmjaeschke",
+      "name": "Frank-Michael Jaeschke",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15345365?v=4",
+      "profile": "https://github.com/fmjaeschke",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
