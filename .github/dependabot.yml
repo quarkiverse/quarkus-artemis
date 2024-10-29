@@ -45,4 +45,7 @@ updates:
       - dependency-name: "io.smallrye:jandex-maven-plugin"
         versions:
           - "[3.2.0,)"
+      - dependency-name: "io.quarkiverse.ironjacamar:quarkus-ironjacamar"
+        versions:
+          - "[1.5.0,)"
     target-branch: "3.2.x"
