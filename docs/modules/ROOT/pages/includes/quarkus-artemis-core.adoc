@@ -116,7 +116,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-de
 --
 The ActiveMQ Artemis container image to use.
 
-Defaults to `quay.io/artemiscloud/activemq-artemis-broker:artemis.2.37.0`
+Defaults to `quay.io/artemiscloud/activemq-artemis-broker:artemis.2.38.0`
 
 
 ifdef::add-copy-button-to-env-var[]
