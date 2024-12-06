@@ -339,6 +339,16 @@ public class DevServicesArtemisProcessor {
             if (port > 0) {
                 addFixedExposedPort(port, ARTEMIS_PORT);
             }
+            withSystemEnv("HTTP_PROXY");
+            withSystemEnv("HTTPS_PROXY");
+            withSystemEnv("NO_PROXY");
+        }
+
+        private void withSystemEnv(String name) {
+            var value = System.getenv(name);
+            if (value != null) {
+                withEnv(name, value);
+            }
         }
 
         public int getPort() {
