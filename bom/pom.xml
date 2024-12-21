@@ -52,6 +52,14 @@
 
             <dependency>
                 <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-bom</artifactId>
+                <version>${artemis.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
                 <artifactId>artemis-core-client</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
@@ -101,11 +109,6 @@
                         <artifactId>commons-logging</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-jakarta-ra</artifactId>
-                <version>${artemis.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>
