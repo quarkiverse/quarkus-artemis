@@ -99,6 +99,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "timonzi",
+      "name": "timonzi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/47322311?v=4",
+      "profile": "https://github.com/timonzi",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
