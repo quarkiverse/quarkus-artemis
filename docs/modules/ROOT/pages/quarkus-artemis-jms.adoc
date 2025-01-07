@@ -147,14 +147,14 @@ it is recommended to add the following BOM to your project, *below the Quarkus B
         <dependency>
             <groupId>io.quarkus.platform</groupId>
             <artifactId>quarkus-bom</artifactId>
-            <version>${quarkus-version}</version>
+            <version>$\{quarkus-version}</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
         <dependency>
             <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-artemis-bom</artifactId>
-            <version>${quarkus-artemis-version}</version>
+            <version>$\{quarkus-artemis-version}</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -177,8 +177,8 @@ Once the BOM is added, simply add the `io.quarkiverse.artemis:quarkus-artemis-jm
 </dependency>
 ----
 
-We recommend to set properties `quarkus.version` and `artemis.version` to the versions you are using/need to use.
-We also recommend to align `artemis.version` with the artemis server version used.
+We recommend to set properties `quarkus-version` and `artemis-version` to the versions you are using/need to use.
+We also recommend to align `artemis-version` with the artemis server version used.
 
 If you are using `camel-quarkus`, we also recommend setting `camel-quarkus.platform.version` to the version of camel used.
 
