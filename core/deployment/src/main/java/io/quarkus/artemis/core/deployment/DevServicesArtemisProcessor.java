@@ -28,7 +28,7 @@ import io.quarkus.deployment.builditem.DockerStatusBuildItem;
 import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
 import io.quarkus.deployment.console.StartupLogCompressor;
-import io.quarkus.deployment.dev.devservices.GlobalDevServicesConfig;
+import io.quarkus.deployment.dev.devservices.DevServicesConfig;
 import io.quarkus.deployment.logging.LoggingSetupBuildItem;
 import io.quarkus.devservices.common.ConfigureUtil;
 import io.quarkus.devservices.common.ContainerAddress;
@@ -58,7 +58,7 @@ public class DevServicesArtemisProcessor {
     static volatile boolean first = true;
 
     @SuppressWarnings("unused")
-    @BuildStep(onlyIfNot = IsNormal.class, onlyIf = GlobalDevServicesConfig.Enabled.class)
+    @BuildStep(onlyIfNot = IsNormal.class, onlyIf = DevServicesConfig.Enabled.class)
     public List<DevServicesResultBuildItem> startArtemisDevService(
             DockerStatusBuildItem dockerStatusBuildItem,
             LaunchModeBuildItem launchMode,
@@ -69,7 +69,7 @@ public class DevServicesArtemisProcessor {
             Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
             CuratedApplicationShutdownBuildItem closeBuildItem,
             LoggingSetupBuildItem loggingSetupBuildItem,
-            GlobalDevServicesConfig devServicesConfig) {
+            DevServicesConfig devServicesConfig) {
         ArrayList<DevServicesResultBuildItem> results = new ArrayList<>();
         for (String name : bootstrap.getConfigurationNames()) {
             ArtemisBuildTimeConfig buildTimeConfig = buildConfigs.configs().get(name);
@@ -109,7 +109,7 @@ public class DevServicesArtemisProcessor {
             Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
             CuratedApplicationShutdownBuildItem closeBuildItem,
             LoggingSetupBuildItem loggingSetupBuildItem,
-            GlobalDevServicesConfig devServicesConfig) {
+            DevServicesConfig devServicesConfig) {
         if (devServices.get(name) != null && configuration != null) {
             boolean shouldShutdownTheBroker = !configuration.equals(cfgs.get(name));
             if (!shouldShutdownTheBroker) {
@@ -130,7 +130,7 @@ public class DevServicesArtemisProcessor {
                             dockerStatusBuildItem,
                             configuration,
                             launchMode,
-                            devServicesConfig.timeout);
+                            devServicesConfig.timeout());
                     if (service != null) {
                         devServices.put(name, service);
                     }
