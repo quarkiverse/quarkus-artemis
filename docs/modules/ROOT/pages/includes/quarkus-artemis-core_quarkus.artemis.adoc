@@ -8,6 +8,10 @@ h|Type
 h|Default
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-health-enabled]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-health-enabled[`quarkus.artemis.health.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.health.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -27,6 +31,10 @@ endif::add-copy-button-to-env-var[]
 |
 
 a| [[quarkus-artemis-core_quarkus-artemis-health-external-enabled]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-health-external-enabled[`quarkus.artemis.health.external.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.health.external.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -48,8 +56,15 @@ h|Type
 h|Default
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-enabled]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-enabled[`quarkus.artemis.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".enabled`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".enabled+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -69,8 +84,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-enabled]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-enabled[`quarkus.artemis.devservices.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.devservices.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".devservices.enabled`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".devservices.enabled+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -88,8 +110,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-port]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-port[`quarkus.artemis.devservices.port`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.devservices.port+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".devservices.port`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".devservices.port+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -109,8 +138,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-image-name]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-image-name[`quarkus.artemis.devservices.image-name`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.devservices.image-name+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".devservices.image-name`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".devservices.image-name+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -130,8 +166,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-shared]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-shared[`quarkus.artemis.devservices.shared`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.devservices.shared+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".devservices.shared`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".devservices.shared+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -153,8 +196,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-service-name]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-service-name[`quarkus.artemis.devservices.service-name`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.devservices.service-name+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".devservices.service-name`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".devservices.service-name+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -174,8 +224,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-user]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-user[`quarkus.artemis.devservices.user`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.devservices.user+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".devservices.user`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".devservices.user+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -193,8 +250,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-password]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-password[`quarkus.artemis.devservices.password`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.devservices.password+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".devservices.password`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".devservices.password+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -212,8 +276,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-extra-args]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-extra-args[`quarkus.artemis.devservices.extra-args`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.devservices.extra-args+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".devservices.extra-args`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".devservices.extra-args+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -231,8 +302,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-xa-enabled]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-xa-enabled[`quarkus.artemis.xa-enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.xa-enabled+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".xa-enabled`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".xa-enabled+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -250,8 +328,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a| [[quarkus-artemis-core_quarkus-artemis-url]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-url[`quarkus.artemis.url`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.url+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".url`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".url+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -269,8 +354,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a| [[quarkus-artemis-core_quarkus-artemis-username]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-username[`quarkus.artemis.username`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.username+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".username`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".username+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -288,8 +380,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a| [[quarkus-artemis-core_quarkus-artemis-password]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-password[`quarkus.artemis.password`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.password+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".password`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".password+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
@@ -307,8 +406,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a| [[quarkus-artemis-core_quarkus-artemis-health-exclude]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-health-exclude[`quarkus.artemis.health-exclude`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.health-exclude+++[]
+endif::add-copy-button-to-config-props[]
+
 
 `quarkus.artemis."configuration-name".health-exclude`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".health-exclude+++[]
+endif::add-copy-button-to-config-props[]
 
 [.description]
 --
