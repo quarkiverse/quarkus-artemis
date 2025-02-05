@@ -40,7 +40,7 @@
         <artemis.version>2.32.0</artemis.version>
         <camel-quarkus.platform.version>3.8.6</camel-quarkus.platform.version>
         <quarkus.version>3.8.6</quarkus.version>
-        <quarkus-ironjacamar.version>1.4.0</quarkus-ironjacamar.version>
+        <quarkus-ironjacamar.version>1.5.2</quarkus-ironjacamar.version>
 
         <!-- Project setup -->
         <maven.compiler.parameters>true</maven.compiler.parameters>
