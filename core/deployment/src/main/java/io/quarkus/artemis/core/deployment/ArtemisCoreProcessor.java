@@ -2,6 +2,7 @@ package io.quarkus.artemis.core.deployment;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -15,7 +16,9 @@ import org.apache.activemq.artemis.api.core.client.loadbalance.FirstElementConne
 import org.apache.activemq.artemis.api.core.client.loadbalance.RandomConnectionLoadBalancingPolicy;
 import org.apache.activemq.artemis.api.core.client.loadbalance.RandomStickyConnectionLoadBalancingPolicy;
 import org.apache.activemq.artemis.api.core.client.loadbalance.RoundRobinConnectionLoadBalancingPolicy;
+import org.apache.activemq.artemis.core.protocol.hornetq.client.HornetQClientProtocolManagerFactory;
 import org.apache.activemq.artemis.core.remoting.impl.netty.NettyConnectorFactory;
+import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.apache.activemq.artemis.spi.core.remoting.ConnectorFactory;
 import org.apache.activemq.artemis.utils.RandomUtil;
 import org.jboss.jandex.ClassInfo;
@@ -42,16 +45,44 @@ public class ArtemisCoreProcessor {
     private static final Logger LOGGER = Logger.getLogger(ArtemisCoreProcessor.class);
     private static final String FEATURE = "artemis-core";
 
-    static final Class<?>[] BUILTIN_CONNECTOR_FACTORIES = {
-            NettyConnectorFactory.class
-    };
+    static final List<ReflectiveClassBuildItem> BUILTIN_CONNECTOR_FACTORIES_REFLECTION_CONFIG = List.of(
+            ReflectiveClassBuildItem
+                    .builder(NettyConnectorFactory.class)
+                    .fields(false)
+                    .methods(false)
+                    .build(),
+            ReflectiveClassBuildItem
+                    .builder(ActiveMQConnectionFactory.class)
+                    .fields(false)
+                    .methods(true)
+                    .build(),
+            ReflectiveClassBuildItem
+                    .builder(HornetQClientProtocolManagerFactory.class)
+                    .fields(false)
+                    .methods(false)
+                    .build());
 
-    static final Class<?>[] BUILTIN_LOADBALANCING_POLICIES = {
-            FirstElementConnectionLoadBalancingPolicy.class,
-            RandomConnectionLoadBalancingPolicy.class,
-            RandomStickyConnectionLoadBalancingPolicy.class,
-            RoundRobinConnectionLoadBalancingPolicy.class
-    };
+    static final List<ReflectiveClassBuildItem> BUILTIN_LOADBALANCING_POLICIES_REFLECTION_CONFIG = List.of(
+            ReflectiveClassBuildItem
+                    .builder(FirstElementConnectionLoadBalancingPolicy.class)
+                    .fields(false)
+                    .methods(false)
+                    .build(),
+            ReflectiveClassBuildItem
+                    .builder(RandomConnectionLoadBalancingPolicy.class)
+                    .fields(false)
+                    .methods(false)
+                    .build(),
+            ReflectiveClassBuildItem
+                    .builder(RandomStickyConnectionLoadBalancingPolicy.class)
+                    .fields(false)
+                    .methods(false)
+                    .build(),
+            ReflectiveClassBuildItem
+                    .builder(RoundRobinConnectionLoadBalancingPolicy.class)
+                    .fields(false)
+                    .methods(false)
+                    .build());
 
     @SuppressWarnings("unused")
     @BuildStep
@@ -81,13 +112,14 @@ public class ArtemisCoreProcessor {
             ArtemisBuildTimeConfigs buildTimeConfigs) {
         Collection<ClassInfo> connectorFactories = indexBuildItem.getIndex()
                 .getAllKnownImplementors(DotName.createSimple(ConnectorFactory.class.getName()));
+
         addDynamicReflectiveBuildItems(reflectiveClass, connectorFactories);
-        addBuiltinReflectiveBuildItems(reflectiveClass, BUILTIN_CONNECTOR_FACTORIES);
+        BUILTIN_CONNECTOR_FACTORIES_REFLECTION_CONFIG.forEach(reflectiveClass::produce);
 
         Collection<ClassInfo> loadBalancers = indexBuildItem.getIndex()
                 .getAllKnownImplementors(DotName.createSimple(ConnectionLoadBalancingPolicy.class.getName()));
         addDynamicReflectiveBuildItems(reflectiveClass, loadBalancers);
-        addBuiltinReflectiveBuildItems(reflectiveClass, BUILTIN_LOADBALANCING_POLICIES);
+        BUILTIN_LOADBALANCING_POLICIES_REFLECTION_CONFIG.forEach(reflectiveClass::produce);
         HashSet<String> names = new HashSet<>(shadowRunTimeConfigs.getNames());
         HashSet<String> disabled = new HashSet<>();
         for (var entry : buildTimeConfigs.configs().entrySet()) {
@@ -140,15 +172,11 @@ public class ArtemisCoreProcessor {
             Collection<ClassInfo> connectorFactories) {
         for (ClassInfo ci : connectorFactories) {
             LOGGER.debug("Adding reflective class " + ci);
-            reflectiveClass.produce(ReflectiveClassBuildItem.builder(ci.toString()).methods(false).fields(false).build());
-        }
-    }
-
-    private static void addBuiltinReflectiveBuildItems(
-            BuildProducer<ReflectiveClassBuildItem> reflectiveClass,
-            Class<?>[] builtinConnectorFactories) {
-        for (Class<?> c : builtinConnectorFactories) {
-            reflectiveClass.produce(ReflectiveClassBuildItem.builder(c).methods(false).fields(false).build());
+            reflectiveClass.produce(ReflectiveClassBuildItem
+                    .builder(ci.toString())
+                    .methods(false)
+                    .fields(false)
+                    .build());
         }
     }
 
