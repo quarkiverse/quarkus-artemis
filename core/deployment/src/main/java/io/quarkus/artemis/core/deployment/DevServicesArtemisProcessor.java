@@ -50,6 +50,7 @@ public class DevServicesArtemisProcessor {
      */
     static final String DEV_SERVICE_LABEL = "quarkus-dev-service-artemis";
     static final int ARTEMIS_PORT = 61616;
+    static final int ARTEMIS_WEB_UI_PORT = 8161;
 
     private static final ContainerLocator artemisContainerLocator = new ContainerLocator(DEV_SERVICE_LABEL, ARTEMIS_PORT);
 
@@ -235,6 +236,7 @@ public class DevServicesArtemisProcessor {
             ArtemisContainer container = new ArtemisContainer(
                     DockerImageName.parse(config.imageName),
                     config.fixedExposedPort,
+                    config.webUiPort,
                     config.user,
                     config.password,
                     config.extraArgs);
@@ -277,6 +279,7 @@ public class DevServicesArtemisProcessor {
         private final boolean devServicesEnabled;
         private final String imageName;
         private final Integer fixedExposedPort;
+        private final Integer webUiPort;
         private final boolean shared;
         private final String serviceName;
         private final String user;
@@ -288,6 +291,7 @@ public class DevServicesArtemisProcessor {
             this.devServicesEnabled = devServicesConfig.enabled().orElse(isUrlEmpty);
             this.imageName = devServicesConfig.getImageName();
             this.fixedExposedPort = devServicesConfig.getPort();
+            this.webUiPort = devServicesConfig.getWebUiPort();
             this.shared = devServicesConfig.isShared();
             this.serviceName = devServicesConfig.getServiceName() + "-" + name;
             this.user = devServicesConfig.getUser();
@@ -320,13 +324,16 @@ public class DevServicesArtemisProcessor {
     private static final class ArtemisContainer extends GenericContainer<ArtemisContainer> {
 
         private final int port;
+        private final int webUiPort;
 
-        private ArtemisContainer(DockerImageName dockerImageName, int fixedExposedPort, String user, String password,
-                String extra) {
+        private ArtemisContainer(DockerImageName dockerImageName, int fixedExposedPort, int webUiPort, String user,
+                String password, String extra) {
             super(dockerImageName);
             this.port = fixedExposedPort;
+            this.webUiPort = webUiPort;
+
             withNetwork(Network.SHARED)
-                    .withExposedPorts(ARTEMIS_PORT)
+                    .withExposedPorts(ARTEMIS_PORT, ARTEMIS_WEB_UI_PORT)
                     .withEnv("AMQ_USER", user)
                     .withEnv("AMQ_PASSWORD", password)
                     .withEnv("AMQ_EXTRA_ARGS", extra)
@@ -338,6 +345,9 @@ public class DevServicesArtemisProcessor {
             super.configure();
             if (port > 0) {
                 addFixedExposedPort(port, ARTEMIS_PORT);
+            }
+            if (webUiPort > 0) {
+                addFixedExposedPort(webUiPort, ARTEMIS_WEB_UI_PORT);
             }
         }
 
