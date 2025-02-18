@@ -20,6 +20,13 @@ public interface ArtemisDevServicesBuildTimeConfig {
     Optional<Integer> port();
 
     /**
+     * Optional fixed port the Artemis Web-Ui will be exposed at.
+     * <p>
+     * If not defined, the Artemis Web-Ui port will be chosen randomly.
+     */
+    Optional<Integer> webUiPort();
+
+    /**
      * The ActiveMQ Artemis container image to use.
      * <p>
      * Defaults to {@code quay.io/artemiscloud/activemq-artemis-broker:artemis.2.37.0}
@@ -74,6 +81,10 @@ public interface ArtemisDevServicesBuildTimeConfig {
 
     default int getPort() {
         return port().orElse(0);
+    }
+
+    default int getWebUiPort() {
+        return webUiPort().orElse(0);
     }
 
     default String getImageName() {
