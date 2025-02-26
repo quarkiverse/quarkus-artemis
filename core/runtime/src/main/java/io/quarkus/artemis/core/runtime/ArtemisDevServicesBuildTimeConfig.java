@@ -70,10 +70,18 @@ public interface ArtemisDevServicesBuildTimeConfig {
     Optional<String> password();
 
     /**
-     * The value of the {@code AMQ_EXTRA_ARGS} environment variable to pass to the container. Defaults to
-     * {@code --no-autotune --mapped --no-fsync  --relax-jolokia} when not set.
+     * Value to pass into the {@code AMQ_EXTRA_ARGS} environment variable in the container. Values wil be augmented with those
+     * provided in {@code defaultExtraArgs}
      */
     Optional<String> extraArgs();
+
+    /**
+     * Default values to be merged with those provided in {@code extraArgs}. It's recommended to only overwrite this if one of
+     * the below listed default arguments needs to be unset, otherwise the {@code extraArgs} option should be used.
+     * <p>
+     * Defaults to {@code --no-autotune --mapped --no-fsync --relax-jolokia} when not set.
+     */
+    Optional<String> defaultExtraArgs();
 
     default boolean isEnabled() {
         return enabled().orElse(true);
@@ -108,7 +116,11 @@ public interface ArtemisDevServicesBuildTimeConfig {
     }
 
     default String getExtraArgs() {
-        return extraArgs().orElse("--no-autotune --mapped --no-fsync --relax-jolokia");
+        return extraArgs().orElse("");
+    }
+
+    default String getDefaultExtraArgs() {
+        return defaultExtraArgs().orElse("--no-autotune --mapped --no-fsync --relax-jolokia");
     }
 
     default boolean isEmpty() {
@@ -119,6 +131,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
                 && serviceName().isEmpty()
                 && user().isEmpty()
                 && password().isEmpty()
-                && extraArgs().isEmpty();
+                && extraArgs().isEmpty()
+                && defaultExtraArgs().isEmpty();
     }
 }

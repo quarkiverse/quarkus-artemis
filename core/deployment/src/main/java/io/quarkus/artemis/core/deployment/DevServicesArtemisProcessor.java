@@ -251,7 +251,7 @@ public class DevServicesArtemisProcessor {
                     config.webUiPort,
                     config.user,
                     config.password,
-                    config.extraArgs);
+                    mergeExtraArgs(config.defaultExtraArgs, config.extraArgs));
 
             ConfigureUtil.configureSharedNetwork(container, "artemis");
 
@@ -288,6 +288,13 @@ public class DevServicesArtemisProcessor {
         return null;
     }
 
+    private static String mergeExtraArgs(String defaultExtraArgs, String extraArgs) {
+        List<String> paramsToAdd = Arrays.stream(defaultExtraArgs.split(" "))
+                .filter(da -> !extraArgs.contains(da)).toList();
+
+        return String.join(" ", paramsToAdd) + (paramsToAdd.isEmpty() ? "" : " ") + extraArgs;
+    }
+
     private static final class ArtemisDevServiceCfg {
         private final boolean devServicesEnabled;
         private final String imageName;
@@ -298,6 +305,7 @@ public class DevServicesArtemisProcessor {
         private final String user;
         private final String password;
         private final String extraArgs;
+        private final String defaultExtraArgs;
 
         public ArtemisDevServiceCfg(ArtemisBuildTimeConfig config, String name, boolean isUrlEmpty) {
             ArtemisDevServicesBuildTimeConfig devServicesConfig = config.getDevservices();
@@ -310,6 +318,7 @@ public class DevServicesArtemisProcessor {
             this.user = devServicesConfig.getUser();
             this.password = devServicesConfig.getPassword();
             this.extraArgs = devServicesConfig.getExtraArgs();
+            this.defaultExtraArgs = devServicesConfig.getDefaultExtraArgs();
         }
 
         @Override
