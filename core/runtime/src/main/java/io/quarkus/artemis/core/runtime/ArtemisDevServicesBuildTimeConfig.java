@@ -71,7 +71,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
 
     /**
      * The value of the {@code AMQ_EXTRA_ARGS} environment variable to pass to the container. Defaults to
-     * {@code --no-autotune --mapped --no-fsync} when not set.
+     * {@code --no-autotune --mapped --no-fsync  --relax-jolokia} when not set.
      */
     Optional<String> extraArgs();
 
@@ -108,7 +108,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
     }
 
     default String getExtraArgs() {
-        return extraArgs().orElse("--no-autotune --mapped --no-fsync");
+        return extraArgs().orElse("--no-autotune --mapped --no-fsync --relax-jolokia");
     }
 
     default boolean isEmpty() {
