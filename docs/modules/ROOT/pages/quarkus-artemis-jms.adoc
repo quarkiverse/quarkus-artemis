@@ -18,11 +18,11 @@ For general considerations about the JMS support in Quarkus, it is recommended t
 | Quarkus JMS version
 | End of Life
 a|
-[.line-through]#`3.16.x`, `3.17.x`,#`3.18.x`
+`3.19.x`
 a|
-`3.6.x`
+[.line-through]#`3.7.x`#
 a|
-TBA
+TBAK
 a|
 `3.15.x`
 a|
@@ -47,6 +47,12 @@ a|
 | Quarkus version
 | Quarkus JMS version
 | End of Life
+a|
+[.line-through]#`3.16.x`, `3.17.x`, `3.18.x`#
+a|
+[.line-through]#`3.7.x`#
+a|
+[.line-through]#2025-18-28#
 a|
 [.line-through]#`3.14.x`#
 a|
