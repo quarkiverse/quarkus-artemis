@@ -20,13 +20,13 @@ For general considerations about the JMS support in Quarkus, it is recommended t
 a|
 `3.19.x`
 a|
-[.line-through]#`3.7.x`#
+latest `3.7.x`
 a|
 TBA
 a|
 `3.15.x`
 a|
-`3.5.x`
+latest `3.5.x`
 a|
 2025-09-25
 a|
@@ -50,7 +50,7 @@ a|
 a|
 [.line-through]#`3.16.x`, `3.17.x`, `3.18.x`#
 a|
-[.line-through]#`3.7.x`#
+[.line-through]#latest `3.7.x`#
 a|
 [.line-through]#2025-18-28#
 a|
