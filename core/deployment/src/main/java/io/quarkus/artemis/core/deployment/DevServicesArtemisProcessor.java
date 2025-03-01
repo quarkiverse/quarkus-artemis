@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.logging.Logger;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
@@ -34,6 +35,7 @@ import io.quarkus.devservices.common.ConfigureUtil;
 import io.quarkus.devservices.common.ContainerAddress;
 import io.quarkus.devservices.common.ContainerLocator;
 import io.quarkus.runtime.configuration.ConfigUtils;
+import io.smallrye.config.NameIterator;
 
 /**
  * Start a ActiveMQ Artemis broker if needed
@@ -42,7 +44,7 @@ import io.quarkus.runtime.configuration.ConfigUtils;
 public class DevServicesArtemisProcessor {
     private static final Logger LOGGER = Logger.getLogger(DevServicesArtemisProcessor.class);
     private static final String QUARKUS_ARTEMIS_URL = "quarkus.artemis.url";
-    private static final String QUARKUS_ARTEMIS_NAMED_URL_TEMPLATE = "quarkus.artemis.\"%s\".url";
+    private static final String QUARKUS_ARTEMIS_NAMED_URL_TEMPLATE = "quarkus.artemis.%s.url";
 
     /**
      * Label to add to shared Dev Service for ActiveMQ Artemis running in containers.
@@ -72,6 +74,20 @@ public class DevServicesArtemisProcessor {
             DevServicesConfig devServicesConfig) {
         ArrayList<DevServicesResultBuildItem> results = new ArrayList<>();
         for (String name : bootstrap.getConfigurationNames()) {
+            String propertyName = name;
+            for (String rawName : ConfigProvider.getConfig().getPropertyNames()) {
+                if (rawName.contains(name)) {
+                    rawName = rawName.substring("quarkus.artemis.".length());
+                    NameIterator nameIterator = new NameIterator(rawName);
+                    if (nameIterator.nextSegmentEquals(name)) {
+                        int end = nameIterator.getNextEnd();
+                        if (rawName.charAt(0) == '"' && rawName.charAt(end - 1) == '"') {
+                            propertyName = rawName.substring(0, end);
+                            break;
+                        }
+                    }
+                }
+            }
             ArtemisBuildTimeConfig buildTimeConfig = buildConfigs.configs().get(name);
             boolean isUrlEmpty = shadowRunTimeConfigs.isUrlEmpty(name);
             if (!shadowRunTimeConfigs.getNames().contains(name) && buildTimeConfig.isEmpty()) {
@@ -86,7 +102,7 @@ public class DevServicesArtemisProcessor {
                     isUrlEmpty);
             DevServicesResultBuildItem result = start(
                     configuration,
-                    name,
+                    propertyName,
                     dockerStatusBuildItem,
                     launchMode,
                     consoleInstalledBuildItem,
