@@ -1,10 +1,7 @@
 package io.quarkus.artemis.core.deployment;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -41,8 +38,8 @@ import io.quarkus.runtime.configuration.ConfigUtils;
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class DevServicesArtemisProcessor {
     private static final Logger LOGGER = Logger.getLogger(DevServicesArtemisProcessor.class);
-    private static final String QUARKUS_ARTEMIS_URL = "quarkus.artemis.url";
-    private static final String QUARKUS_ARTEMIS_NAMED_URL_TEMPLATE = "quarkus.artemis.\"%s\".url";
+    private static final String QUARKUS_ARTEMIS_BASE = "quarkus.artemis.";
+    private static final String QUARKUS_ARTEMIS_NAMED_BASE_TEMPLATE = "quarkus.artemis.\"%s\".";
 
     /**
      * Label to add to shared Dev Service for ActiveMQ Artemis running in containers.
@@ -50,6 +47,7 @@ public class DevServicesArtemisProcessor {
      */
     static final String DEV_SERVICE_LABEL = "quarkus-dev-service-artemis";
     static final int ARTEMIS_PORT = 61616;
+    static final int ARTEMIS_WEB_UI_PORT = 8161;
 
     private static final ContainerLocator artemisContainerLocator = new ContainerLocator(DEV_SERVICE_LABEL, ARTEMIS_PORT);
 
@@ -164,10 +162,13 @@ public class DevServicesArtemisProcessor {
         cfgs.put(name, Objects.requireNonNull(configuration));
 
         if (devServices.get(name).isOwner()) {
-            LOGGER.infof(
-                    "Dev Services for ActiveMQ Artemis and named configuration %s started on %s",
-                    name,
-                    getArtemisUrl(name));
+            LOGGER.infof("Dev Services for ActiveMQ Artemis and named configuration %s started on %s",
+                    name, getArtemisUrl(name));
+
+            if (getArtemisWebUiUrl(name) != null) {
+                LOGGER.infof("Artemis Management Console for named configuration %s is available at %s",
+                        name, getArtemisWebUiUrl(name));
+            }
         }
         return devServices.get(name).toBuildItem();
     }
@@ -176,11 +177,23 @@ public class DevServicesArtemisProcessor {
         return devServices.get(name).getConfig().get(getUrlPropertyName(name));
     }
 
+    private static String getArtemisWebUiUrl(String name) {
+        return devServices.get(name).getConfig().get(getWebUiUrlPropertyName(name));
+    }
+
     private static String getUrlPropertyName(String name) {
+        return getArtemisPropertyBase(name) + "url";
+    }
+
+    private static String getWebUiUrlPropertyName(String name) {
+        return getArtemisPropertyBase(name) + "web-ui-url";
+    }
+
+    private static String getArtemisPropertyBase(String name) {
         if (Objects.equals(ArtemisUtil.DEFAULT_CONFIG_NAME, name)) {
-            return QUARKUS_ARTEMIS_URL;
+            return QUARKUS_ARTEMIS_BASE;
         } else {
-            return String.format(QUARKUS_ARTEMIS_NAMED_URL_TEMPLATE, name);
+            return String.format(QUARKUS_ARTEMIS_NAMED_BASE_TEMPLATE, name);
         }
     }
 
@@ -235,9 +248,10 @@ public class DevServicesArtemisProcessor {
             ArtemisContainer container = new ArtemisContainer(
                     DockerImageName.parse(config.imageName),
                     config.fixedExposedPort,
+                    config.webUiPort,
                     config.user,
                     config.password,
-                    config.extraArgs);
+                    mergeExtraArgs(config.defaultExtraArgs, config.extraArgs));
 
             ConfigureUtil.configureSharedNetwork(container, "artemis");
 
@@ -252,8 +266,10 @@ public class DevServicesArtemisProcessor {
                     containerName,
                     container.getContainerId(),
                     container::close,
-                    urlPropertyName,
-                    String.format("tcp://%s:%d", container.getHost(), container.getPort()));
+                    Map.of(
+                            urlPropertyName, String.format("tcp://%s:%d", container.getHost(), container.getPort()),
+                            getWebUiUrlPropertyName(name), String.format("http://%s:%d", container.getHost(),
+                                    container.getMappedPort(ARTEMIS_WEB_UI_PORT))));
         };
 
         return maybeContainerAddress
@@ -261,8 +277,7 @@ public class DevServicesArtemisProcessor {
                         containerName,
                         containerAddress.getId(),
                         null,
-                        urlPropertyName,
-                        String.format("tcp://%s", containerAddress.getUrl())))
+                        Map.of(urlPropertyName, String.format("tcp://%s", containerAddress.getUrl()))))
                 .orElseGet(defaultArtemisBrokerSupplier);
     }
 
@@ -273,26 +288,37 @@ public class DevServicesArtemisProcessor {
         return null;
     }
 
+    private static String mergeExtraArgs(String defaultExtraArgs, String extraArgs) {
+        List<String> paramsToAdd = Arrays.stream(defaultExtraArgs.split(" "))
+                .filter(da -> !extraArgs.contains(da)).toList();
+
+        return String.join(" ", paramsToAdd) + (paramsToAdd.isEmpty() ? "" : " ") + extraArgs;
+    }
+
     private static final class ArtemisDevServiceCfg {
         private final boolean devServicesEnabled;
         private final String imageName;
         private final Integer fixedExposedPort;
+        private final Integer webUiPort;
         private final boolean shared;
         private final String serviceName;
         private final String user;
         private final String password;
         private final String extraArgs;
+        private final String defaultExtraArgs;
 
         public ArtemisDevServiceCfg(ArtemisBuildTimeConfig config, String name, boolean isUrlEmpty) {
             ArtemisDevServicesBuildTimeConfig devServicesConfig = config.getDevservices();
             this.devServicesEnabled = devServicesConfig.enabled().orElse(isUrlEmpty);
             this.imageName = devServicesConfig.getImageName();
             this.fixedExposedPort = devServicesConfig.getPort();
+            this.webUiPort = devServicesConfig.getWebUiPort();
             this.shared = devServicesConfig.isShared();
             this.serviceName = devServicesConfig.getServiceName() + "-" + name;
             this.user = devServicesConfig.getUser();
             this.password = devServicesConfig.getPassword();
             this.extraArgs = devServicesConfig.getExtraArgs();
+            this.defaultExtraArgs = devServicesConfig.getDefaultExtraArgs();
         }
 
         @Override
@@ -320,13 +346,16 @@ public class DevServicesArtemisProcessor {
     private static final class ArtemisContainer extends GenericContainer<ArtemisContainer> {
 
         private final int port;
+        private final int webUiPort;
 
-        private ArtemisContainer(DockerImageName dockerImageName, int fixedExposedPort, String user, String password,
-                String extra) {
+        private ArtemisContainer(DockerImageName dockerImageName, int fixedExposedPort, int webUiPort, String user,
+                String password, String extra) {
             super(dockerImageName);
             this.port = fixedExposedPort;
+            this.webUiPort = webUiPort;
+
             withNetwork(Network.SHARED)
-                    .withExposedPorts(ARTEMIS_PORT)
+                    .withExposedPorts(ARTEMIS_PORT, ARTEMIS_WEB_UI_PORT)
                     .withEnv("AMQ_USER", user)
                     .withEnv("AMQ_PASSWORD", password)
                     .withEnv("AMQ_EXTRA_ARGS", extra)
@@ -338,6 +367,9 @@ public class DevServicesArtemisProcessor {
             super.configure();
             if (port > 0) {
                 addFixedExposedPort(port, ARTEMIS_PORT);
+            }
+            if (webUiPort > 0) {
+                addFixedExposedPort(webUiPort, ARTEMIS_WEB_UI_PORT);
             }
         }
 
