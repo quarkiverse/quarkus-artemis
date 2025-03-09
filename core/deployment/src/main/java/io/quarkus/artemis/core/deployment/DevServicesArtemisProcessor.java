@@ -18,12 +18,8 @@ import io.quarkus.artemis.core.runtime.ArtemisDevServicesBuildTimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.CuratedApplicationShutdownBuildItem;
-import io.quarkus.deployment.builditem.DevServicesResultBuildItem;
+import io.quarkus.deployment.builditem.*;
 import io.quarkus.deployment.builditem.DevServicesResultBuildItem.RunningDevService;
-import io.quarkus.deployment.builditem.DevServicesSharedNetworkBuildItem;
-import io.quarkus.deployment.builditem.DockerStatusBuildItem;
-import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
 import io.quarkus.deployment.console.StartupLogCompressor;
 import io.quarkus.deployment.dev.devservices.DevServicesConfig;
@@ -305,9 +301,14 @@ public class DevServicesArtemisProcessor {
     }
 
     private static String mergeExtraArgs(String defaultExtraArgs, String extraArgs) {
-        List<String> paramsToAdd = Arrays.stream(defaultExtraArgs.split(" "))
-                .filter(da -> !extraArgs.contains(da)).toList();
+        List<String> parsedDefaultArgs = Arrays.asList(defaultExtraArgs.split(" "));
 
+        List<String> duplicatedParams = parsedDefaultArgs.stream().filter(extraArgs::contains).toList();
+        if (!duplicatedParams.isEmpty()) {
+            LOGGER.warnf("parameters %s are set in both default-extra-args and extra-args", duplicatedParams);
+        }
+
+        List<String> paramsToAdd = parsedDefaultArgs.stream().filter(p -> !duplicatedParams.contains(p)).toList();
         return String.join(" ", paramsToAdd) + (paramsToAdd.isEmpty() ? "" : " ") + extraArgs;
     }
 
