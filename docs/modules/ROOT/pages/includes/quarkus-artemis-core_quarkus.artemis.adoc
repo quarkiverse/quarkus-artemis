@@ -137,6 +137,34 @@ endif::add-copy-button-to-env-var[]
 |int
 |
 
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-web-ui-port]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-web-ui-port[`quarkus.artemis.devservices.web-ui-port`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.devservices.web-ui-port+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".devservices.web-ui-port`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".devservices.web-ui-port+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Optional fixed port the Artemis Web-Ui will be exposed at.
+
+If not defined, the Artemis Web-Ui port will be chosen randomly.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_WEB_UI_PORT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_WEB_UI_PORT+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-image-name]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-image-name[`quarkus.artemis.devservices.image-name`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.artemis.devservices.image-name+++[]
@@ -288,7 +316,7 @@ endif::add-copy-button-to-config-props[]
 
 [.description]
 --
-The value of the `AMQ_EXTRA_ARGS` environment variable to pass to the container. Defaults to `--no-autotune --mapped --no-fsync` when not set.
+Value to pass into the `AMQ_EXTRA_ARGS` environment variable in the container. Values wil be augmented with those provided in `defaultExtraArgs`
 
 
 ifdef::add-copy-button-to-env-var[]
@@ -296,6 +324,34 @@ Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_EX
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_EXTRA_ARGS+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-default-extra-args]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-default-extra-args[`quarkus.artemis.devservices.default-extra-args`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.devservices.default-extra-args+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".devservices.default-extra-args`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".devservices.default-extra-args+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Default values to be merged with those provided in `extraArgs`. It's recommended to only overwrite this if one of the below listed default arguments needs to be unset, otherwise the `extraArgs` option should be used.
+
+Defaults to `--no-autotune --mapped --no-fsync --relax-jolokia` when not set.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_DEFAULT_EXTRA_ARGS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_DEFAULT_EXTRA_ARGS+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
