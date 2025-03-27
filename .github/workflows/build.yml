@@ -7,7 +7,6 @@ on:
       - "main"
       - "3.7.x"
       - "3.5.x"
-      - "3.2.x"
     paths-ignore:
       - '.gitignore'
       - 'CODEOWNERS'
