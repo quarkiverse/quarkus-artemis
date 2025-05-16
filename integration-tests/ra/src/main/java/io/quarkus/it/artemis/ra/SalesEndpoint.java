@@ -29,7 +29,7 @@ public class SalesEndpoint implements MessageListener {
     @Transactional
     public void onMessage(Message message) {
         try {
-            Log.info("####### QuarkusTransaction.isActive = " + QuarkusTransaction.isActive());
+            Log.info("####### QuarkusTransaction.status = " + QuarkusTransaction.getStatus());
             String body = message.getBody(String.class);
             Log.infof("######### Received message from Sales queue: %s", body);
             Log.info("######### Redelivered: " + message.getJMSRedelivered());
