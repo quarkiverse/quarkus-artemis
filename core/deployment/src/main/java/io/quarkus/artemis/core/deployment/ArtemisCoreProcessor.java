@@ -111,13 +111,13 @@ public class ArtemisCoreProcessor {
             ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs) {
         Collection<ClassInfo> connectorFactories = indexBuildItem.getIndex()
-                .getAllKnownImplementors(DotName.createSimple(ConnectorFactory.class.getName()));
+                .getAllKnownImplementations(DotName.createSimple(ConnectorFactory.class.getName()));
 
         addDynamicReflectiveBuildItems(reflectiveClass, connectorFactories);
         BUILTIN_CONNECTOR_FACTORIES_REFLECTION_CONFIG.forEach(reflectiveClass::produce);
 
         Collection<ClassInfo> loadBalancers = indexBuildItem.getIndex()
-                .getAllKnownImplementors(DotName.createSimple(ConnectionLoadBalancingPolicy.class.getName()));
+                .getAllKnownImplementations(DotName.createSimple(ConnectionLoadBalancingPolicy.class.getName()));
         addDynamicReflectiveBuildItems(reflectiveClass, loadBalancers);
         BUILTIN_LOADBALANCING_POLICIES_REFLECTION_CONFIG.forEach(reflectiveClass::produce);
         HashSet<String> names = new HashSet<>(shadowRunTimeConfigs.getNames());
