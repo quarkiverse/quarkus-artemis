@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025 by Bank Lombard Odier & Co Ltd, Geneva, Switzerland. This software is subject
- * to copyright protection under the laws of Switzerland and other countries. ALL RIGHTS RESERVED.
- *
- */
 package io.quarkus.artemis.jms.ra.deployment;
 
 import java.util.Optional;
