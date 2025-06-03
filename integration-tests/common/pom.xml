@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.quarkiverse.artemis</groupId>
         <artifactId>quarkus-integration-test-artemis-common-parent</artifactId>
-        <version>3.7.x-999-SNAPSHOT</version>
+        <version>3.7.3</version>
         <relativePath>../common-parent/pom.xml</relativePath>
     </parent>
 
