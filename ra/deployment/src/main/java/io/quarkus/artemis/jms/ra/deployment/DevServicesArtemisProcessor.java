@@ -203,18 +203,18 @@ public class DevServicesArtemisProcessor {
             return null;
         }
 
-        // Check if quarkus.artemis.url is set
+        // Check if quarkus.ironjacamar.ra.config.connection-parameters is set
         String urlPropertyName = getUrlPropertyName(name);
         if (ConfigUtils.isPropertyPresent(urlPropertyName)) {
             LOGGER.debugf(
-                    "Not starting dev services for ActiveMQ Artemis and configuration %s, the quarkus.artemis.url is configured.",
+                    "Not starting dev services for ActiveMQ Artemis and configuration %s, the quarkus.ironjacamar.ra.config.connection-parameters is configured.",
                     name);
             return null;
         }
 
         if (!dockerStatusBuildItem.isContainerRuntimeAvailable()) {
             LOGGER.warn(
-                    "Docker isn't working, please configure the ActiveMQ Artemis Url property (quarkus.artemis.url).");
+                    "Docker isn't working, please configure the connection parameters property (quarkus.ironjacamar.ra.config.connection-parameters).");
             return null;
         }
 
