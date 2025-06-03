@@ -261,11 +261,7 @@ public class DevServicesArtemisProcessor {
     }
 
     private static Map<String, String> createConnectionParameters(String urlPropertyName, String host, int port) {
-        return Map.of(urlPropertyName,
-                String.format("host=%s;port=%d;protocols=CORE", host,
-                        port),
-                "protocol-manager-factory",
-                "org.apache.activemq.artemis.core.protocol.hornetq.client.HornetQClientProtocolManagerFactory");
+        return Map.of(urlPropertyName, String.format("host=%s;port=%d;protocols=CORE", host, port));
     }
 
     private ArtemisDevServiceCfg getConfiguration(ArtemisDevServicesBuildTimeConfig devServicesBuildTimeConfig, String name,
