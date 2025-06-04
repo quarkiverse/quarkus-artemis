@@ -12,6 +12,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
 import io.quarkiverse.ironjacamar.runtime.IronJacamarBuildtimeConfig;
+import io.quarkus.artemis.jms.ra.runtime.ArtemisDevServicesBuildTimeConfig;
 import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.*;

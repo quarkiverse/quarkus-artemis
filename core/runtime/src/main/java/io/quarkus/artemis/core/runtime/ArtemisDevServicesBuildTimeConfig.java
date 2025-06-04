@@ -6,6 +6,9 @@ import io.quarkus.runtime.annotations.ConfigGroup;
 
 @ConfigGroup
 public interface ArtemisDevServicesBuildTimeConfig {
+
+    String DEFAULT_IMAGE = "quay.io/arkmq-org/activemq-artemis-broker:artemis.2.40.0";
+
     /**
      * Enable or disable Dev Services explicitly. Dev Services are automatically enabled unless
      * {@code quarkus.artemis.url} is set.
@@ -96,7 +99,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
     }
 
     default String getImageName() {
-        return imageName().orElse("quay.io/arkmq-org/activemq-artemis-broker:artemis.2.40.0");
+        return imageName().orElse(DEFAULT_IMAGE);
     }
 
     default boolean isShared() {
