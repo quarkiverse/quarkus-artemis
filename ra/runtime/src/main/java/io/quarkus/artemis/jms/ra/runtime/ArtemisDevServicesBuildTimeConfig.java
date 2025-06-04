@@ -1,4 +1,4 @@
-package io.quarkus.artemis.jms.ra.deployment;
+package io.quarkus.artemis.jms.ra.runtime;
 
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
     /**
      * The ActiveMQ Artemis container image to use.
      * <p>
-     * Defaults to {@code quay.io/artemiscloud/activemq-artemis-broker:artemis.2.40.0}
+     * Defaults to {@code quay.io/arkmq-org/activemq-artemis-broker:artemis.2.40.0}
      */
     Optional<String> imageName();
 
@@ -83,7 +83,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
     }
 
     default String getImageName() {
-        return imageName().orElse("quay.io/artemiscloud/activemq-artemis-broker:artemis.2.40.0");
+        return imageName().orElse(io.quarkus.artemis.core.runtime.ArtemisDevServicesBuildTimeConfig.DEFAULT_IMAGE);
     }
 
     default boolean isShared() {
