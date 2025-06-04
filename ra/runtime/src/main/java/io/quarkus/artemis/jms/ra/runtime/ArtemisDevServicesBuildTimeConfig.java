@@ -1,4 +1,4 @@
-package io.quarkus.artemis.jms.ra.deployment;
+package io.quarkus.artemis.jms.ra.runtime;
 
 import java.util.Optional;
 
@@ -83,7 +83,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
     }
 
     default String getImageName() {
-        return imageName().orElse("quay.io/artemiscloud/activemq-artemis-broker:artemis.2.37.0");
+        return imageName().orElse(io.quarkus.artemis.core.runtime.ArtemisDevServicesBuildTimeConfig.DEFAULT_IMAGE);
     }
 
     default boolean isShared() {

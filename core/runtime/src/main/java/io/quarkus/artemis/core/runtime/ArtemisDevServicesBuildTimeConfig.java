@@ -6,6 +6,9 @@ import io.quarkus.runtime.annotations.ConfigGroup;
 
 @ConfigGroup
 public interface ArtemisDevServicesBuildTimeConfig {
+
+    String DEFAULT_IMAGE = "quay.io/artemiscloud/activemq-artemis-broker:artemis.2.37.0";
+
     /**
      * Enable or disable Dev Services explicitly. Dev Services are automatically enabled unless
      * {@code quarkus.artemis.url} is set.
@@ -29,7 +32,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
     /**
      * The ActiveMQ Artemis container image to use.
      * <p>
-     * Defaults to {@code quay.io/artemiscloud/activemq-artemis-broker:artemis.2.37.0}
+     * Defaults to {@code quay.io/arkmq-org/activemq-artemis-broker:artemis.2.40.0}
      */
     Optional<String> imageName();
 
@@ -96,7 +99,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
     }
 
     default String getImageName() {
-        return imageName().orElse("quay.io/artemiscloud/activemq-artemis-broker:artemis.2.37.0");
+        return imageName().orElse(DEFAULT_IMAGE);
     }
 
     default boolean isShared() {
