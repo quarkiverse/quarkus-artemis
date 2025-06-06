@@ -1,5 +1,8 @@
 package io.quarkus.artemis.jms.ra.deployment;
 
+import static io.quarkus.devservices.common.ContainerLocator.locateContainerWithLabels;
+import static io.quarkus.devservices.common.Labels.QUARKUS_DEV_SERVICE;
+
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,9 +24,8 @@ import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
 import io.quarkus.deployment.console.StartupLogCompressor;
 import io.quarkus.deployment.dev.devservices.DevServicesConfig;
 import io.quarkus.deployment.logging.LoggingSetupBuildItem;
-import io.quarkus.devservices.common.ConfigureUtil;
-import io.quarkus.devservices.common.ContainerAddress;
-import io.quarkus.devservices.common.ContainerLocator;
+import io.quarkus.devservices.common.*;
+import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.configuration.ConfigUtils;
 
 /**
@@ -47,7 +49,7 @@ public class DevServicesArtemisProcessor {
 
     static final int ARTEMIS_PORT = 61616;
 
-    private static final ContainerLocator artemisContainerLocator = new ContainerLocator(DEV_SERVICE_LABEL, ARTEMIS_PORT);
+    private static final ContainerLocator artemisContainerLocator = locateContainerWithLabels(ARTEMIS_PORT, DEV_SERVICE_LABEL);
 
     static final ConcurrentHashMap<String, RunningDevService> devServices = new ConcurrentHashMap<>();
 
@@ -59,6 +61,7 @@ public class DevServicesArtemisProcessor {
     @BuildStep(onlyIfNot = IsNormal.class, onlyIf = DevServicesConfig.Enabled.class)
     public List<DevServicesResultBuildItem> startArtemisDevService(
             DockerStatusBuildItem dockerStatusBuildItem,
+            DevServicesComposeProjectBuildItem composeProjectBuildItem,
             LaunchModeBuildItem launchMode,
             IronJacamarBuildtimeConfig buildConfig,
             ShadowIronJacamarRuntimeConfig runtimeConfig,
@@ -80,6 +83,7 @@ public class DevServicesArtemisProcessor {
                     configuration,
                     name,
                     dockerStatusBuildItem,
+                    composeProjectBuildItem,
                     launchMode,
                     consoleInstalledBuildItem,
                     closeBuildItem,
@@ -96,6 +100,7 @@ public class DevServicesArtemisProcessor {
             ArtemisDevServiceCfg configuration,
             String name,
             DockerStatusBuildItem dockerStatusBuildItem,
+            DevServicesComposeProjectBuildItem composeProjectBuildItem,
             LaunchModeBuildItem launchMode,
             Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
             CuratedApplicationShutdownBuildItem closeBuildItem,
@@ -119,6 +124,7 @@ public class DevServicesArtemisProcessor {
                     RunningDevService service = startArtemis(
                             name,
                             dockerStatusBuildItem,
+                            composeProjectBuildItem,
                             configuration,
                             launchMode,
                             devServicesConfig.timeout());
@@ -188,6 +194,7 @@ public class DevServicesArtemisProcessor {
     private static RunningDevService startArtemis(
             String name,
             DockerStatusBuildItem dockerStatusBuildItem,
+            DevServicesComposeProjectBuildItem composeProjectBuildItem,
             ArtemisDevServiceCfg config,
             LaunchModeBuildItem launchMode,
             Optional<Duration> timeout) {
@@ -214,12 +221,25 @@ public class DevServicesArtemisProcessor {
             return null;
         }
 
+        String containerName = "ActiveMQ-Artemis " + name;
+
         final Optional<ContainerAddress> maybeContainerAddress = artemisContainerLocator.locateContainer(config.serviceName,
                 config.shared,
                 launchMode.getLaunchMode());
 
+        if (maybeContainerAddress.isEmpty()) {
+            Optional<ContainerAddress> artemis = ComposeLocator.locateContainer(composeProjectBuildItem,
+                    List.of(config.imageName), // TODO should this be List.of(config.imageName, "artemis")
+                    ARTEMIS_PORT, launchMode.getLaunchMode(),
+                    false); // TODO should we support shared network? how?
+            if (artemis.isPresent()) {
+                ContainerAddress address = artemis.get();
+                var configuration = createConnectionParameters(urlPropertyName, address.getHost(), address.getPort());
+                return new RunningDevService(containerName, address.getId(), null, configuration);
+            }
+        }
+
         // Starting the broker
-        String containerName = "ActiveMQ-Artemis " + name;
         Supplier<RunningDevService> defaultArtemisBrokerSupplier = () -> {
             ArtemisContainer container = new ArtemisContainer(
                     DockerImageName.parse(config.imageName),
@@ -231,8 +251,10 @@ public class DevServicesArtemisProcessor {
 
             ConfigureUtil.configureSharedNetwork(container, "artemis");
 
-            if (config.serviceName != null) {
-                container.withLabel(DevServicesArtemisProcessor.DEV_SERVICE_LABEL, config.serviceName);
+            String devServiceName = launchMode.getLaunchMode() == LaunchMode.DEVELOPMENT ? config.serviceName : null;
+            if (devServiceName != null) { // TODO is this correct? Should we use the service name in dev mode?
+                container.withLabel(DevServicesArtemisProcessor.DEV_SERVICE_LABEL, devServiceName);
+                container.withLabel(QUARKUS_DEV_SERVICE, devServiceName);
             }
 
             timeout.ifPresent(container::withStartupTimeout);
@@ -244,7 +266,6 @@ public class DevServicesArtemisProcessor {
                     container.getContainerId(),
                     container::close,
                     configuration);
-
         };
 
         return maybeContainerAddress
@@ -336,6 +357,7 @@ public class DevServicesArtemisProcessor {
                     .withEnv("AMQ_PASSWORD", password)
                     .withEnv("AMQ_EXTRA_ARGS", extra)
                     .waitingFor(Wait.forLogMessage(".*AMQ241004.*", 1)); // Artemis console available.
+
         }
 
         @Override
