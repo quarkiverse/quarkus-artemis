@@ -1,9 +1,11 @@
 package io.quarkus.artemis.jms.ra.deployment;
 
+import static io.quarkus.devservices.common.ContainerLocator.locateContainerWithLabels;
+import static io.quarkus.devservices.common.Labels.QUARKUS_DEV_SERVICE;
+
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
 import org.jboss.logging.Logger;
 import org.testcontainers.containers.GenericContainer;
@@ -21,9 +23,10 @@ import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
 import io.quarkus.deployment.console.StartupLogCompressor;
 import io.quarkus.deployment.dev.devservices.DevServicesConfig;
 import io.quarkus.deployment.logging.LoggingSetupBuildItem;
+import io.quarkus.devservices.common.ComposeLocator;
 import io.quarkus.devservices.common.ConfigureUtil;
-import io.quarkus.devservices.common.ContainerAddress;
 import io.quarkus.devservices.common.ContainerLocator;
+import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.configuration.ConfigUtils;
 
 /**
@@ -47,7 +50,7 @@ public class DevServicesArtemisProcessor {
 
     static final int ARTEMIS_PORT = 61616;
 
-    private static final ContainerLocator artemisContainerLocator = new ContainerLocator(DEV_SERVICE_LABEL, ARTEMIS_PORT);
+    private static final ContainerLocator artemisContainerLocator = locateContainerWithLabels(ARTEMIS_PORT, DEV_SERVICE_LABEL);
 
     static final ConcurrentHashMap<String, RunningDevService> devServices = new ConcurrentHashMap<>();
 
@@ -59,6 +62,7 @@ public class DevServicesArtemisProcessor {
     @BuildStep(onlyIfNot = IsNormal.class, onlyIf = DevServicesConfig.Enabled.class)
     public List<DevServicesResultBuildItem> startArtemisDevService(
             DockerStatusBuildItem dockerStatusBuildItem,
+            DevServicesComposeProjectBuildItem composeProjectBuildItem,
             LaunchModeBuildItem launchMode,
             IronJacamarBuildtimeConfig buildConfig,
             ShadowIronJacamarRuntimeConfig runtimeConfig,
@@ -80,7 +84,9 @@ public class DevServicesArtemisProcessor {
                     configuration,
                     name,
                     dockerStatusBuildItem,
+                    composeProjectBuildItem,
                     launchMode,
+                    devServicesSharedNetworkBuildItem,
                     consoleInstalledBuildItem,
                     closeBuildItem,
                     loggingSetupBuildItem,
@@ -96,7 +102,9 @@ public class DevServicesArtemisProcessor {
             ArtemisDevServiceCfg configuration,
             String name,
             DockerStatusBuildItem dockerStatusBuildItem,
+            DevServicesComposeProjectBuildItem composeProjectBuildItem,
             LaunchModeBuildItem launchMode,
+            List<DevServicesSharedNetworkBuildItem> devServicesSharedNetworkBuildItem,
             Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
             CuratedApplicationShutdownBuildItem closeBuildItem,
             LoggingSetupBuildItem loggingSetupBuildItem,
@@ -115,12 +123,16 @@ public class DevServicesArtemisProcessor {
                     (launchMode.isTest() ? "(test) " : "") + "ActiveMQ Artemis Dev Services Starting:",
                     consoleInstalledBuildItem, loggingSetupBuildItem)) {
                 try {
+                    boolean useSharedNetwork = DevServicesSharedNetworkBuildItem.isSharedNetworkRequired(devServicesConfig,
+                            devServicesSharedNetworkBuildItem);
                     // devServices
                     RunningDevService service = startArtemis(
                             name,
                             dockerStatusBuildItem,
+                            composeProjectBuildItem,
                             configuration,
                             launchMode,
+                            useSharedNetwork,
                             devServicesConfig.timeout());
                     if (service != null) {
                         devServices.put(name, service);
@@ -188,8 +200,10 @@ public class DevServicesArtemisProcessor {
     private static RunningDevService startArtemis(
             String name,
             DockerStatusBuildItem dockerStatusBuildItem,
+            DevServicesComposeProjectBuildItem composeProjectBuildItem,
             ArtemisDevServiceCfg config,
             LaunchModeBuildItem launchMode,
+            boolean useSharedNetwork,
             Optional<Duration> timeout) {
         if (!config.devServicesEnabled) {
             // explicitly disabled
@@ -214,46 +228,42 @@ public class DevServicesArtemisProcessor {
             return null;
         }
 
-        final Optional<ContainerAddress> maybeContainerAddress = artemisContainerLocator.locateContainer(config.serviceName,
-                config.shared,
-                launchMode.getLaunchMode());
-
-        // Starting the broker
         String containerName = "ActiveMQ-Artemis " + name;
-        Supplier<RunningDevService> defaultArtemisBrokerSupplier = () -> {
-            ArtemisContainer container = new ArtemisContainer(
-                    DockerImageName.parse(config.imageName),
-                    config.fixedExposedPort,
-                    config.user,
-                    config.password,
-                    config.extraArgs);
-            container.withReuse(config.reuse);
 
-            ConfigureUtil.configureSharedNetwork(container, "artemis");
+        return artemisContainerLocator.locateContainer(config.serviceName, config.shared, launchMode.getLaunchMode())
+                .or(() -> ComposeLocator.locateContainer(composeProjectBuildItem, List.of(config.imageName, "artemis"),
+                        ARTEMIS_PORT, launchMode.getLaunchMode(), useSharedNetwork))
+                .map(address -> {
+                    var connectionParameters = createConnectionParameters(urlPropertyName, address.getHost(),
+                            address.getPort());
+                    return new RunningDevService(containerName, address.getId(), null, connectionParameters);
+                }).orElseGet(() -> {
+                    ArtemisContainer container = new ArtemisContainer(
+                            DockerImageName.parse(config.imageName),
+                            config.fixedExposedPort,
+                            config.user,
+                            config.password,
+                            config.extraArgs);
+                    container.withReuse(config.reuse);
 
-            if (config.serviceName != null) {
-                container.withLabel(DevServicesArtemisProcessor.DEV_SERVICE_LABEL, config.serviceName);
-            }
+                    ConfigureUtil.configureSharedNetwork(container, "artemis");
 
-            timeout.ifPresent(container::withStartupTimeout);
+                    String serviceName = launchMode.getLaunchMode() == LaunchMode.DEVELOPMENT ? config.serviceName : null;
+                    if (serviceName != null) {
+                        container.withLabel(DevServicesArtemisProcessor.DEV_SERVICE_LABEL, serviceName);
+                        container.withLabel(QUARKUS_DEV_SERVICE, serviceName);
+                    }
 
-            container.start();
-            var configuration = createConnectionParameters(urlPropertyName, container.getHost(), container.getPort());
-            return new RunningDevService(
-                    containerName,
-                    container.getContainerId(),
-                    container::close,
-                    configuration);
+                    timeout.ifPresent(container::withStartupTimeout);
 
-        };
-
-        return maybeContainerAddress
-                .map(containerAddress -> new RunningDevService(
-                        containerName,
-                        containerAddress.getId(),
-                        null,
-                        createConnectionParameters(urlPropertyName, containerAddress.getHost(), containerAddress.getPort())))
-                .orElseGet(defaultArtemisBrokerSupplier);
+                    container.start();
+                    var configuration = createConnectionParameters(urlPropertyName, container.getHost(), container.getPort());
+                    return new RunningDevService(
+                            containerName,
+                            container.getContainerId(),
+                            container::close,
+                            configuration);
+                });
     }
 
     private static Map<String, String> createConnectionParameters(String urlPropertyName, String host, int port) {

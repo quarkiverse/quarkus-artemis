@@ -123,6 +123,26 @@ public class MyResourceEndpoint implements MessageListener {
 <1> This MessageListener will be activated by the `other` resource adapter configured above.
 <2> This `ConnectionFactory` will be the one configured in the `main` resource adapter.
 
+[[Compose]]
+== Compose
+
+The Artemis RA Dev Services supports xref:https://quarkus.io/guides/compose-dev-services[Compose Dev Services].
+It relies on a `compose-devservices.yml`, such as:
+
+[source,yaml]
+----
+name: <application name>
+services:
+  artemis:
+    image: quay.io/arkmq-org/activemq-artemis-broker:artemis.2.40.0
+    ports:
+      - "61616"
+    environment:
+      AMQ_USER: admin
+      AMQ_PASSWORD: admin
+      AMQ_EXTRA_ARGS: --no-autotune --mapped --no-fsync
+----
+
 
 [[extension-configuration-reference]]
 == Configuration Reference
