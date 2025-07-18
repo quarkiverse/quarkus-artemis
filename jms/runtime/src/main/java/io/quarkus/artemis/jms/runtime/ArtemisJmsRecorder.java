@@ -14,21 +14,25 @@ import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
+import io.quarkus.runtime.RuntimeValue;
 import io.quarkus.runtime.annotations.Recorder;
 
 @Recorder
 public class ArtemisJmsRecorder {
+    private final ArtemisBuildTimeConfigs buildTimeConfigs;
+    private final RuntimeValue<ArtemisRuntimeConfigs> runtimeConfigs;
+
+    public ArtemisJmsRecorder(ArtemisBuildTimeConfigs buildTimeConfigs, RuntimeValue<ArtemisRuntimeConfigs> runtimeConfigs) {
+        this.buildTimeConfigs = buildTimeConfigs;
+        this.runtimeConfigs = runtimeConfigs;
+    }
 
     public Function<ConnectionFactory, Object> getDefaultWrapper() {
         return cf -> cf;
     }
 
-    public Supplier<ConnectionFactory> getConnectionFactoryProducer(
-            String name,
-            ArtemisRuntimeConfigs runtimeConfigs,
-            ArtemisBuildTimeConfigs buildTimeConfigs,
-            Function<ConnectionFactory, Object> wrapper) {
-        ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.configs().get(name);
+    public Supplier<ConnectionFactory> getConnectionFactoryProducer(String name, Function<ConnectionFactory, Object> wrapper) {
+        ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.getValue().configs().get(name);
         ArtemisBuildTimeConfig buildTimeConfig = buildTimeConfigs.configs().get(name);
         ArtemisUtil.validateIntegrity(name, runtimeConfig, buildTimeConfig);
         final ConnectionFactory connectionFactory = Objects
