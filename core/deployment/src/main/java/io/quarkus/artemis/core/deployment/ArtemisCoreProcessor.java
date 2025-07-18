@@ -28,7 +28,6 @@ import org.jboss.logging.Logger;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisCoreRecorder;
-import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -137,7 +136,6 @@ public class ArtemisCoreProcessor {
     @BuildStep
     ArtemisCoreConfiguredBuildItem configure(
             ArtemisCoreRecorder recorder,
-            ArtemisRuntimeConfigs runtimeConfigs,
             ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             ArtemisBootstrappedBuildItem bootstrap,
@@ -157,10 +155,7 @@ public class ArtemisCoreProcessor {
                     && buildTimeConfigs.configs().get(name).isEmpty()) {
                 continue;
             }
-            Supplier<ServerLocator> supplier = recorder.getServerLocatorSupplier(
-                    name,
-                    runtimeConfigs,
-                    buildTimeConfigs);
+            Supplier<ServerLocator> supplier = recorder.getServerLocatorSupplier(name);
             SyntheticBeanBuildItem serverLocator = toSyntheticBeanBuildItem(supplier, name, isSoleServerLocator);
             syntheticBeanProducer.produce(serverLocator);
         }
