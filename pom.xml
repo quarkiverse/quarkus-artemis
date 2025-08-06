@@ -22,6 +22,7 @@
         <module>test-framework</module>
     </modules>
 
+
     <scm>
         <connection>scm:git:git@github.com:quarkiverse/quarkus-artemis.git</connection>
         <developerConnection>scm:git:git@github.com:quarkiverse/quarkus-artemis.git</developerConnection>
