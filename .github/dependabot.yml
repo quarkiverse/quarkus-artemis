@@ -19,11 +19,27 @@ updates:
       - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
       - dependency-name: "io.quarkus:*"
         versions:
-          - "[3.16,)"
+          - "[3.28,)"
       - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
         versions:
-          - "[3.16,)"
+          - "[3.28,)"
       - dependency-name: "org.apache.activemq:*"
         versions:
-          - "[2.37.0,)"
-    target-branch: "3.5.x"
+          - "[2.43.0,)"
+    target-branch: "3.9.x"
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
+      - dependency-name: "io.quarkus:*"
+        versions:
+          - "[3.21,)"
+      - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
+        versions:
+          - "[3.21,)"
+      - dependency-name: "org.apache.activemq:*"
+        versions:
+          - "[2.41.0,)"
+    target-branch: "3.7.x"
