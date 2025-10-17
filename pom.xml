@@ -37,7 +37,7 @@
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
 
         <!-- Dependency versions -->
-        <artemis.version>2.42.0</artemis.version>
+        <artemis.version>2.43.0</artemis.version>
         <camel-quarkus.platform.version>3.28.3</camel-quarkus.platform.version>
         <quarkus.version>3.28.3</quarkus.version>
         <quarkus-ironjacamar.version>1.6.1</quarkus-ironjacamar.version>
