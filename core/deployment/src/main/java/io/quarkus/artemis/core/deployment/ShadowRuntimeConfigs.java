@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
+import io.quarkus.runtime.annotations.ConfigDocIgnore;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
 import io.smallrye.config.ConfigMapping;
@@ -27,25 +28,13 @@ import io.smallrye.config.WithUnnamedKey;
 @ConfigMapping(prefix = "quarkus.artemis")
 @ConfigRoot(phase = ConfigPhase.BUILD_TIME)
 public interface ShadowRuntimeConfigs {
-    /**
-     * Configurations
-     *
-     * @deprecated since 3.1.3, to suppress doc generation
-     */
     @WithParentName
     @WithUnnamedKey(ArtemisUtil.DEFAULT_CONFIG_NAME)
     @WithDefaults
-    @Deprecated(since = "3.1.3")
+    @ConfigDocIgnore
     Map<String, ShadowRuntimeConfig> configs();
 
-    /**
-     * Whether configurations ({@link org.apache.activemq.artemis.api.core.client.ServerLocator}s in case of the
-     * {@code artemis-core} extension, {@link jakarta.jms.ConnectionFactory}s in case of the
-     * {@code artemis-jms} extension) should be included in the health check. Defaults to {@code true} if not set.
-     *
-     * @deprecated since 3.1.3, to suppress doc generation
-     */
-    @Deprecated(since = "3.1.3")
+    @ConfigDocIgnore
     @WithName("health.external.enabled")
     Optional<Boolean> healthExternalEnabled();
 
