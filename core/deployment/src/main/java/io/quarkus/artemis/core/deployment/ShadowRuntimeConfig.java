@@ -2,6 +2,7 @@ package io.quarkus.artemis.core.deployment;
 
 import java.util.Optional;
 
+import io.quarkus.runtime.annotations.ConfigDocIgnore;
 import io.quarkus.runtime.annotations.ConfigGroup;
 
 /**
@@ -16,39 +17,16 @@ import io.quarkus.runtime.annotations.ConfigGroup;
  */
 @ConfigGroup
 public interface ShadowRuntimeConfig {
-    /**
-     * Artemis connection url
-     *
-     * @deprecated since 3.1.3, to suppress doc generation
-     */
-    @Deprecated(since = "3.1.3")
+    @ConfigDocIgnore
     Optional<String> url();
 
-    /**
-     * Username for authentication, only used with JMS
-     *
-     * @deprecated since 3.1.3, to suppress doc generation
-     */
-    @Deprecated(since = "3.1.3")
+    @ConfigDocIgnore
     Optional<String> username();
 
-    /**
-     * Password for authentication, only used with JMS
-     *
-     * @deprecated since 3.1.3, to suppress doc generation
-     */
-    @Deprecated(since = "3.1.3")
+    @ConfigDocIgnore
     Optional<String> password();
 
-    /**
-     * Whether this particular data source should be excluded from the health check if
-     * the general health check for data sources is enabled.
-     * <p>
-     * By default, the health check includes all configured data sources (if it is enabled).
-     *
-     * @deprecated since 3.1.3, to suppress doc generation
-     */
-    @Deprecated(since = "3.1.3")
+    @ConfigDocIgnore
     Optional<Boolean> healthExclude();
 
     default boolean isUrlEmpty() {
