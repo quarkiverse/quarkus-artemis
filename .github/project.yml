@@ -1,5 +1,5 @@
 release:
-  current-version: 3.9.0
+  current-version: 3.9.1
   next-version: 3.9.x-999-SNAPSHOT
   latest: false
   pre-release: false
