@@ -9,7 +9,7 @@
 
     <groupId>io.quarkiverse.artemis</groupId>
     <artifactId>quarkus-artemis-parent</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>3.10.2</version>
     <name>Quarkus - Artemis - Parent</name>
 
     <packaging>pom</packaging>
@@ -26,7 +26,7 @@
         <connection>scm:git:git@github.com:quarkiverse/quarkus-artemis.git</connection>
         <developerConnection>scm:git:git@github.com:quarkiverse/quarkus-artemis.git</developerConnection>
         <url>https://github.com/quarkiverse/quarkus-artemis</url>
-      <tag>HEAD</tag>
+      <tag>3.10.2</tag>
   </scm>
 
     <properties>
