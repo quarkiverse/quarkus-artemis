@@ -180,7 +180,7 @@ endif::add-copy-button-to-config-props[]
 --
 The ActiveMQ Artemis container image to use.
 
-Defaults to `quay.io/arkmq-org/activemq-artemis-broker:artemis.2.42.0`
+Defaults to `quay.io/arkmq-org/activemq-artemis-broker:artemis.2.44.0`
 
 
 ifdef::add-copy-button-to-env-var[]

@@ -134,7 +134,7 @@ It relies on a `compose-devservices.yml`, such as:
 name: <application name>
 services:
   artemis:
-    image: quay.io/arkmq-org/activemq-artemis-broker:artemis.2.40.0
+    image: quay.io/arkmq-org/activemq-artemis-broker:artemis.2.44.0
     ports:
       - "61616"
     environment:
