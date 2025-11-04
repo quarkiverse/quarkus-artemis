@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.quarkiverse.artemis</groupId>
         <artifactId>quarkus-artemis-integration-tests-parent</artifactId>
-        <version>3.10.2</version>
+        <version>999-SNAPSHOT</version>
     </parent>
 
     <artifactId>quarkus-integration-test-artemis-jms-parent</artifactId>
