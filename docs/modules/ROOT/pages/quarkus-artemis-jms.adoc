@@ -509,9 +509,32 @@ public class NamedOneArtemisTestResource extends ArtemisTestResource {
 
 We can then annotate our test with `@WithTestResource(NamedOneArtemisTestResource.class)`.
 
-This instance can be configured by placing a `broker-named-1.xml` in `src/test/resources`. In general, for a configuration with name `<name>`, we can configure the corresponding in-memory artemis through file `src/test/resources/broker-<name>.xml`.
+Alternatively, to avoid creation of a new test resource class, the name of the configuration can be provided to the `initArgs` of the `@QuarkusTestResource` or `@WithTestResource` annotation:
+[source,java,subs=attributes+]
+----
+@QuarkusTestResource(ArtemisTestResource.class, initArgs = {@ResourceArg(name = "configurationName", value = "named-1")})
+class MyArtemisTest {
+
+    @Test
+    void someTest() {
+    }
+}
+----
+
+The named instance can be configured by placing a `broker-named-1.xml` in `src/test/resources`. In general, for a configuration with name `<name>`, we can configure the corresponding in-memory artemis through file `src/test/resources/broker-<name>.xml`.
 
 For an in-depth explanation of what can be configured in a `broker.xml`, please see the link:https://activemq.apache.org/components/artemis/documentation/latest/configuration-index.html:[official Artemis documentation].
+
+`ArtemisTestResource` supports dynamic resolution of the port into `quarkus.artemis.url` / `quarkus.artemis."named-configuration".url` property. Set the `activemq` connector and acceptor port to 0 in the `broker-<name>.xml` in order to start the embedded broker on the first random available port.
+[source,xml]
+----
+<connectors>
+  <connector name="activemq">tcp://localhost:0</connector>
+</connectors>
+<acceptors>
+  <acceptor name="activemq">tcp://localhost:0</acceptor>
+</acceptors>
+----
 
 == Examples
 Examples can be found in the `integration-tests` module, e.g.
