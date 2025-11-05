@@ -64,7 +64,8 @@ public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager 
             if (config.getName().equals("activemq")) {
                 return Collections.singletonMap(
                         getUrlConfigKey(),
-                        String.format("tcp://%s:%s", config.getParams().get("host"), resolvePort(config.getName(), config.getParams().get("port"))));
+                        String.format("tcp://%s:%s", config.getParams().get("host"),
+                                resolvePort(config.getName(), config.getParams().get("port"))));
             }
         }
 
@@ -74,9 +75,9 @@ public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager 
     private Object resolvePort(String acceptorName, Object configPort) {
         if (Integer.parseInt(configPort.toString()) == 0) {
             return embedded.getActiveMQServer()
-                .getRemotingService()
-                .getAcceptor(acceptorName)
-                .getActualPort();
+                    .getRemotingService()
+                    .getAcceptor(acceptorName)
+                    .getActualPort();
         }
         return configPort;
     }
