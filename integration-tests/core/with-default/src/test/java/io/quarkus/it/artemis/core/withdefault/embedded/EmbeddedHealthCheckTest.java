@@ -7,6 +7,6 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @WithTestResource(ArtemisTestResource.class)
-@WithTestResource(NamedOneArtemisTestResource.class)
+@WithTestResource(ArtemisTestResource.class, initArgs={@ResourceArg(name = "configurationName", value = "named-1")})
 class EmbeddedHealthCheckTest extends BaseArtemisHealthCheckTest {
 }
