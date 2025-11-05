@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.quarkiverse.artemis</groupId>
+        <artifactId>quarkus-integration-test-artemis-core-parent</artifactId>
+        <version>999-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>quarkus-integration-test-artemis-core-with-default-dynamic-port</artifactId>
+    <name>Quarkus - Artemis - Integration Tests - Core - With default dynamic port configuration</name>
+    <description>The Apache ActiveMQ Artemis Core integration with default dynamic port configuration tests module</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-integration-test-artemis-core-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.artemis</groupId>
+            <artifactId>quarkus-integration-test-artemis-core-common</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+        </dependency>
+    </dependencies>
+</project>
