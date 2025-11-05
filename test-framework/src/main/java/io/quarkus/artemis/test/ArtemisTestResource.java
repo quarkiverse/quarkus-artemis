@@ -14,9 +14,11 @@ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager {
     private static final String DEFAULT_CONFIGURATION_NAME = "<default>";
     private static final String QUARKUS_ARTEMIS_CONFIG_PREFIX = "quarkus.artemis";
+    private static final String INIT_ARG_CONFIGURATION_NAME = "configurationName";
+    private static final String INIT_ARG_CONFIGURATION_PREFIX = "configurationPrefix";
 
-    private final String configurationName;
-    private final String configurationPrefix;
+    private String configurationName;
+    private String configurationPrefix;
     private EmbeddedActiveMQ embedded;
 
     @SuppressWarnings("unused")
@@ -31,6 +33,19 @@ public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager 
     protected ArtemisTestResource(String configurationPrefix, String configurationName) {
         this.configurationPrefix = configurationPrefix;
         this.configurationName = Objects.requireNonNull(configurationName);
+    }
+
+    @Override
+    public void init(Map<String, String> initArgs) {
+        if (initArgs == null || initArgs.isEmpty()) {
+            return;
+        }
+        if (initArgs.containsKey(INIT_ARG_CONFIGURATION_NAME)) {
+            this.configurationName = initArgs.get(INIT_ARG_CONFIGURATION_NAME);
+        }
+        if (initArgs.containsKey(INIT_ARG_CONFIGURATION_PREFIX)) {
+            this.configurationPrefix = initArgs.get(INIT_ARG_CONFIGURATION_PREFIX);
+        }
     }
 
     @Override
@@ -49,11 +64,21 @@ public class ArtemisTestResource implements QuarkusTestResourceLifecycleManager 
             if (config.getName().equals("activemq")) {
                 return Collections.singletonMap(
                         getUrlConfigKey(),
-                        String.format("tcp://%s:%s", config.getParams().get("host"), config.getParams().get("port")));
+                        String.format("tcp://%s:%s", config.getParams().get("host"), resolvePort(config.getName(), config.getParams().get("port"))));
             }
         }
 
         return Collections.emptyMap();
+    }
+
+    private Object resolvePort(String acceptorName, Object configPort) {
+        if (Integer.parseInt(configPort.toString()) == 0) {
+            return embedded.getActiveMQServer()
+                .getRemotingService()
+                .getAcceptor(acceptorName)
+                .getActualPort();
+        }
+        return configPort;
     }
 
     private String getConfigurationFileName() {
