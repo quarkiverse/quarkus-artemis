@@ -3,9 +3,14 @@ package io.quarkus.artemis.core.runtime;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
+
+import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
+import org.jboss.logging.Logger;
+import org.jboss.logging.MDC;
 
 import io.quarkus.arc.Arc;
 import io.quarkus.arc.InstanceHandle;
@@ -13,6 +18,7 @@ import io.smallrye.common.annotation.Identifier;
 
 public class ArtemisUtil {
     public static final String DEFAULT_CONFIG_NAME = "<default>";
+    public static final String ERROR_ID_KEY = "error-id";
 
     private ArtemisUtil() {
     }
@@ -74,6 +80,23 @@ public class ArtemisUtil {
             return Default.Literal.INSTANCE;
         } else {
             return Identifier.Literal.of(name);
+        }
+    }
+
+    public static void handleFailedHealthCheck(HealthCheckResponseBuilder builder, String connectionKind, String name,
+            Logger logger,
+            Logger.Level logLevel, Throwable t) {
+        if (logger.isEnabled(logLevel)) {
+            String errorId = UUID.randomUUID().toString();
+            MDC.put(ERROR_ID_KEY, errorId);
+            logger.log(logLevel,
+                    "Exception occurred during health check of %s %s (%s %s)".formatted(
+                            connectionKind, name, ERROR_ID_KEY, errorId),
+                    t);
+            MDC.remove(ERROR_ID_KEY);
+            builder.withData(name, "DOWN, see %s %s".formatted(ERROR_ID_KEY, errorId)).down();
+        } else {
+            builder.withData(name, "DOWN").down();
         }
     }
 }

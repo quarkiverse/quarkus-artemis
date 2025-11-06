@@ -390,6 +390,111 @@ TIP: If we want to configure a connection solely through the implicit environmen
 
 Please do not try to configure a configuration purely through environment variables, without having any indication of its presence in the application's configuration file. We specifically rely on the presence of some configuration fragment at build-time to detect configurations.
 
+== Error reporting of failed health checks
+
+When a health check for a server locator or connection factory fails, then:
+
+* the data for this server locator or connection factory is set to `"DOWN, see error-id <id>"`, and
+* a log message in the form of `"Exception occurred during health check of [server locator | connection factory]  <name> (error-id <id>)"`.
+The log level of this message can be set through configuration property `quarkus.artemis.health.fail.log-level`.
+If not set, `quarkus.artemis.health.fail.log-level` defaults to `INFO`.
+The log message also holds a `MDC` entry with key `error-id` and value `<id>`.
+
+.Sample health response on error with `error-id`
+[%collapsible]
+====
+[source,json]
+----
+{
+    "status": "DOWN",
+    "checks": [
+        {
+            "name": "Artemis JMS health check",
+            "status": "DOWN",
+            "data": {
+                "<default>": "DOWN, see error-id ce6bf00c-0024-42b8-803d-0135ea131e06"
+            }
+        }
+    ]
+}
+----
+====
+
+.Sample log on failing health check
+[%collapsible]
+====
+[source]
+----
+2025-11-08 11:59:48,056 INFO  [io.qua.art.jms.run.hea.ConnectionFactoryHealthCheck] (vert.x-worker-thread-1) Exception occurred during health check of connection factory <default> (error-id ce6bf00c-0024-42b8-803d-0135ea131e06): jakarta.jms.JMSException: Failed to create session factory
+	at org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory.createConnectionInternal(ActiveMQConnectionFactory.java:917)
+	at org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory.createXAConnection(ActiveMQConnectionFactory.java:386)
+	at org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory.createXAConnection(ActiveMQConnectionFactory.java:381)
+	at org.messaginghub.pooled.jms.JmsPoolXAConnectionFactory.createProviderConnection(JmsPoolXAConnectionFactory.java:85)
+	at org.messaginghub.pooled.jms.JmsPoolXAConnectionFactory.createProviderConnection(JmsPoolXAConnectionFactory.java:46)
+	at org.messaginghub.pooled.jms.JmsPoolConnectionFactory$1.makeObject(JmsPoolConnectionFactory.java:119)
+	at org.messaginghub.pooled.jms.JmsPoolConnectionFactory$1.makeObject(JmsPoolConnectionFactory.java:116)
+	at org.apache.commons.pool2.impl.GenericKeyedObjectPool.create(GenericKeyedObjectPool.java:796)
+	at org.apache.commons.pool2.impl.GenericKeyedObjectPool.addObject(GenericKeyedObjectPool.java:341)
+	at org.messaginghub.pooled.jms.JmsPoolConnectionFactory.createJmsPoolConnection(JmsPoolConnectionFactory.java:773)
+	at org.messaginghub.pooled.jms.JmsPoolConnectionFactory.createConnection(JmsPoolConnectionFactory.java:259)
+	at org.messaginghub.pooled.jms.JmsPoolConnectionFactory.createConnection(JmsPoolConnectionFactory.java:254)
+	at jakarta.jms.ConnectionFactory_tBORokLmr_ADGinSNA0ijl7u0zc_Synthetic_ClientProxy.createConnection(Unknown Source)
+	at io.quarkus.artemis.jms.runtime.health.ConnectionFactoryHealthCheck.call(ConnectionFactoryHealthCheck.java:52)
+	at io.quarkus.artemis.jms.runtime.health.ConnectionFactoryHealthCheck_ClientProxy.call(Unknown Source)
+	at io.smallrye.context.impl.wrappers.SlowContextualSupplier.get(SlowContextualSupplier.java:21)
+	at io.smallrye.mutiny.operators.uni.builders.UniCreateFromItemSupplier.subscribe(UniCreateFromItemSupplier.java:28)
+	at io.smallrye.mutiny.operators.AbstractUni.subscribe(AbstractUni.java:35)
+	at io.smallrye.mutiny.operators.uni.UniOnFailureFlatMap.subscribe(UniOnFailureFlatMap.java:34)
+	at io.smallrye.mutiny.operators.AbstractUni.subscribe(AbstractUni.java:35)
+	at io.smallrye.mutiny.operators.uni.UniOnItemTransform.subscribe(UniOnItemTransform.java:22)
+	at io.smallrye.mutiny.operators.AbstractUni.subscribe(AbstractUni.java:35)
+	at io.smallrye.mutiny.operators.uni.UniRunSubscribeOn.lambda$subscribe$0(UniRunSubscribeOn.java:27)
+	at io.quarkus.smallrye.health.runtime.QuarkusAsyncHealthCheckFactory$1$1.call(QuarkusAsyncHealthCheckFactory.java:42)
+	at io.quarkus.smallrye.health.runtime.QuarkusAsyncHealthCheckFactory$1$1.call(QuarkusAsyncHealthCheckFactory.java:39)
+	at io.vertx.core.impl.ContextImpl.lambda$executeBlocking$4(ContextImpl.java:192)
+	at io.vertx.core.impl.ContextInternal.dispatch(ContextInternal.java:270)
+	at io.vertx.core.impl.ContextImpl$1.execute(ContextImpl.java:221)
+	at io.vertx.core.impl.WorkerTask.run(WorkerTask.java:56)
+	at org.jboss.threads.ContextHandler$1.runWith(ContextHandler.java:18)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.doRunWith(EnhancedQueueExecutor.java:2651)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2630)
+	at org.jboss.threads.EnhancedQueueExecutor.runThreadBody(EnhancedQueueExecutor.java:1622)
+	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1589)
+	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:11)
+	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:11)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.apache.activemq.artemis.api.core.ActiveMQNotConnectedException: [errorType=NOT_CONNECTED message=AMQ219007: Cannot connect to server(s). Tried with all available servers.]
+	at org.apache.activemq.artemis.core.client.impl.ServerLocatorImpl.createSessionFactory(ServerLocatorImpl.java:733)
+	at org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory.createConnectionInternal(ActiveMQConnectionFactory.java:915)
+	... 37 more
+
+2025-11-08 11:59:48,078 INFO  [io.sma.health] (vert.x-eventloop-thread-1) SRHCK01001: Reporting health down status: {"status":"DOWN","checks":[{"name":"Artemis JMS health check","status":"DOWN","data":{"<default>":"DOWN, see error-id ce6bf00c-0024-42b8-803d-0135ea131e06"}}]}
+----
+====
+
+If log level `quarkus.artemis.health.fail.log-level` is not active, then the failing health check will have only the data `"DOWN"`, and no message is logged.
+
+.Sample health response on error without `error-id`
+[%collapsible]
+====
+[source,json]
+----
+{
+    "status": "DOWN",
+    "checks": [
+        {
+            "name": "Artemis JMS health check",
+            "status": "DOWN",
+            "data": {
+                "<default>": "DOWN"
+            }
+        }
+    ]
+}
+----
+====
+
 == XA-capable Connection Factories
 
 To get XA-capable connection factories, we can set `quarkus.artemis.xa-enabled` / `quarkus.artemis."named-configuration".xa-enabled` to *true*. We can then inject the corresponding bean as `XAConnectionFactory`.
