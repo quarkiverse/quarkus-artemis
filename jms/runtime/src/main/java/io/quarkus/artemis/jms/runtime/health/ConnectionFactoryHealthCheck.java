@@ -15,6 +15,7 @@ import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import org.eclipse.microprofile.health.Readiness;
+import org.jboss.logging.Logger;
 
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
@@ -24,6 +25,9 @@ import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupport;
 @Readiness
 @ApplicationScoped
 public class ConnectionFactoryHealthCheck implements HealthCheck {
+    private static final Logger LOGGER = Logger.getLogger(ConnectionFactoryHealthCheck.class);
+
+    private final ArtemisRuntimeConfigs runtimeConfigs;
     private final Instance<ConnectionFactory> connectionFactories;
     private final Set<String> connectionFactoryNames;
 
@@ -32,6 +36,7 @@ public class ConnectionFactoryHealthCheck implements HealthCheck {
             ArtemisBuildTimeConfigs buildTimeConfigs,
             @SuppressWarnings("CdiInjectionPointsInspection") ArtemisHealthSupport support,
             @Any Instance<ConnectionFactory> connectionFactories) {
+        this.runtimeConfigs = runtimeConfigs;
         this.connectionFactories = connectionFactories;
         connectionFactoryNames = support.getConfiguredNames().stream()
                 .filter(name -> runtimeConfigs.configs().get(name).isHealthInclude())
@@ -47,7 +52,8 @@ public class ConnectionFactoryHealthCheck implements HealthCheck {
             try (Connection ignored = connectionFactories.select(identifier).get().createConnection()) {
                 builder.withData(name, "UP");
             } catch (Exception e) {
-                builder.withData(name, "DOWN").down();
+                ArtemisUtil.handleFailedHealthCheck(builder, "connection factory", name, LOGGER,
+                        runtimeConfigs.healthFailLogLevel(), e);
             }
         }
         return builder.build();
