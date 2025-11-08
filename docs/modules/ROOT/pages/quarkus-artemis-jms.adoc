@@ -525,7 +525,7 @@ Caused by: org.apache.activemq.artemis.api.core.ActiveMQNotConnectedException: [
 ----
 ====
 
-If log level `quarkus.artemis.health.fail.log-level` is not active, then the failing health check will have only the data `"DOWN"`, and no message is logged.
+If log level `quarkus.artemis.health.fail.log-level` is not active or `quarkus.artemis.health.fail.log` is set to `false` (it defaults to `true`), then the failing health check will have only the data `"DOWN"`, and no message is logged.
 
 .Sample health response on error without `error-id`
 [%collapsible]

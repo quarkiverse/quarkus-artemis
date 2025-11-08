@@ -45,7 +45,7 @@ public class ConnectionFactoryHealthCheck implements HealthCheck {
             try (Connection ignored = connectionFactories.select(identifier).get().createConnection()) {
                 builder.withData(name, "UP");
             } catch (Exception e) {
-                ArtemisUtil.handleFailedHealthCheck(builder, "connection factory", name, LOGGER,
+                ArtemisUtil.handleFailedHealthCheck(builder, "connection factory", name, LOGGER, runtimeConfigs.healthFailLog(),
                         runtimeConfigs.healthFailLogLevel(), e);
             }
         }

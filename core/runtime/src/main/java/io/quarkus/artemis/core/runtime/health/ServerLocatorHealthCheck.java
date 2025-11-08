@@ -51,7 +51,7 @@ public class ServerLocatorHealthCheck implements HealthCheck {
             try (ClientSessionFactory ignored = serverLocators.select(identifier).get().createSessionFactory()) {
                 builder.withData(name, "UP");
             } catch (Exception e) {
-                ArtemisUtil.handleFailedHealthCheck(builder, "server locator", name, LOGGER,
+                ArtemisUtil.handleFailedHealthCheck(builder, "server locator", name, LOGGER, runtimeConfigs.healthFailLog(),
                         runtimeConfigs.healthFailLogLevel(), e);
             }
         }
