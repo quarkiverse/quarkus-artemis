@@ -590,7 +590,7 @@ from(jms("queue:in"))
     .to(jms("queue:out"));
 ----
 
-This also works for an externally defined `ConnectionFactory`, as long as it is defined as `@Default` (remember that link:https://jakarta.ee/specifications/cdi/2.0/cdi-spec-2.0.html#builtin_qualifiers:[all beans that do not have any qualifier annotation are automatically `@Default` beans]).
+This also works for an externally defined `ConnectionFactory`, as long as it is defined as `@Default` (remember that link:https://jakarta.ee/specifications/cdi/2.0/cdi-spec-2.0.html#builtin_qualifiers[all beans that do not have any qualifier annotation are automatically `@Default` beans]).
 
 This mechanism stops working as soon as more than one `ConnectionFactory` bean is defined in the application.
 
