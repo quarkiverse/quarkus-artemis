@@ -28,7 +28,7 @@ public interface ArtemisRuntimeConfigs {
     @ConfigDocMapKey("configuration-name")
     @WithParentName
     @WithDefaults
-    @WithUnnamedKey(ArtemisUtil.DEFAULT_CONFIG_NAME)
+    @WithUnnamedKey(ArtemisConstants.DEFAULT_CONFIG_NAME)
     Map<String, ArtemisRuntimeConfig> configs();
 
     /**

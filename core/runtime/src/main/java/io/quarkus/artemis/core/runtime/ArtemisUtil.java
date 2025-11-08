@@ -17,14 +17,23 @@ import io.quarkus.arc.InstanceHandle;
 import io.smallrye.common.annotation.Identifier;
 
 public class ArtemisUtil {
-    public static final String DEFAULT_CONFIG_NAME = "<default>";
-    public static final String ERROR_ID_KEY = "error-id";
+    /**
+     * @deprecated use {@link ArtemisConstants#DEFAULT_CONFIG_NAME} instead.
+     */
+    @Deprecated(since = "3.10.4", forRemoval = true)
+    public static final String DEFAULT_CONFIG_NAME = ArtemisConstants.DEFAULT_CONFIG_NAME;
+
+    /**
+     * @deprecated use {@link ArtemisConstants#ERROR_ID_KEY} instead.
+     */
+    @Deprecated(since = "3.10.4", forRemoval = true)
+    public static final String ERROR_ID_KEY = ArtemisConstants.ERROR_ID_KEY;
 
     private ArtemisUtil() {
     }
 
     public static boolean isDefault(String configName) {
-        return DEFAULT_CONFIG_NAME.equals(configName);
+        return ArtemisConstants.DEFAULT_CONFIG_NAME.equals(configName);
     }
 
     public static void validateIntegrity(
@@ -87,13 +96,13 @@ public class ArtemisUtil {
             Logger logger, boolean doLog, Logger.Level logLevel, Throwable t) {
         if (doLog && logger.isEnabled(logLevel)) {
             String errorId = UUID.randomUUID().toString();
-            MDC.put(ERROR_ID_KEY, errorId);
+            MDC.put(ArtemisConstants.ERROR_ID_KEY, errorId);
             logger.log(logLevel,
                     "Exception occurred during health check of %s %s (%s %s)".formatted(
-                            connectionKind, name, ERROR_ID_KEY, errorId),
+                            connectionKind, name, ArtemisConstants.ERROR_ID_KEY, errorId),
                     t);
-            MDC.remove(ERROR_ID_KEY);
-            builder.withData(name, "DOWN, see %s %s".formatted(ERROR_ID_KEY, errorId)).down();
+            MDC.remove(ArtemisConstants.ERROR_ID_KEY);
+            builder.withData(name, "DOWN, see %s %s".formatted(ArtemisConstants.ERROR_ID_KEY, errorId)).down();
         } else {
             builder.withData(name, "DOWN").down();
         }
