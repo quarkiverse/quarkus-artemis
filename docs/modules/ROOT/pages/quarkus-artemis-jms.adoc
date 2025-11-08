@@ -390,7 +390,59 @@ TIP: If we want to configure a connection solely through the implicit environmen
 
 Please do not try to configure a configuration purely through environment variables, without having any indication of its presence in the application's configuration file. We specifically rely on the presence of some configuration fragment at build-time to detect configurations.
 
-== Error reporting of failed health checks
+== XA-capable Connection Factories
+
+To get XA-capable connection factories, we can set `quarkus.artemis.xa-enabled` / `quarkus.artemis."named-configuration".xa-enabled` to *true*. We can then inject the corresponding bean as `XAConnectionFactory`.
+
+To use XA transactions and integrate with a transaction manager, we recommend using the link:https://github.com/quarkiverse/quarkus-pooled-jms[quarkus-pooled-jms quarkiverse extension].
+
+== URL as optional configuration
+The `url` configuration property is optional. But in general, without a `url` property, we cannot create a connection. In case of tests with embedded resources or devservices, the corresponding annotation/service injects a url. But if  the application starts up and no `url` property is found, the creation of the bean will throw a `RuntimeException` with a corresponding error message. Notice that this will happen when the bean is created. If the bean is never used (and thus never created), the exception will not occur.
+
+== Health checks [[health_checks]]
+By default, all configurations are added to the health check endpoint when extension `quarkus-smallrye-health` is loaded.
+
+We can disable health checks for all `ServerLocator` s (extension `quarkus-artemis-core`) or `ConnectionFactory` s (extension `quarkus-artemis-jms`) by setting `quarkus.artemis.health.enabled` to *false*.
+
+We can disable health checks for individual configurations by setting `quarkus.artemis.health-exclude` / `quarkus.artemis."named-configuration".health-exclude` to *true*
+
+IMPORTANT: Note that we can only enable health checks through the above configuration if `quarkus.artemis.health.enabled` is *true*. Otherwise, setting `quarkus.artemis.health-exclude` / `quarkus.artemis."named-connection".health-exclude` has no effect.
+
+If we create `ServerLocator`- (extension `quarkus-artemis-core`) or `ConnectionFactory`- (extension `quarkus-artemis-jms`) beans within our application (i.e. outside of this extension), we can include them in the health check by using the link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`Identifier` annotation], e.g.:
+
+.Defining a `ServerLocator`-bean that is picked up automatically by health checks
+[source,java,subs=attributes+]
+----
+public class MyBeanProvider {
+    @ApplicationScoped
+    @Identifier("my-server-locator") // this annotation makes it so the bean is picked up by the health endpoint
+    public ServerLocator mySeverLocator(...) {
+        ServerLocator myServerLocator = ...;
+        ...
+        return myServerLocator;
+    }
+}
+----
+
+.Defining a `ConnectionFactory`-bean that is picked up automatically by health checks
+[source,java,subs=attributes+]
+----
+public class MyBeanProvider {
+    @ApplicationScoped
+    @Identifier("my-connection-factory") // this annotation makes it so the bean is picked up by the health endpoint
+    public ConnectionFactory myConnectionFactory(...) {
+        ConnectionFactory myConnectionFactory = ...;
+        ...
+        return myConnectionFactory;
+    }
+}
+----
+
+If we do not want that beans created within our application is picked up by the health endpoint, we can set `quarkus.artemis.health.external.enabled` to *false*.
+
+IMPORTANT: Note that `ServerLocator` s / `ConnectionFactory` s are only picked up when `quarkus.artemis.health.enabled` is *true*.
+
+=== Error reporting of failed health checks
 
 When a health check for a server locator or connection factory fails, then:
 
@@ -494,58 +546,6 @@ If log level `quarkus.artemis.health.fail.log-level` is not active, then the fai
 }
 ----
 ====
-
-== XA-capable Connection Factories
-
-To get XA-capable connection factories, we can set `quarkus.artemis.xa-enabled` / `quarkus.artemis."named-configuration".xa-enabled` to *true*. We can then inject the corresponding bean as `XAConnectionFactory`.
-
-To use XA transactions and integrate with a transaction manager, we recommend using the link:https://github.com/quarkiverse/quarkus-pooled-jms[quarkus-pooled-jms quarkiverse extension].
-
-== URL as optional configuration
-The `url` configuration property is optional. But in general, without a `url` property, we cannot create a connection. In case of tests with embedded resources or devservices, the corresponding annotation/service injects a url. But if  the application starts up and no `url` property is found, the creation of the bean will throw a `RuntimeException` with a corresponding error message. Notice that this will happen when the bean is created. If the bean is never used (and thus never created), the exception will not occur.
-
-== Health checks [[health_checks]]
-By default, all configurations are added to the health check endpoint when extension `quarkus-smallrye-health` is loaded.
-
-We can disable health checks for all `ServerLocator` s (extension `quarkus-artemis-core`) or `ConnectionFactory` s (extension `quarkus-artemis-jms`) by setting `quarkus.artemis.health.enabled` to *false*.
-
-We can disable health checks for individual configurations by setting `quarkus.artemis.health-exclude` / `quarkus.artemis."named-configuration".health-exclude` to *true*
-
-IMPORTANT: Note that we can only enable health checks through the above configuration if `quarkus.artemis.health.enabled` is *true*. Otherwise, setting `quarkus.artemis.health-exclude` / `quarkus.artemis."named-connection".health-exclude` has no effect.
-
-If we create `ServerLocator`- (extension `quarkus-artemis-core`) or `ConnectionFactory`- (extension `quarkus-artemis-jms`) beans within our application (i.e. outside of this extension), we can include them in the health check by using the link:https://javadoc.io/doc/io.smallrye.common/smallrye-common-annotation/latest/io/smallrye/common/annotation/Identifier.html[`Identifier` annotation], e.g.:
-
-.Defining a `ServerLocator`-bean that is picked up automatically by health checks
-[source,java,subs=attributes+]
-----
-public class MyBeanProvider {
-    @ApplicationScoped
-    @Identifier("my-server-locator") // this annotation makes it so the bean is picked up by the health endpoint
-    public ServerLocator mySeverLocator(...) {
-        ServerLocator myServerLocator = ...;
-        ...
-        return myServerLocator;
-    }
-}
-----
-
-.Defining a `ConnectionFactory`-bean that is picked up automatically by health checks
-[source,java,subs=attributes+]
-----
-public class MyBeanProvider {
-    @ApplicationScoped
-    @Identifier("my-connection-factory") // this annotation makes it so the bean is picked up by the health endpoint
-    public ConnectionFactory myConnectionFactory(...) {
-        ConnectionFactory myConnectionFactory = ...;
-        ...
-        return myConnectionFactory;
-    }
-}
-----
-
-If we do not want that beans created within our application is picked up by the health endpoint, we can set `quarkus.artemis.health.external.enabled` to *false*.
-
-IMPORTANT: Note that `ServerLocator` s / `ConnectionFactory` s are only picked up when `quarkus.artemis.health.enabled` is *true*.
 
 == Camel support
 All connection factories that are configured through `quarkus-artemis-jms` are automatically registered in the camel context, if the program uses camel. This allows us to reference the connection factories by name, e.g.:
