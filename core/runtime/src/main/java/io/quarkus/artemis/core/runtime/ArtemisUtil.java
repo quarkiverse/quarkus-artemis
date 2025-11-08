@@ -84,9 +84,8 @@ public class ArtemisUtil {
     }
 
     public static void handleFailedHealthCheck(HealthCheckResponseBuilder builder, String connectionKind, String name,
-            Logger logger,
-            Logger.Level logLevel, Throwable t) {
-        if (logger.isEnabled(logLevel)) {
+            Logger logger, boolean doLog, Logger.Level logLevel, Throwable t) {
+        if (doLog && logger.isEnabled(logLevel)) {
             String errorId = UUID.randomUUID().toString();
             MDC.put(ERROR_ID_KEY, errorId);
             logger.log(logLevel,

@@ -40,6 +40,13 @@ public interface ArtemisRuntimeConfigs {
     Optional<Boolean> healthExternalEnabled();
 
     /**
+     * Whether failed health checks should report the stack trace via a log.
+     */
+    @WithName("health.fail.log")
+    @WithDefault("true")
+    boolean healthFailLog();
+
+    /**
      * The log level for the stack trace of a failed health check.
      * <p>
      * If the log level is not enabled, the health check will only report {@code "DOWN"}.
