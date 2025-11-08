@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import io.quarkus.artemis.core.runtime.ArtemisUtil;
+import io.quarkus.artemis.core.runtime.ArtemisConstants;
 import io.quarkus.runtime.annotations.ConfigDocIgnore;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
@@ -29,7 +29,7 @@ import io.smallrye.config.WithUnnamedKey;
 @ConfigRoot(phase = ConfigPhase.BUILD_TIME)
 public interface ShadowRuntimeConfigs {
     @WithParentName
-    @WithUnnamedKey(ArtemisUtil.DEFAULT_CONFIG_NAME)
+    @WithUnnamedKey(ArtemisConstants.DEFAULT_CONFIG_NAME)
     @WithDefaults
     @ConfigDocIgnore
     Map<String, ShadowRuntimeConfig> configs();

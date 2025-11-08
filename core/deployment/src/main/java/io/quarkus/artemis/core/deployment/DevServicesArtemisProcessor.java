@@ -14,8 +14,8 @@ import org.testcontainers.utility.DockerImageName;
 
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
+import io.quarkus.artemis.core.runtime.ArtemisConstants;
 import io.quarkus.artemis.core.runtime.ArtemisDevServicesBuildTimeConfig;
-import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.*;
@@ -202,7 +202,7 @@ public class DevServicesArtemisProcessor {
     }
 
     private static String getArtemisPropertyBase(String name) {
-        if (Objects.equals(ArtemisUtil.DEFAULT_CONFIG_NAME, name)) {
+        if (Objects.equals(ArtemisConstants.DEFAULT_CONFIG_NAME, name)) {
             return QUARKUS_ARTEMIS_BASE;
         } else {
             return String.format(QUARKUS_ARTEMIS_NAMED_BASE_TEMPLATE, name);
