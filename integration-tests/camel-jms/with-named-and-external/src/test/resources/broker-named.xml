@@ -6,10 +6,10 @@
         <large-messages-directory>./target/artemis/named/large-messages</large-messages-directory>
 
         <connectors>
-            <connector name="activemq">tcp://localhost:61617</connector>
+            <connector name="activemq">tcp://localhost:0</connector>
         </connectors>
         <acceptors>
-            <acceptor name="activemq">tcp://localhost:61617</acceptor>
+            <acceptor name="activemq">tcp://localhost:0</acceptor>
         </acceptors>
 
         <max-disk-usage>-1</max-disk-usage>
