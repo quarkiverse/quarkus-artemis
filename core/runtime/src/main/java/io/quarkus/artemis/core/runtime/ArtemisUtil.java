@@ -20,13 +20,13 @@ public class ArtemisUtil {
     /**
      * @deprecated use {@link ArtemisConstants#DEFAULT_CONFIG_NAME} instead.
      */
-    @Deprecated(since = "3.10.4", forRemoval = true)
+    @Deprecated(since = "3.11.0", forRemoval = true)
     public static final String DEFAULT_CONFIG_NAME = ArtemisConstants.DEFAULT_CONFIG_NAME;
 
     /**
      * @deprecated use {@link ArtemisConstants#ERROR_ID_KEY} instead.
      */
-    @Deprecated(since = "3.10.4", forRemoval = true)
+    @Deprecated(since = "3.11.0", forRemoval = true)
     public static final String ERROR_ID_KEY = ArtemisConstants.ERROR_ID_KEY;
 
     private ArtemisUtil() {
