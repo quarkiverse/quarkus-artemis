@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.quarkiverse.artemis</groupId>
         <artifactId>quarkus-integration-test-artemis-core-parent</artifactId>
-        <version>999-SNAPSHOT</version>
+        <version>3.11.0</version>
     </parent>
 
     <artifactId>quarkus-integration-test-artemis-core-with-default-dynamic-port</artifactId>
