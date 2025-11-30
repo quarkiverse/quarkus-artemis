@@ -3,7 +3,6 @@ package io.quarkus.artemis.jms.ra.runtime;
 import java.lang.annotation.Annotation;
 import java.util.Set;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
 import jakarta.jms.Connection;
@@ -18,7 +17,6 @@ import io.quarkiverse.ironjacamar.runtime.IronJacamarBuildtimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
 
 @Readiness
-@ApplicationScoped
 public class ConnectionFactoryHealthCheck implements HealthCheck {
     private final Instance<ConnectionFactory> connectionFactories;
     private final Set<String> connectionFactoryNames;
