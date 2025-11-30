@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
 import jakarta.jms.Connection;
@@ -23,7 +22,6 @@ import io.quarkus.artemis.core.runtime.ArtemisUtil;
 import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupport;
 
 @Readiness
-@ApplicationScoped
 public class ConnectionFactoryHealthCheck implements HealthCheck {
     private static final Logger LOGGER = Logger.getLogger(ConnectionFactoryHealthCheck.class);
 
