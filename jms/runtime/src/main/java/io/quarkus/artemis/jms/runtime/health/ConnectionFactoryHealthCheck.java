@@ -10,6 +10,7 @@ import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
 import jakarta.jms.Connection;
 import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Session;
 
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
@@ -49,7 +50,8 @@ public class ConnectionFactoryHealthCheck implements HealthCheck {
         HealthCheckResponseBuilder builder = HealthCheckResponse.named("Artemis JMS health check").up();
         for (String name : connectionFactoryNames) {
             Annotation identifier = ArtemisUtil.toIdentifier(name);
-            try (Connection ignored = connectionFactories.select(identifier).get().createConnection()) {
+            try (Connection connection = connectionFactories.select(identifier).get().createConnection();
+                    Session ignored = connection.createSession()) {
                 builder.withData(name, "UP");
             } catch (Exception e) {
                 ArtemisUtil.handleFailedHealthCheck(builder, "connection factory", name, LOGGER, runtimeConfigs.healthFailLog(),

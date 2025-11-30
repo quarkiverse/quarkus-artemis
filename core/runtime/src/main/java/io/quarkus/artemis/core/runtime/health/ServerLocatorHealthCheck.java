@@ -9,6 +9,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
 
+import org.apache.activemq.artemis.api.core.client.ClientSession;
 import org.apache.activemq.artemis.api.core.client.ClientSessionFactory;
 import org.apache.activemq.artemis.api.core.client.ServerLocator;
 import org.eclipse.microprofile.health.HealthCheck;
@@ -48,7 +49,8 @@ public class ServerLocatorHealthCheck implements HealthCheck {
         HealthCheckResponseBuilder builder = HealthCheckResponse.named("Artemis Core health check").up();
         for (String name : serverLocatorNames) {
             Annotation identifier = ArtemisUtil.toIdentifier(name);
-            try (ClientSessionFactory ignored = serverLocators.select(identifier).get().createSessionFactory()) {
+            try (ClientSessionFactory clientSessionFactory = serverLocators.select(identifier).get().createSessionFactory();
+                    ClientSession ignored = clientSessionFactory.createSession()) {
                 builder.withData(name, "UP");
             } catch (Exception e) {
                 ArtemisUtil.handleFailedHealthCheck(builder, "server locator", name, LOGGER, runtimeConfigs.healthFailLog(),
