@@ -1,9 +1,9 @@
-package io.quarkus.artemis.jms.deployment.health;
+package io.quarkus.artemis.jms.ra.deployment.health;
 
 import java.util.Optional;
 
 import io.quarkus.artemis.core.deployment.health.ArtemisHealthSupportBuildItem;
-import io.quarkus.artemis.jms.runtime.health.ConnectionFactoryHealthCheck;
+import io.quarkus.artemis.jms.ra.runtime.ConnectionFactoryHealthCheck;
 import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.annotations.BuildStep;

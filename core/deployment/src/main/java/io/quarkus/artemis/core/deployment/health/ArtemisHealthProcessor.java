@@ -18,6 +18,7 @@ import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupport;
 import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupportRecorder;
 import io.quarkus.artemis.core.runtime.health.ServerLocatorHealthCheck;
 import io.quarkus.deployment.Capabilities;
+import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -29,7 +30,6 @@ public class ArtemisHealthProcessor {
     @Record(ExecutionTime.STATIC_INIT)
     @BuildStep
     ArtemisHealthSupportBuildItem healthSupport(
-            Capabilities capabilities,
             ArtemisBootstrappedBuildItem bootstrap,
             ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
@@ -60,6 +60,9 @@ public class ArtemisHealthProcessor {
             Optional<ArtemisJmsBuildItem> artemisJms,
             Optional<ArtemisJmsRABuildItem> ra,
             Optional<ArtemisHealthSupportBuildItem> artemisHealthSupportBuildItem) {
+        if (!capabilities.isPresent(Capability.SMALLRYE_HEALTH)) {
+            return null;
+        }
         if (artemisJms.isPresent() || ra.isPresent()) {
             return null;
         }

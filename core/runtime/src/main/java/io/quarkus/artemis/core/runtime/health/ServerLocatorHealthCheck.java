@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
 
@@ -22,7 +21,6 @@ import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
 
 @Readiness
-@ApplicationScoped
 public class ServerLocatorHealthCheck implements HealthCheck {
     private static final Logger LOGGER = Logger.getLogger(ServerLocatorHealthCheck.class);
 
