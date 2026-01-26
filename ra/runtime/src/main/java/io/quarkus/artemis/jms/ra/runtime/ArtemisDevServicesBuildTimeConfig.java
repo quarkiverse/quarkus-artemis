@@ -32,7 +32,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
     /**
      * The ActiveMQ Artemis container image to use.
      * <p>
-     * Defaults to {@code quay.io/arkmq-org/activemq-artemis-broker:artemis.2.44.0}
+     * Defaults to {@code quay.io/arkmq-org/activemq-artemis-broker:artemis.2.50.0}
      */
     Optional<String> imageName();
 
