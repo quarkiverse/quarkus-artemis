@@ -219,6 +219,11 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-jakarta-ra</artifactId>
+                <version>${artemis.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
