@@ -39,11 +39,11 @@
             <artifactId>quarkus-jsonp</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.activemq</groupId>
+            <groupId>org.apache.artemis</groupId>
             <artifactId>artemis-server</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.activemq</groupId>
+            <groupId>org.apache.artemis</groupId>
             <artifactId>artemis-amqp-protocol</artifactId>
         </dependency>
     </dependencies>
