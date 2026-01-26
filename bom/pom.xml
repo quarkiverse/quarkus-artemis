@@ -51,7 +51,7 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-bom</artifactId>
                 <version>${artemis.version}</version>
                 <type>pom</type>
@@ -59,7 +59,7 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-core-client</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
@@ -85,7 +85,7 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-jakarta-client</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
@@ -111,7 +111,7 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-server</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
@@ -154,73 +154,73 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-amqp-protocol</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
                     <exclusion>
-                       <groupId>org.apache.activemq</groupId>
+                       <groupId>org.apache.artemis</groupId>
                        <artifactId>artemis-server</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-hornetq-protocol</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
                     <exclusion>
-                       <groupId>org.apache.activemq</groupId>
+                       <groupId>org.apache.artemis</groupId>
                        <artifactId>artemis-server</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-hqclient-protocol</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
                     <exclusion>
-                       <groupId>org.apache.activemq</groupId>
+                       <groupId>org.apache.artemis</groupId>
                        <artifactId>artemis-server</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-mqtt-protocol</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
                     <exclusion>
-                       <groupId>org.apache.activemq</groupId>
+                       <groupId>org.apache.artemis</groupId>
                        <artifactId>artemis-server</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-openwire-protocol</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
                     <exclusion>
-                       <groupId>org.apache.activemq</groupId>
+                       <groupId>org.apache.artemis</groupId>
                        <artifactId>artemis-server</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-stomp-protocol</artifactId>
                 <version>${artemis.version}</version>
                 <exclusions>
                     <exclusion>
-                       <groupId>org.apache.activemq</groupId>
+                       <groupId>org.apache.artemis</groupId>
                        <artifactId>artemis-server</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.apache.activemq</groupId>
+                <groupId>org.apache.artemis</groupId>
                 <artifactId>artemis-jakarta-ra</artifactId>
                 <version>${artemis.version}</version>
             </dependency>
