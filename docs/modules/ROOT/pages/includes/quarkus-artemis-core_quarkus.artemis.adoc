@@ -229,7 +229,7 @@ endif::add-copy-button-to-config-props[]
 --
 The ActiveMQ Artemis container image to use.
 
-Defaults to `quay.io/arkmq-org/activemq-artemis-broker:artemis.2.44.0`
+Defaults to `quay.io/arkmq-org/activemq-artemis-broker:artemis.2.50.0`
 
 
 ifdef::add-copy-button-to-env-var[]
@@ -536,6 +536,1202 @@ Environment variable: `+++QUARKUS_ARTEMIS_HEALTH_EXCLUDE+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-consumer-window-size]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-consumer-window-size[`quarkus.artemis.consumer-window-size`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.consumer-window-size+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".consumer-window-size`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".consumer-window-size+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The window size for consumer flow control in bytes.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CONSUMER_WINDOW_SIZE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CONSUMER_WINDOW_SIZE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-consumer-max-rate]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-consumer-max-rate[`quarkus.artemis.consumer-max-rate`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.consumer-max-rate+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".consumer-max-rate`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".consumer-max-rate+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The maximum rate of messages consumed per second.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CONSUMER_MAX_RATE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CONSUMER_MAX_RATE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-producer-window-size]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-producer-window-size[`quarkus.artemis.producer-window-size`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.producer-window-size+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".producer-window-size`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".producer-window-size+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The window size for producer flow control in bytes.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_PRODUCER_WINDOW_SIZE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_PRODUCER_WINDOW_SIZE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-producer-max-rate]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-producer-max-rate[`quarkus.artemis.producer-max-rate`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.producer-max-rate+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".producer-max-rate`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".producer-max-rate+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The maximum rate of messages produced per second.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_PRODUCER_MAX_RATE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_PRODUCER_MAX_RATE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-confirmation-window-size]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-confirmation-window-size[`quarkus.artemis.confirmation-window-size`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.confirmation-window-size+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".confirmation-window-size`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".confirmation-window-size+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The window size for confirmation of sent messages in bytes.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CONFIRMATION_WINDOW_SIZE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CONFIRMATION_WINDOW_SIZE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-min-large-message-size]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-min-large-message-size[`quarkus.artemis.min-large-message-size`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.min-large-message-size+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".min-large-message-size`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".min-large-message-size+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The threshold in bytes for treating a message as a large message.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_MIN_LARGE_MESSAGE_SIZE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_MIN_LARGE_MESSAGE_SIZE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-compress-large-message]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-compress-large-message[`quarkus.artemis.compress-large-message`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.compress-large-message+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".compress-large-message`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".compress-large-message+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Whether to compress large messages sent to the server.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_COMPRESS_LARGE_MESSAGE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_COMPRESS_LARGE_MESSAGE+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-compression-level]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-compression-level[`quarkus.artemis.compression-level`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.compression-level+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".compression-level`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".compression-level+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The compression level to use (0-9).
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_COMPRESSION_LEVEL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_COMPRESSION_LEVEL+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-cache-large-messages-client]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-cache-large-messages-client[`quarkus.artemis.cache-large-messages-client`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.cache-large-messages-client+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".cache-large-messages-client`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".cache-large-messages-client+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Whether to cache large messages on the client side.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CACHE_LARGE_MESSAGES_CLIENT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CACHE_LARGE_MESSAGES_CLIENT+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-client-failure-check-period]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-client-failure-check-period[`quarkus.artemis.client-failure-check-period`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.client-failure-check-period+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".client-failure-check-period`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".client-failure-check-period+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The frequency (ms) to check for client failure.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CLIENT_FAILURE_CHECK_PERIOD+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CLIENT_FAILURE_CHECK_PERIOD+++`
+endif::add-copy-button-to-env-var[]
+--
+|long
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-connection-ttl]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-connection-ttl[`quarkus.artemis.connection-ttl`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.connection-ttl+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".connection-ttl`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".connection-ttl+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+How long (ms) to keep a connection alive without receiving a packet.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CONNECTION_TTL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CONNECTION_TTL+++`
+endif::add-copy-button-to-env-var[]
+--
+|long
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-call-timeout]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-call-timeout[`quarkus.artemis.call-timeout`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.call-timeout+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".call-timeout`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".call-timeout+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Total time (ms) to wait for a blocking call to complete.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CALL_TIMEOUT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CALL_TIMEOUT+++`
+endif::add-copy-button-to-env-var[]
+--
+|long
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-call-failover-timeout]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-call-failover-timeout[`quarkus.artemis.call-failover-timeout`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.call-failover-timeout+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".call-failover-timeout`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".call-failover-timeout+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Total time (ms) to wait for a call during failover.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CALL_FAILOVER_TIMEOUT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CALL_FAILOVER_TIMEOUT+++`
+endif::add-copy-button-to-env-var[]
+--
+|long
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-use-global-pools]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-use-global-pools[`quarkus.artemis.use-global-pools`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.use-global-pools+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".use-global-pools`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".use-global-pools+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Whether to use global thread pools.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_USE_GLOBAL_POOLS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_USE_GLOBAL_POOLS+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-scheduled-thread-pool-max-size]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-scheduled-thread-pool-max-size[`quarkus.artemis.scheduled-thread-pool-max-size`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.scheduled-thread-pool-max-size+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".scheduled-thread-pool-max-size`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".scheduled-thread-pool-max-size+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The maximum size of the scheduled thread pool.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_SCHEDULED_THREAD_POOL_MAX_SIZE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_SCHEDULED_THREAD_POOL_MAX_SIZE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-thread-pool-max-size]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-thread-pool-max-size[`quarkus.artemis.thread-pool-max-size`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.thread-pool-max-size+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".thread-pool-max-size`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".thread-pool-max-size+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The maximum size of the general purpose thread pool.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_THREAD_POOL_MAX_SIZE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_THREAD_POOL_MAX_SIZE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-reconnect-attempts]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-reconnect-attempts[`quarkus.artemis.reconnect-attempts`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.reconnect-attempts+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".reconnect-attempts`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".reconnect-attempts+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Maximum number of reconnection attempts. Use -1 for infinite.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_RECONNECT_ATTEMPTS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_RECONNECT_ATTEMPTS+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-initial-connect-attempts]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-initial-connect-attempts[`quarkus.artemis.initial-connect-attempts`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.initial-connect-attempts+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".initial-connect-attempts`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".initial-connect-attempts+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Reconnection attempts for the initial connection.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_INITIAL_CONNECT_ATTEMPTS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_INITIAL_CONNECT_ATTEMPTS+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-failover-attempts]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-failover-attempts[`quarkus.artemis.failover-attempts`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.failover-attempts+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".failover-attempts`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".failover-attempts+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Maximum number of failover attempts.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_FAILOVER_ATTEMPTS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_FAILOVER_ATTEMPTS+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-retry-interval]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-retry-interval[`quarkus.artemis.retry-interval`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.retry-interval+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".retry-interval`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".retry-interval+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Interval (ms) between reconnection attempts.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_RETRY_INTERVAL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_RETRY_INTERVAL+++`
+endif::add-copy-button-to-env-var[]
+--
+|long
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-retry-interval-multiplier]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-retry-interval-multiplier[`quarkus.artemis.retry-interval-multiplier`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.retry-interval-multiplier+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".retry-interval-multiplier`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".retry-interval-multiplier+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Multiplier for exponential backoff on retries.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_RETRY_INTERVAL_MULTIPLIER+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_RETRY_INTERVAL_MULTIPLIER+++`
+endif::add-copy-button-to-env-var[]
+--
+|double
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-max-retry-interval]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-max-retry-interval[`quarkus.artemis.max-retry-interval`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.max-retry-interval+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".max-retry-interval`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".max-retry-interval+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Maximum interval (ms) between retries.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_MAX_RETRY_INTERVAL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_MAX_RETRY_INTERVAL+++`
+endif::add-copy-button-to-env-var[]
+--
+|long
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-failover-on-initial-connection]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-failover-on-initial-connection[`quarkus.artemis.failover-on-initial-connection`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.failover-on-initial-connection+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".failover-on-initial-connection`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".failover-on-initial-connection+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Whether to failover to backup on initial connection.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_FAILOVER_ON_INITIAL_CONNECTION+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_FAILOVER_ON_INITIAL_CONNECTION+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-auto-group]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-auto-group[`quarkus.artemis.auto-group`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.auto-group+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".auto-group`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".auto-group+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Whether to automatically group messages.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_AUTO_GROUP+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_AUTO_GROUP+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-group-id]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-group-id[`quarkus.artemis.group-id`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.group-id+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".group-id`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".group-id+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The group ID to use for messages.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_GROUP_ID+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_GROUP_ID+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-block-on-acknowledge]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-block-on-acknowledge[`quarkus.artemis.block-on-acknowledge`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.block-on-acknowledge+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".block-on-acknowledge`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".block-on-acknowledge+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Whether consumers block while sending acknowledgments.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_BLOCK_ON_ACKNOWLEDGE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_BLOCK_ON_ACKNOWLEDGE+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-block-on-durable-send]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-block-on-durable-send[`quarkus.artemis.block-on-durable-send`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.block-on-durable-send+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".block-on-durable-send`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".block-on-durable-send+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Whether producers block when sending durable messages.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_BLOCK_ON_DURABLE_SEND+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_BLOCK_ON_DURABLE_SEND+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-block-on-non-durable-send]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-block-on-non-durable-send[`quarkus.artemis.block-on-non-durable-send`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.block-on-non-durable-send+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".block-on-non-durable-send`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".block-on-non-durable-send+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Whether producers block when sending non-durable messages.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_BLOCK_ON_NON_DURABLE_SEND+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_BLOCK_ON_NON_DURABLE_SEND+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-pre-acknowledge]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-pre-acknowledge[`quarkus.artemis.pre-acknowledge`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.pre-acknowledge+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".pre-acknowledge`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".pre-acknowledge+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Whether messages are pre-acknowledged on the server.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_PRE_ACKNOWLEDGE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_PRE_ACKNOWLEDGE+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-initial-message-packet-size]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-initial-message-packet-size[`quarkus.artemis.initial-message-packet-size`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.initial-message-packet-size+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".initial-message-packet-size`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".initial-message-packet-size+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+The initial size of message packets in bytes.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_INITIAL_MESSAGE_PACKET_SIZE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_INITIAL_MESSAGE_PACKET_SIZE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-ack-batch-size]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-ack-batch-size[`quarkus.artemis.ack-batch-size`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.ack-batch-size+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".ack-batch-size`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".ack-batch-size+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Core Only: The acknowledgments batch size.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_ACK_BATCH_SIZE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_ACK_BATCH_SIZE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-on-message-close-timeout]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-on-message-close-timeout[`quarkus.artemis.on-message-close-timeout`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.on-message-close-timeout+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".on-message-close-timeout`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".on-message-close-timeout+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Core Only: Timeout (ms) for onMessage completion when closing consumers.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_ON_MESSAGE_CLOSE_TIMEOUT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_ON_MESSAGE_CLOSE_TIMEOUT+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-use-topology-for-load-balancing]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-use-topology-for-load-balancing[`quarkus.artemis.use-topology-for-load-balancing`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.use-topology-for-load-balancing+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".use-topology-for-load-balancing`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".use-topology-for-load-balancing+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Core Only: Whether to use cluster topology for load balancing.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_USE_TOPOLOGY_FOR_LOAD_BALANCING+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_USE_TOPOLOGY_FOR_LOAD_BALANCING+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-client-id]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-client-id[`quarkus.artemis.client-id`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.client-id+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".client-id`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".client-id+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+JMS Only: The client ID for the connection.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CLIENT_ID+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CLIENT_ID+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-enable-shared-client-id]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-enable-shared-client-id[`quarkus.artemis.enable-shared-client-id`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.enable-shared-client-id+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".enable-shared-client-id`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".enable-shared-client-id+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+JMS Only: Whether multiple connections can share the same client ID.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_ENABLE_SHARED_CLIENT_ID+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_ENABLE_SHARED_CLIENT_ID+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-enable1x-prefixes]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-enable1x-prefixes[`quarkus.artemis.enable1x-prefixes`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.enable1x-prefixes+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".enable1x-prefixes`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".enable1x-prefixes+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+JMS Only: Whether to use 1.x message prefixes (jms.queue.).
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_ENABLE1X_PREFIXES+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_ENABLE1X_PREFIXES+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-ignore-jta]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-ignore-jta[`quarkus.artemis.ignore-jta`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.ignore-jta+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".ignore-jta`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".ignore-jta+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+JMS Only: Whether to ignore JTA for session management.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_IGNORE_JTA+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_IGNORE_JTA+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-dups-ok-batch-size]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-dups-ok-batch-size[`quarkus.artemis.dups-ok-batch-size`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.dups-ok-batch-size+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".dups-ok-batch-size`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".dups-ok-batch-size+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+JMS Only: The batch size for DUPS_OK_ACKNOWLEDGE mode.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DUPS_OK_BATCH_SIZE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DUPS_OK_BATCH_SIZE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-transaction-batch-size]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-transaction-batch-size[`quarkus.artemis.transaction-batch-size`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.transaction-batch-size+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".transaction-batch-size`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".transaction-batch-size+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+JMS Only: The batch size for transacted sessions in bytes.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_TRANSACTION_BATCH_SIZE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_TRANSACTION_BATCH_SIZE+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-cache-destinations]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-cache-destinations[`quarkus.artemis.cache-destinations`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.cache-destinations+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".cache-destinations`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".cache-destinations+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+JMS Only: Whether to cache JMS destinations on the client.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CACHE_DESTINATIONS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CACHE_DESTINATIONS+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-deserialization-white-list]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-deserialization-white-list[`quarkus.artemis.deserialization-white-list`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.deserialization-white-list+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".deserialization-white-list`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".deserialization-white-list+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+JMS Only: Allowed classes for ObjectMessage deserialization.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DESERIALIZATION_WHITE_LIST+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DESERIALIZATION_WHITE_LIST+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-deserialization-black-list]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-deserialization-black-list[`quarkus.artemis.deserialization-black-list`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.deserialization-black-list+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".deserialization-black-list`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".deserialization-black-list+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+JMS Only: Forbidden classes for ObjectMessage deserialization.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DESERIALIZATION_BLACK_LIST+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DESERIALIZATION_BLACK_LIST+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-incoming-interceptor-list]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-incoming-interceptor-list[`quarkus.artemis.incoming-interceptor-list`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.incoming-interceptor-list+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".incoming-interceptor-list`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".incoming-interceptor-list+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Comma-separated list of incoming interceptors.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_INCOMING_INTERCEPTOR_LIST+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_INCOMING_INTERCEPTOR_LIST+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-outgoing-interceptor-list]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-outgoing-interceptor-list[`quarkus.artemis.outgoing-interceptor-list`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.outgoing-interceptor-list+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".outgoing-interceptor-list`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".outgoing-interceptor-list+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Comma-separated list of outgoing interceptors.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_OUTGOING_INTERCEPTOR_LIST+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_OUTGOING_INTERCEPTOR_LIST+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-connection-load-balancing-policy-class-name]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-connection-load-balancing-policy-class-name[`quarkus.artemis.connection-load-balancing-policy-class-name`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.connection-load-balancing-policy-class-name+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".connection-load-balancing-policy-class-name`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".connection-load-balancing-policy-class-name+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Class name of the connection load balancing policy.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_CONNECTION_LOAD_BALANCING_POLICY_CLASS_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_CONNECTION_LOAD_BALANCING_POLICY_CLASS_NAME+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a| [[quarkus-artemis-core_quarkus-artemis-protocol-manager-factory-str]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-protocol-manager-factory-str[`quarkus.artemis.protocol-manager-factory-str`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.protocol-manager-factory-str+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".protocol-manager-factory-str`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".protocol-manager-factory-str+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Class name of the protocol manager factory.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_PROTOCOL_MANAGER_FACTORY_STR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_PROTOCOL_MANAGER_FACTORY_STR+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
 |
 
 
