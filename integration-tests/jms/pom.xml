@@ -19,6 +19,7 @@
         <module>with-default-and-external</module>
         <module>with-default-change-url</module>
         <module>with-external</module>
+        <module>with-factory-customization</module>
         <module>without-default</module>
     </modules>
 
