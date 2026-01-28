@@ -20,6 +20,7 @@
         <module>with-default-change-url</module>
         <module>with-default-dynamic-port</module>
         <module>with-external</module>
+        <module>with-locator-customization</module>
         <module>without-default</module>
     </modules>
 
