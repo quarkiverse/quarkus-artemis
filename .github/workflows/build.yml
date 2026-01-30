@@ -30,6 +30,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  JAVA_VERSION: 25
+
 jobs:
   upload-pr-number:
     runs-on: ubuntu-latest
@@ -112,10 +115,10 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
-      - name: Set up JDK 21
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
         id: setup
@@ -150,10 +153,10 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
-      - name: Set up JDK 21
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
 
@@ -202,16 +205,16 @@ jobs:
       - name: Get Maven Cache
         uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Set up GraalVM 21
+      - name: Set up GraalVM ${{ env.JAVA_VERSION }}
         uses: graalvm/setup-graalvm@v1
         with:
           distribution: 'mandrel'
           version: 'latest'
-          java-version: 21
+          java-version: ${{ env.JAVA_VERSION }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Test
