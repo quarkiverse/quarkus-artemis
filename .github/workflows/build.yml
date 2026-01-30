@@ -33,6 +33,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  JAVA_VERSION: 25
+
 jobs:
   generate-matrix:
     runs-on: ubuntu-latest
@@ -94,10 +97,10 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v6
 
-      - name: Set up JDK 21
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v5
         with:
-          java-version: 21
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
         id: setup
@@ -133,10 +136,10 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v6
 
-      - name: Set up JDK 21
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v5
         with:
-          java-version: 21
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
 
@@ -182,10 +185,10 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v6
 
-      - name: Set up JDK 21
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v5
         with:
-          java-version: 21
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
 
@@ -200,7 +203,7 @@ jobs:
             --define native \
             --define native.surefire.skip \
             --define quarkus.native.container-build \
-            --define quarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 \
+            --define quarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-${{ env.JAVA_VERSION }} \
             --projects \
               "core/deployment, \
               jms/deployment, \
