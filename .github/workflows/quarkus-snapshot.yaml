@@ -17,4 +17,4 @@ jobs:
     secrets: inherit
     with:
       ecosystem_ci_repo_path: quarkiverse-artemis
-      java_version: 21
+      java_version: 25
