@@ -1,6 +1,6 @@
 # Quarkus Artemis
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Version](https://img.shields.io/maven-central/v/io.quarkiverse.artemis/quarkus-artemis-jms?logo=apache-maven&style=flat-square)](https://search.maven.org/artifact/io.quarkiverse.artemis/quarkus-artemis-jms)
@@ -45,6 +45,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/timonzi"><img src="https://avatars.githubusercontent.com/u/47322311?v=4?s=100" width="100px;" alt="timonzi"/><br /><sub><b>timonzi</b></sub></a><br /><a href="#ideas-timonzi" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/YuuichiMizuoka"><img src="https://avatars.githubusercontent.com/u/32476209?v=4?s=100" width="100px;" alt="YuuichiMizuoka"/><br /><sub><b>YuuichiMizuoka</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=YuuichiMizuoka" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/alex-kovalenko1982"><img src="https://avatars.githubusercontent.com/u/69167029?v=4?s=100" width="100px;" alt="Alex Kovalenko"/><br /><sub><b>Alex Kovalenko</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=alex-kovalenko1982" title="Code">💻</a> <a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=alex-kovalenko1982" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/mikethecalamity"><img src="https://avatars.githubusercontent.com/u/4815011?v=4?s=100" width="100px;" alt="Mike Weber"/><br /><sub><b>Mike Weber</b></sub></a><br /><a href="https://github.com/quarkiverse/quarkus-artemis/commits?author=mikethecalamity" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
