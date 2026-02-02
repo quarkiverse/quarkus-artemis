@@ -128,6 +128,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "mikethecalamity",
+      "name": "Mike Weber",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4815011?v=4",
+      "profile": "https://github.com/mikethecalamity",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
