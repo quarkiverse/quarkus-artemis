@@ -244,12 +244,12 @@ public interface ArtemisRuntimeConfig {
     /**
      * JMS Only: Allowed classes for ObjectMessage deserialization.
      */
-    Optional<String> deserializationWhiteList();
+    Optional<String> deserializationAllowList();
 
     /**
      * JMS Only: Forbidden classes for ObjectMessage deserialization.
      */
-    Optional<String> deserializationBlackList();
+    Optional<String> deserializationDenyList();
 
     // --- Interceptors & Policies ---
 
