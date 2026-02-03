@@ -1578,15 +1578,15 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |
 
-a| [[quarkus-artemis-core_quarkus-artemis-deserialization-white-list]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-deserialization-white-list[`quarkus.artemis.deserialization-white-list`]##
+a| [[quarkus-artemis-core_quarkus-artemis-deserialization-allow-list]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-deserialization-allow-list[`quarkus.artemis.deserialization-allow-list`]##
 ifdef::add-copy-button-to-config-props[]
-config_property_copy_button:+++quarkus.artemis.deserialization-white-list+++[]
+config_property_copy_button:+++quarkus.artemis.deserialization-allow-list+++[]
 endif::add-copy-button-to-config-props[]
 
 
-`quarkus.artemis."configuration-name".deserialization-white-list`
+`quarkus.artemis."configuration-name".deserialization-allow-list`
 ifdef::add-copy-button-to-config-props[]
-config_property_copy_button:+++quarkus.artemis."configuration-name".deserialization-white-list+++[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".deserialization-allow-list+++[]
 endif::add-copy-button-to-config-props[]
 
 [.description]
@@ -1595,24 +1595,24 @@ JMS Only: Allowed classes for ObjectMessage deserialization.
 
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DESERIALIZATION_WHITE_LIST+++[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DESERIALIZATION_ALLOW_LIST+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++QUARKUS_ARTEMIS_DESERIALIZATION_WHITE_LIST+++`
+Environment variable: `+++QUARKUS_ARTEMIS_DESERIALIZATION_ALLOW_LIST+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
 |
 
-a| [[quarkus-artemis-core_quarkus-artemis-deserialization-black-list]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-deserialization-black-list[`quarkus.artemis.deserialization-black-list`]##
+a| [[quarkus-artemis-core_quarkus-artemis-deserialization-deny-list]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-deserialization-deny-list[`quarkus.artemis.deserialization-deny-list`]##
 ifdef::add-copy-button-to-config-props[]
-config_property_copy_button:+++quarkus.artemis.deserialization-black-list+++[]
+config_property_copy_button:+++quarkus.artemis.deserialization-deny-list+++[]
 endif::add-copy-button-to-config-props[]
 
 
-`quarkus.artemis."configuration-name".deserialization-black-list`
+`quarkus.artemis."configuration-name".deserialization-deny-list`
 ifdef::add-copy-button-to-config-props[]
-config_property_copy_button:+++quarkus.artemis."configuration-name".deserialization-black-list+++[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".deserialization-deny-list+++[]
 endif::add-copy-button-to-config-props[]
 
 [.description]
@@ -1621,10 +1621,10 @@ JMS Only: Forbidden classes for ObjectMessage deserialization.
 
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DESERIALIZATION_BLACK_LIST+++[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DESERIALIZATION_DENY_LIST+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++QUARKUS_ARTEMIS_DESERIALIZATION_BLACK_LIST+++`
+Environment variable: `+++QUARKUS_ARTEMIS_DESERIALIZATION_DENY_LIST+++`
 endif::add-copy-button-to-env-var[]
 --
 |string

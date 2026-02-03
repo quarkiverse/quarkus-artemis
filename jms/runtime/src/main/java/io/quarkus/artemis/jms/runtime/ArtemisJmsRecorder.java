@@ -106,11 +106,12 @@ public class ArtemisJmsRecorder {
         runtimeConfig.cacheDestinations().ifPresent(connectionFactory::setCacheDestinations);
 
         // --- Security & Policy ---
-        runtimeConfig.deserializationWhiteList().ifPresent(connectionFactory::setDeserializationWhiteList);
-        runtimeConfig.deserializationBlackList().ifPresent(connectionFactory::setDeserializationBlackList);
+        runtimeConfig.deserializationAllowList().ifPresent(connectionFactory::setDeserializationAllowList);
+        runtimeConfig.deserializationDenyList().ifPresent(connectionFactory::setDeserializationDenyList);
         runtimeConfig.incomingInterceptorList().ifPresent(connectionFactory::setIncomingInterceptorList);
         runtimeConfig.outgoingInterceptorList().ifPresent(connectionFactory::setOutgoingInterceptorList);
-        runtimeConfig.connectionLoadBalancingPolicyClassName().ifPresent(connectionFactory::setConnectionLoadBalancingPolicyClassName);
+        runtimeConfig.connectionLoadBalancingPolicyClassName()
+                .ifPresent(connectionFactory::setConnectionLoadBalancingPolicyClassName);
         runtimeConfig.protocolManagerFactoryStr().ifPresent(connectionFactory::setProtocolManagerFactoryStr);
 
         // --- Compatibility & Identification ---
