@@ -44,77 +44,82 @@ public class ArtemisJmsRecorder {
             Function<ConnectionFactory, Object> wrapper) {
         String url = runtimeConfig.getUrl();
         if (url != null) {
-            ActiveMQConnectionFactory cf;
             if (isXaEnabled) {
-                cf = (ActiveMQConnectionFactory) wrapper.apply(new ActiveMQXAConnectionFactory(
-                        url,
-                        runtimeConfig.getUsername(),
-                        runtimeConfig.getPassword()));
+                return (ConnectionFactory) wrapper.apply(applyConfig(
+                        new ActiveMQXAConnectionFactory(
+                                url,
+                                runtimeConfig.getUsername(),
+                                runtimeConfig.getPassword()),
+                        runtimeConfig));
             } else {
-                cf = (ActiveMQConnectionFactory) wrapper.apply(new ActiveMQConnectionFactory(
-                        url,
-                        runtimeConfig.getUsername(),
-                        runtimeConfig.getPassword()));
+                return (ConnectionFactory) wrapper.apply(applyConfig(
+                        new ActiveMQConnectionFactory(
+                                url,
+                                runtimeConfig.getUsername(),
+                                runtimeConfig.getPassword()),
+                        runtimeConfig));
             }
-
-            // --- Flow Control ---
-            runtimeConfig.consumerWindowSize().ifPresent(cf::setConsumerWindowSize);
-            runtimeConfig.consumerMaxRate().ifPresent(cf::setConsumerMaxRate);
-            runtimeConfig.producerWindowSize().ifPresent(cf::setProducerWindowSize);
-            runtimeConfig.producerMaxRate().ifPresent(cf::setProducerMaxRate);
-            runtimeConfig.confirmationWindowSize().ifPresent(cf::setConfirmationWindowSize);
-            runtimeConfig.minLargeMessageSize().ifPresent(cf::setMinLargeMessageSize);
-            runtimeConfig.compressLargeMessage().ifPresent(cf::setCompressLargeMessage);
-            runtimeConfig.compressionLevel().ifPresent(cf::setCompressionLevel);
-            runtimeConfig.cacheLargeMessagesClient().ifPresent(cf::setCacheLargeMessagesClient);
-
-            // --- Connectivity & Timeouts ---
-            runtimeConfig.clientFailureCheckPeriod().ifPresent(cf::setClientFailureCheckPeriod);
-            runtimeConfig.connectionTtl().ifPresent(cf::setConnectionTTL);
-            runtimeConfig.callTimeout().ifPresent(cf::setCallTimeout);
-            runtimeConfig.callFailoverTimeout().ifPresent(cf::setCallFailoverTimeout);
-            runtimeConfig.useGlobalPools().ifPresent(cf::setUseGlobalPools);
-            runtimeConfig.scheduledThreadPoolMaxSize().ifPresent(cf::setScheduledThreadPoolMaxSize);
-            runtimeConfig.threadPoolMaxSize().ifPresent(cf::setThreadPoolMaxSize);
-
-            // --- Retries & Failover ---
-            runtimeConfig.reconnectAttempts().ifPresent(cf::setReconnectAttempts);
-            runtimeConfig.initialConnectAttempts().ifPresent(cf::setInitialConnectAttempts);
-            runtimeConfig.retryInterval().ifPresent(cf::setRetryInterval);
-            runtimeConfig.retryIntervalMultiplier().ifPresent(cf::setRetryIntervalMultiplier);
-            runtimeConfig.maxRetryInterval().ifPresent(cf::setMaxRetryInterval);
-            runtimeConfig.failoverOnInitialConnection().ifPresent(cf::setFailoverOnInitialConnection);
-
-            // --- Behavior & Grouping ---
-            runtimeConfig.autoGroup().ifPresent(cf::setAutoGroup);
-            runtimeConfig.groupID().ifPresent(cf::setGroupID);
-            runtimeConfig.blockOnAcknowledge().ifPresent(cf::setBlockOnAcknowledge);
-            runtimeConfig.blockOnDurableSend().ifPresent(cf::setBlockOnDurableSend);
-            runtimeConfig.blockOnNonDurableSend().ifPresent(cf::setBlockOnNonDurableSend);
-            runtimeConfig.preAcknowledge().ifPresent(cf::setPreAcknowledge);
-            runtimeConfig.dupsOKBatchSize().ifPresent(cf::setDupsOKBatchSize);
-            runtimeConfig.transactionBatchSize().ifPresent(cf::setTransactionBatchSize);
-            runtimeConfig.cacheDestinations().ifPresent(cf::setCacheDestinations);
-
-            // --- Security & Policy ---
-            runtimeConfig.deserializationWhiteList().ifPresent(cf::setDeserializationWhiteList);
-            runtimeConfig.deserializationBlackList().ifPresent(cf::setDeserializationBlackList);
-            runtimeConfig.incomingInterceptorList().ifPresent(cf::setIncomingInterceptorList);
-            runtimeConfig.outgoingInterceptorList().ifPresent(cf::setOutgoingInterceptorList);
-            runtimeConfig.connectionLoadBalancingPolicyClassName().ifPresent(cf::setConnectionLoadBalancingPolicyClassName);
-            runtimeConfig.protocolManagerFactoryStr().ifPresent(cf::setProtocolManagerFactoryStr);
-
-            // --- Compatibility & Identification ---
-            runtimeConfig.clientID().ifPresent(cf::setClientID);
-            runtimeConfig.enableSharedClientID().ifPresent(cf::setEnableSharedClientID);
-            runtimeConfig.enable1xPrefixes().ifPresent(cf::setEnable1xPrefixes);
-            runtimeConfig.ignoreJTA().ifPresent(cf::setIgnoreJTA);
-            runtimeConfig.useTopologyForLoadBalancing().ifPresent(cf::setUseTopologyForLoadBalancing);
-            runtimeConfig.initialMessagePacketSize().ifPresent(cf::setInitialMessagePacketSize);
-
-            return cf;
         } else {
             return null;
         }
+    }
+
+    private static <T extends ActiveMQConnectionFactory> T applyConfig(T connectionFactory,
+            ArtemisRuntimeConfig runtimeConfig) {
+        // --- Flow Control ---
+        runtimeConfig.consumerWindowSize().ifPresent(connectionFactory::setConsumerWindowSize);
+        runtimeConfig.consumerMaxRate().ifPresent(connectionFactory::setConsumerMaxRate);
+        runtimeConfig.producerWindowSize().ifPresent(connectionFactory::setProducerWindowSize);
+        runtimeConfig.producerMaxRate().ifPresent(connectionFactory::setProducerMaxRate);
+        runtimeConfig.confirmationWindowSize().ifPresent(connectionFactory::setConfirmationWindowSize);
+        runtimeConfig.minLargeMessageSize().ifPresent(connectionFactory::setMinLargeMessageSize);
+        runtimeConfig.compressLargeMessage().ifPresent(connectionFactory::setCompressLargeMessage);
+        runtimeConfig.compressionLevel().ifPresent(connectionFactory::setCompressionLevel);
+        runtimeConfig.cacheLargeMessagesClient().ifPresent(connectionFactory::setCacheLargeMessagesClient);
+
+        // --- Connectivity & Timeouts ---
+        runtimeConfig.clientFailureCheckPeriod().ifPresent(connectionFactory::setClientFailureCheckPeriod);
+        runtimeConfig.connectionTtl().ifPresent(connectionFactory::setConnectionTTL);
+        runtimeConfig.callTimeout().ifPresent(connectionFactory::setCallTimeout);
+        runtimeConfig.callFailoverTimeout().ifPresent(connectionFactory::setCallFailoverTimeout);
+        runtimeConfig.useGlobalPools().ifPresent(connectionFactory::setUseGlobalPools);
+        runtimeConfig.scheduledThreadPoolMaxSize().ifPresent(connectionFactory::setScheduledThreadPoolMaxSize);
+        runtimeConfig.threadPoolMaxSize().ifPresent(connectionFactory::setThreadPoolMaxSize);
+
+        // --- Retries & Failover ---
+        runtimeConfig.reconnectAttempts().ifPresent(connectionFactory::setReconnectAttempts);
+        runtimeConfig.initialConnectAttempts().ifPresent(connectionFactory::setInitialConnectAttempts);
+        runtimeConfig.retryInterval().ifPresent(connectionFactory::setRetryInterval);
+        runtimeConfig.retryIntervalMultiplier().ifPresent(connectionFactory::setRetryIntervalMultiplier);
+        runtimeConfig.maxRetryInterval().ifPresent(connectionFactory::setMaxRetryInterval);
+        runtimeConfig.failoverOnInitialConnection().ifPresent(connectionFactory::setFailoverOnInitialConnection);
+
+        // --- Behavior & Grouping ---
+        runtimeConfig.autoGroup().ifPresent(connectionFactory::setAutoGroup);
+        runtimeConfig.groupID().ifPresent(connectionFactory::setGroupID);
+        runtimeConfig.blockOnAcknowledge().ifPresent(connectionFactory::setBlockOnAcknowledge);
+        runtimeConfig.blockOnDurableSend().ifPresent(connectionFactory::setBlockOnDurableSend);
+        runtimeConfig.blockOnNonDurableSend().ifPresent(connectionFactory::setBlockOnNonDurableSend);
+        runtimeConfig.preAcknowledge().ifPresent(connectionFactory::setPreAcknowledge);
+        runtimeConfig.dupsOKBatchSize().ifPresent(connectionFactory::setDupsOKBatchSize);
+        runtimeConfig.transactionBatchSize().ifPresent(connectionFactory::setTransactionBatchSize);
+        runtimeConfig.cacheDestinations().ifPresent(connectionFactory::setCacheDestinations);
+
+        // --- Security & Policy ---
+        runtimeConfig.deserializationWhiteList().ifPresent(connectionFactory::setDeserializationWhiteList);
+        runtimeConfig.deserializationBlackList().ifPresent(connectionFactory::setDeserializationBlackList);
+        runtimeConfig.incomingInterceptorList().ifPresent(connectionFactory::setIncomingInterceptorList);
+        runtimeConfig.outgoingInterceptorList().ifPresent(connectionFactory::setOutgoingInterceptorList);
+        runtimeConfig.connectionLoadBalancingPolicyClassName().ifPresent(connectionFactory::setConnectionLoadBalancingPolicyClassName);
+        runtimeConfig.protocolManagerFactoryStr().ifPresent(connectionFactory::setProtocolManagerFactoryStr);
+
+        // --- Compatibility & Identification ---
+        runtimeConfig.clientID().ifPresent(connectionFactory::setClientID);
+        runtimeConfig.enableSharedClientID().ifPresent(connectionFactory::setEnableSharedClientID);
+        runtimeConfig.enable1xPrefixes().ifPresent(connectionFactory::setEnable1xPrefixes);
+        runtimeConfig.ignoreJTA().ifPresent(connectionFactory::setIgnoreJTA);
+        runtimeConfig.useTopologyForLoadBalancing().ifPresent(connectionFactory::setUseTopologyForLoadBalancing);
+        runtimeConfig.initialMessagePacketSize().ifPresent(connectionFactory::setInitialMessagePacketSize);
+        return connectionFactory;
     }
 }
