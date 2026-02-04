@@ -1,9 +1,5 @@
 package io.quarkus.artemis.jms.deployment;
 
-import java.util.function.Function;
-
-import jakarta.jms.ConnectionFactory;
-
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsRecorder;
 import io.quarkus.deployment.Capabilities;
@@ -29,31 +25,8 @@ public class ArtemisJmsOpenTelemetryProcessor {
 
         // Only enable if OpenTelemetry is present
         if (capabilities.isPresent(Capability.OPENTELEMETRY_TRACER)) {
-            // Create a wrapper using the recorder
-            // The wrapper function will check at runtime if OpenTelemetry is available
-            Function<ConnectionFactory, Object> wrapper = cf -> {
-                try {
-                    // Try to get OpenTelemetry from CDI at runtime using reflection
-                    var container = io.quarkus.arc.Arc.container();
-                    if (container != null) {
-                        // Use reflection to avoid compile-time dependency on OpenTelemetry
-                        Class<?> otelClass = Class.forName("io.opentelemetry.api.OpenTelemetry");
-                        var instance = container.instance(otelClass);
-                        if (instance.isAvailable()) {
-                            // Use reflection to create the tracing wrapper
-                            Class<?> tracingFactoryClass = Class
-                                    .forName("io.quarkus.artemis.jms.runtime.tracing.TracingConnectionFactory");
-                            var constructor = tracingFactoryClass.getConstructor(ConnectionFactory.class, otelClass);
-                            return constructor.newInstance(cf, instance.get());
-                        }
-                    }
-                } catch (Exception e) {
-                    // If OpenTelemetry is not available or any error occurs, return unwrapped
-                }
-                return cf;
-            };
-
-            wrapperProducer.produce(new ConnectionFactoryWrapperBuildItem(wrapper));
+            // Use the recorder to create the wrapper at runtime
+            wrapperProducer.produce(new ConnectionFactoryWrapperBuildItem(recorder.getOpenTelemetryWrapper()));
         }
     }
 }
