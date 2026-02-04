@@ -9,11 +9,13 @@ import jakarta.jms.ConnectionFactory;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.apache.activemq.artemis.jms.client.ActiveMQXAConnectionFactory;
 
+import io.opentelemetry.api.OpenTelemetry;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
+import io.quarkus.artemis.jms.runtime.tracing.TracingConnectionFactory;
 import io.quarkus.runtime.RuntimeValue;
 import io.quarkus.runtime.annotations.Recorder;
 
@@ -122,5 +124,15 @@ public class ArtemisJmsRecorder {
         runtimeConfig.useTopologyForLoadBalancing().ifPresent(connectionFactory::setUseTopologyForLoadBalancing);
         runtimeConfig.initialMessagePacketSize().ifPresent(connectionFactory::setInitialMessagePacketSize);
         return connectionFactory;
+    }
+
+    /**
+     * Creates a wrapper function that adds OpenTelemetry tracing to ConnectionFactory.
+     *
+     * @param openTelemetry the OpenTelemetry instance to use for tracing
+     * @return a wrapper function
+     */
+    public Function<ConnectionFactory, Object> getTracingWrapper(OpenTelemetry openTelemetry) {
+        return cf -> new TracingConnectionFactory(cf, openTelemetry);
     }
 }
