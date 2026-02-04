@@ -15,6 +15,18 @@ import io.opentelemetry.context.Scope;
 
 /**
  * Wrapper for JMSConsumer that adds OpenTelemetry tracing.
+ *
+ * <p>
+ * <b>Note:</b> The {@code receiveBody} methods cannot be fully traced because
+ * they do not provide access to the underlying Message object. As a result:
+ * <ul>
+ * <li>No span is created for these operations</li>
+ * <li>Trace context cannot be extracted from the message</li>
+ * <li>Message attributes cannot be added to spans</li>
+ * </ul>
+ * For complete tracing coverage, prefer using {@code receive()} methods which
+ * return the full Message object.
+ * </p>
  */
 class TracingJMSConsumer implements JMSConsumer {
 
@@ -58,17 +70,29 @@ class TracingJMSConsumer implements JMSConsumer {
         return message;
     }
 
+    /**
+     * Note: receiveBody methods cannot be traced because they don't provide access
+     * to the Message object, preventing trace context extraction and span creation.
+     */
     @Override
     public <T> T receiveBody(Class<T> c) {
         // Note: We can't access the message here, so no tracing for receiveBody
         return delegate.receiveBody(c);
     }
 
+    /**
+     * Note: receiveBody methods cannot be traced because they don't provide access
+     * to the Message object, preventing trace context extraction and span creation.
+     */
     @Override
     public <T> T receiveBody(Class<T> c, long timeout) {
         return delegate.receiveBody(c, timeout);
     }
 
+    /**
+     * Note: receiveBody methods cannot be traced because they don't provide access
+     * to the Message object, preventing trace context extraction and span creation.
+     */
     @Override
     public <T> T receiveBodyNoWait(Class<T> c) {
         return delegate.receiveBodyNoWait(c);

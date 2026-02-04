@@ -40,25 +40,83 @@ class TracingJMSProducer implements JMSProducer {
 
     @Override
     public JMSProducer send(Destination destination, String body) {
-        delegate.send(destination, body);
+        // Note: These convenience methods create messages internally, so we can only trace
+        // the send operation but cannot inject trace context into the message
+        String spanName = JmsSpanAttributes.generateSpanName(destination, "publish");
+        SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
+                .setSpanKind(SpanKind.PRODUCER);
+
+        Span span = spanBuilder.startSpan();
+        try (Scope scope = span.makeCurrent()) {
+            JmsSpanAttributes.setSpanAttributes(span, destination, null);
+            delegate.send(destination, body);
+        } catch (Exception e) {
+            span.recordException(e);
+            span.setStatus(StatusCode.ERROR, e.getMessage());
+            throw e;
+        } finally {
+            span.end();
+        }
         return this;
     }
 
     @Override
     public JMSProducer send(Destination destination, Map<String, Object> body) {
-        delegate.send(destination, body);
+        String spanName = JmsSpanAttributes.generateSpanName(destination, "publish");
+        SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
+                .setSpanKind(SpanKind.PRODUCER);
+
+        Span span = spanBuilder.startSpan();
+        try (Scope scope = span.makeCurrent()) {
+            JmsSpanAttributes.setSpanAttributes(span, destination, null);
+            delegate.send(destination, body);
+        } catch (Exception e) {
+            span.recordException(e);
+            span.setStatus(StatusCode.ERROR, e.getMessage());
+            throw e;
+        } finally {
+            span.end();
+        }
         return this;
     }
 
     @Override
     public JMSProducer send(Destination destination, byte[] body) {
-        delegate.send(destination, body);
+        String spanName = JmsSpanAttributes.generateSpanName(destination, "publish");
+        SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
+                .setSpanKind(SpanKind.PRODUCER);
+
+        Span span = spanBuilder.startSpan();
+        try (Scope scope = span.makeCurrent()) {
+            JmsSpanAttributes.setSpanAttributes(span, destination, null);
+            delegate.send(destination, body);
+        } catch (Exception e) {
+            span.recordException(e);
+            span.setStatus(StatusCode.ERROR, e.getMessage());
+            throw e;
+        } finally {
+            span.end();
+        }
         return this;
     }
 
     @Override
     public JMSProducer send(Destination destination, Serializable body) {
-        delegate.send(destination, body);
+        String spanName = JmsSpanAttributes.generateSpanName(destination, "publish");
+        SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
+                .setSpanKind(SpanKind.PRODUCER);
+
+        Span span = spanBuilder.startSpan();
+        try (Scope scope = span.makeCurrent()) {
+            JmsSpanAttributes.setSpanAttributes(span, destination, null);
+            delegate.send(destination, body);
+        } catch (Exception e) {
+            span.recordException(e);
+            span.setStatus(StatusCode.ERROR, e.getMessage());
+            throw e;
+        } finally {
+            span.end();
+        }
         return this;
     }
 
