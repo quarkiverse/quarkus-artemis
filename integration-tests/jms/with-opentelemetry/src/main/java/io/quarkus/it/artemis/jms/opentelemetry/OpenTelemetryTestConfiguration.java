@@ -24,11 +24,4 @@ public class OpenTelemetryTestConfiguration {
     public SpanProcessor spanProcessor(InMemorySpanExporter exporter) {
         return SimpleSpanProcessor.create(exporter);
     }
-
-    @Produces
-    @Singleton
-    @Unremovable
-    public SpanExporter spanExporterWrapper(InMemorySpanExporter exporter) {
-        return () -> exporter;
-    }
 }
