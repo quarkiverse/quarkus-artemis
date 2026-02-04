@@ -4,7 +4,6 @@ import java.util.function.Function;
 
 import jakarta.jms.ConnectionFactory;
 
-import io.opentelemetry.api.OpenTelemetry;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsRecorder;
 import io.quarkus.deployment.Capabilities;
@@ -30,25 +29,26 @@ public class ArtemisJmsOpenTelemetryProcessor {
 
         // Only enable if OpenTelemetry is present
         if (capabilities.isPresent(Capability.OPENTELEMETRY_TRACER)) {
-            // Create a synthetic bean for OpenTelemetry if needed
-            // The OpenTelemetry bean should already be provided by quarkus-opentelemetry extension
-            
             // Create a wrapper using the recorder
-            // Note: We can't directly access OpenTelemetry at build time, 
-            // so we need to use a runtime value approach
-            // For now, let's use a simpler approach - check at runtime if OpenTelemetry is available
+            // The wrapper function will check at runtime if OpenTelemetry is available
             Function<ConnectionFactory, Object> wrapper = cf -> {
                 try {
-                    // Try to get OpenTelemetry from CDI at runtime
+                    // Try to get OpenTelemetry from CDI at runtime using reflection
                     var container = io.quarkus.arc.Arc.container();
                     if (container != null) {
-                        var instance = container.instance(OpenTelemetry.class);
+                        // Use reflection to avoid compile-time dependency on OpenTelemetry
+                        Class<?> otelClass = Class.forName("io.opentelemetry.api.OpenTelemetry");
+                        var instance = container.instance(otelClass);
                         if (instance.isAvailable()) {
-                            return recorder.getTracingWrapper(instance.get()).apply(cf);
+                            // Use reflection to create the tracing wrapper
+                            Class<?> tracingFactoryClass = Class
+                                    .forName("io.quarkus.artemis.jms.runtime.tracing.TracingConnectionFactory");
+                            var constructor = tracingFactoryClass.getConstructor(ConnectionFactory.class, otelClass);
+                            return constructor.newInstance(cf, instance.get());
                         }
                     }
                 } catch (Exception e) {
-                    // If OpenTelemetry is not available, return unwrapped
+                    // If OpenTelemetry is not available or any error occurs, return unwrapped
                 }
                 return cf;
             };

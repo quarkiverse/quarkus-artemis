@@ -17,13 +17,16 @@ import io.opentelemetry.api.trace.Span;
 class JmsSpanAttributes {
 
     private static final String MESSAGING_SYSTEM = "jms";
-    
+
     // Semantic convention attribute keys
     private static final AttributeKey<String> MESSAGING_SYSTEM_KEY = AttributeKey.stringKey("messaging.system");
-    private static final AttributeKey<String> MESSAGING_DESTINATION_NAME_KEY = AttributeKey.stringKey("messaging.destination.name");
-    private static final AttributeKey<String> MESSAGING_DESTINATION_KIND_KEY = AttributeKey.stringKey("messaging.destination.kind");
+    private static final AttributeKey<String> MESSAGING_DESTINATION_NAME_KEY = AttributeKey
+            .stringKey("messaging.destination.name");
+    private static final AttributeKey<String> MESSAGING_DESTINATION_KIND_KEY = AttributeKey
+            .stringKey("messaging.destination.kind");
     private static final AttributeKey<String> MESSAGING_MESSAGE_ID_KEY = AttributeKey.stringKey("messaging.message.id");
-    private static final AttributeKey<String> MESSAGING_CONVERSATION_ID_KEY = AttributeKey.stringKey("messaging.message.conversation_id");
+    private static final AttributeKey<String> MESSAGING_CONVERSATION_ID_KEY = AttributeKey
+            .stringKey("messaging.message.conversation_id");
 
     /**
      * Sets span attributes for a JMS message operation.

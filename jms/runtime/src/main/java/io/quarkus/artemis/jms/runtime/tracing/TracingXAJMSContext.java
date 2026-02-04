@@ -1,10 +1,9 @@
 package io.quarkus.artemis.jms.runtime.tracing;
 
-import jakarta.jms.JMSContext;
-import jakarta.jms.Session;
-import jakarta.jms.XAJMSContext;
-
 import javax.transaction.xa.XAResource;
+
+import jakarta.jms.JMSContext;
+import jakarta.jms.XAJMSContext;
 
 import io.opentelemetry.api.trace.Tracer;
 
@@ -23,11 +22,6 @@ class TracingXAJMSContext extends TracingJMSContext implements XAJMSContext {
     @Override
     public JMSContext getContext() {
         return new TracingJMSContext(delegate.getContext(), tracer, contextPropagator);
-    }
-
-    @Override
-    public Session getSession() {
-        return new TracingSession(delegate.getSession(), tracer, contextPropagator);
     }
 
     @Override

@@ -1,11 +1,11 @@
 package io.quarkus.artemis.jms.runtime.tracing;
 
+import javax.transaction.xa.XAResource;
+
 import jakarta.jms.JMSException;
 import jakarta.jms.Session;
 import jakarta.jms.XAConnection;
 import jakarta.jms.XASession;
-
-import javax.transaction.xa.XAResource;
 
 import io.opentelemetry.api.trace.Tracer;
 
