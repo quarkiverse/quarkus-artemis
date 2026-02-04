@@ -31,6 +31,26 @@ public class ArtemisJmsRecorder {
         return cf -> cf;
     }
 
+    /**
+     * Composes multiple ConnectionFactory wrappers into a single wrapper.
+     * Wrappers are applied in order: wrapper2(wrapper1(cf))
+     *
+     * @param wrapper1 the first wrapper to apply
+     * @param wrapper2 the second wrapper to apply on top of the first
+     * @return a composed wrapper function
+     */
+    public Function<ConnectionFactory, Object> composeWrappers(
+            Function<ConnectionFactory, Object> wrapper1,
+            Function<ConnectionFactory, Object> wrapper2) {
+        return cf -> {
+            Object wrapped = wrapper1.apply(cf);
+            if (wrapped instanceof ConnectionFactory) {
+                return wrapper2.apply((ConnectionFactory) wrapped);
+            }
+            return wrapped;
+        };
+    }
+
     public Supplier<ConnectionFactory> getConnectionFactoryProducer(String name, Function<ConnectionFactory, Object> wrapper) {
         ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.getValue().configs().get(name);
         ArtemisBuildTimeConfig buildTimeConfig = buildTimeConfigs.configs().get(name);
