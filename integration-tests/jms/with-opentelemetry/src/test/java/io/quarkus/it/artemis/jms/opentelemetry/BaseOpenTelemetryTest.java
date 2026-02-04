@@ -29,7 +29,8 @@ abstract public class BaseOpenTelemetryTest {
         // Clear any leftover messages from the queue
         try {
             String leftover;
-            while ((leftover = given().when().get("/artemis").then().extract().asString()) != null && !leftover.isEmpty()) {
+            while ((leftover = given().when().get("/artemis").then().extract().asString()) != null
+                    && !leftover.isEmpty()) {
                 // Consume all messages
             }
         } catch (Exception e) {
@@ -48,58 +49,29 @@ abstract public class BaseOpenTelemetryTest {
                 .then()
                 .statusCode(204);
 
-        // Wait for spans to be exported - be more lenient
-        try {
-            await().atMost(10, TimeUnit.SECONDS).until(() -> {
-                List<SpanData> spans = spanExporter.getFinishedSpanItems();
-                System.out.println("DEBUG: Number of spans: " + spans.size());
-                for (SpanData span : spans) {
-                    System.out.println("DEBUG: Span - Name: " + span.getName() + ", Kind: " + span.getKind());
-                }
-                return spans.size() > 0;
-            });
-        } catch (Exception e) {
-            System.out.println("DEBUG: No spans were created within timeout");
-        }
+        // Wait for spans to be exported
+        await().atMost(10, TimeUnit.SECONDS).until(() -> spanExporter.getFinishedSpanItems().size() > 0);
 
         List<SpanData> spans = spanExporter.getFinishedSpanItems();
 
-        // Just check if we have any POST spans first (this will pass even without JMS tracing)
-        boolean hasHttpSpans = spans.stream().anyMatch(span -> span.getName().contains("POST"));
-        System.out.println("DEBUG: Has HTTP spans: " + hasHttpSpans);
-
-        // Now check for JMS producer spans
-        long producerSpanCount = spans.stream()
+        // Find JMS producer spans
+        List<SpanData> producerSpans = spans.stream()
                 .filter(span -> span.getKind() == SpanKind.PRODUCER)
-                .filter(span -> span.getName().contains("publish") || span.getName().contains("jms"))
-                .count();
+                .toList();
 
-        System.out.println("DEBUG: Producer span count: " + producerSpanCount);
+        assertThat("Should have at least one JMS producer span", producerSpans, hasSize(greaterThan(0)));
 
-        // For now, let's just assert that we have some spans (HTTP spans from REST calls)
-        // The JMS tracing might need additional configuration
-        assertThat("Should have at least one span (HTTP or JMS)", spans.size(), greaterThan(0));
+        SpanData producerSpan = producerSpans.get(0);
+        assertThat("Producer span name should contain 'publish'", producerSpan.getName().contains("publish"), is(true));
 
-        // If we have JMS producer spans, validate them
-        if (producerSpanCount > 0) {
-            SpanData producerSpan = spans.stream()
-                    .filter(span -> span.getKind() == SpanKind.PRODUCER)
-                    .findFirst()
-                    .orElse(null);
-
-            assertThat("Producer span should have correct kind", producerSpan.getKind(), is(SpanKind.PRODUCER));
-
-            // Verify span attributes if present
-            if (producerSpan.getAttributes()
-                    .get(io.opentelemetry.api.common.AttributeKey.stringKey("messaging.system")) != null) {
-                assertThat("Should have messaging.system attribute",
-                        producerSpan.getAttributes()
-                                .get(io.opentelemetry.api.common.AttributeKey.stringKey("messaging.system")),
-                        is(equalTo("jms")));
-            }
-        }
-    }
-
+        // Verify span attributes
+        assertThat("Should have messaging.system attribute",
+                producerSpan.getAttributes().get(io.opentelemetry.api.common.AttributeKey.stringKey("messaging.system")),
+                is(equalTo("jms")));
+        assertThat("Should have messaging.destination.name attribute",
+                producerSpan.getAttributes()
+                        .get(io.opentelemetry.api.common.AttributeKey.stringKey("messaging.destination.name")),
+                is(notNullValue()));
     }
 
     @Test
@@ -124,37 +96,24 @@ abstract public class BaseOpenTelemetryTest {
                 .body(equalTo(body));
 
         // Wait for spans to be exported
-        try {
-            await().atMost(10, TimeUnit.SECONDS).until(() -> {
-                List<SpanData> spans = spanExporter.getFinishedSpanItems();
-                System.out.println("DEBUG Consumer: Number of spans: " + spans.size());
-                return spans.size() > 0;
-            });
-        } catch (Exception e) {
-            System.out.println("DEBUG Consumer: No spans were created");
-        }
+        await().atMost(10, TimeUnit.SECONDS).until(() -> spanExporter.getFinishedSpanItems().size() > 0);
 
         List<SpanData> spans = spanExporter.getFinishedSpanItems();
-        assertThat("Should have at least one span (HTTP or JMS)", spans.size(), greaterThan(0));
 
-        // Check for JMS consumer spans
-        long consumerSpanCount = spans.stream()
+        // Find JMS consumer spans
+        List<SpanData> consumerSpans = spans.stream()
                 .filter(span -> span.getKind() == SpanKind.CONSUMER)
-                .count();
+                .toList();
 
-        System.out.println("DEBUG Consumer: Consumer span count: " + consumerSpanCount);
+        assertThat("Should have at least one JMS consumer span", consumerSpans, hasSize(greaterThan(0)));
 
-        // If we have JMS consumer spans, validate them
-        if (consumerSpanCount > 0) {
-            SpanData consumerSpan = spans.stream()
-                    .filter(span -> span.getKind() == SpanKind.CONSUMER)
-                    .findFirst()
-                    .orElse(null);
+        SpanData consumerSpan = consumerSpans.get(0);
+        assertThat("Consumer span name should contain 'receive'", consumerSpan.getName().contains("receive"), is(true));
 
-            assertThat("Consumer span should have correct kind", consumerSpan.getKind(), is(SpanKind.CONSUMER));
-        }
-    }
-
+        // Verify span attributes
+        assertThat("Should have messaging.system attribute",
+                consumerSpan.getAttributes().get(io.opentelemetry.api.common.AttributeKey.stringKey("messaging.system")),
+                is(equalTo("jms")));
     }
 
     @Test
@@ -179,20 +138,11 @@ abstract public class BaseOpenTelemetryTest {
                 .body(equalTo(body));
 
         // Wait for all spans to be exported
-        try {
-            await().atMost(10, TimeUnit.SECONDS).until(() -> {
-                List<SpanData> spans = spanExporter.getFinishedSpanItems();
-                System.out.println("DEBUG E2E: Number of spans: " + spans.size());
-                return spans.size() >= 1; // At least HTTP spans
-            });
-        } catch (Exception e) {
-            System.out.println("DEBUG E2E: Timeout waiting for spans");
-        }
+        await().atMost(10, TimeUnit.SECONDS).until(() -> spanExporter.getFinishedSpanItems().size() >= 2);
 
         List<SpanData> spans = spanExporter.getFinishedSpanItems();
-        assertThat("Should have at least 1 span (HTTP calls)", spans.size(), greaterThan(0));
 
-        // Verify we have JMS spans if tracing is working
+        // Verify we have both producer and consumer spans
         long producerSpans = spans.stream()
                 .filter(span -> span.getKind() == SpanKind.PRODUCER)
                 .count();
@@ -200,9 +150,7 @@ abstract public class BaseOpenTelemetryTest {
                 .filter(span -> span.getKind() == SpanKind.CONSUMER)
                 .count();
 
-        System.out.println("DEBUG E2E: Producer spans: " + producerSpans + ", Consumer spans: " + consumerSpans);
-
-        // The test passes if we have HTTP spans, JMS tracing is a bonus
-        // This documents that JMS tracing should create both producer and consumer spans
+        assertThat("Should have at least one producer span", producerSpans, is(greaterThan(0L)));
+        assertThat("Should have at least one consumer span", consumerSpans, is(greaterThan(0L)));
     }
-}}
+}

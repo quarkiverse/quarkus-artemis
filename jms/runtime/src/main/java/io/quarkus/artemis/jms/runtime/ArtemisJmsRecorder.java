@@ -130,27 +130,47 @@ public class ArtemisJmsRecorder {
      *
      * @return a wrapper function
      */
+    /**
+     * Creates a wrapper function that adds OpenTelemetry tracing to ConnectionFactory.
+     * Uses reflection to avoid compile-time dependency on OpenTelemetry.
+     * The wrapping is done lazily to ensure OpenTelemetry beans are initialized.
+     *
+     * @return a wrapper function
+     */
     public Function<ConnectionFactory, Object> getOpenTelemetryWrapper() {
         return cf -> {
-            try {
-                // Try to get OpenTelemetry from CDI at runtime using reflection
-                var container = io.quarkus.arc.Arc.container();
-                if (container != null) {
-                    // Use reflection to avoid compile-time dependency on OpenTelemetry
-                    Class<?> otelClass = Class.forName("io.opentelemetry.api.OpenTelemetry");
-                    var instance = container.instance(otelClass);
-                    if (instance.isAvailable()) {
-                        // Use reflection to create the tracing wrapper
-                        Class<?> tracingFactoryClass = Class
-                                .forName("io.quarkus.artemis.jms.runtime.tracing.TracingConnectionFactory");
-                        var constructor = tracingFactoryClass.getConstructor(ConnectionFactory.class, otelClass);
-                        return constructor.newInstance(cf, instance.get());
-                    }
-                }
-            } catch (Exception e) {
-                // If OpenTelemetry is not available or any error occurs, return unwrapped
-            }
-            return cf;
+            // Create a lazy proxy that defers OpenTelemetry lookup until first use
+            return java.lang.reflect.Proxy.newProxyInstance(
+                    cf.getClass().getClassLoader(),
+                    new Class<?>[] { ConnectionFactory.class },
+                    (proxy, method, args) -> {
+                        // Lazily wrap on first method invocation
+                        ConnectionFactory wrapped = getTracingConnectionFactory(cf);
+                        return method.invoke(wrapped, args);
+                    });
         };
+    }
+
+    private ConnectionFactory getTracingConnectionFactory(ConnectionFactory cf) {
+        try {
+            // Try to get OpenTelemetry from CDI at runtime using reflection
+            var container = io.quarkus.arc.Arc.container();
+            if (container != null) {
+                // Use reflection to avoid compile-time dependency on OpenTelemetry
+                Class<?> otelClass = Class.forName("io.opentelemetry.api.OpenTelemetry");
+                var instance = container.instance(otelClass);
+                if (instance.isAvailable()) {
+                    // Use reflection to create the tracing wrapper
+                    Class<?> tracingFactoryClass = Class
+                            .forName("io.quarkus.artemis.jms.runtime.tracing.TracingConnectionFactory");
+                    var constructor = tracingFactoryClass.getConstructor(ConnectionFactory.class, otelClass);
+                    Object wrapped = constructor.newInstance(cf, instance.get());
+                    return (ConnectionFactory) wrapped;
+                }
+            }
+        } catch (Exception e) {
+            // If OpenTelemetry is not available or any error occurs, return unwrapped
+        }
+        return cf;
     }
 }
