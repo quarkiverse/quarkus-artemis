@@ -24,7 +24,9 @@ public class ArtemisJmsOpenTelemetryProcessor {
             BuildProducer<ConnectionFactoryWrapperBuildItem> wrapperProducer,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeans) {
 
-        // Only enable if OpenTelemetry is present
+        // Only enable if OpenTelemetry capability is present
+        // Note: This checks for presence but not if OpenTelemetry is explicitly disabled.
+        // The runtime code will gracefully handle the case when OpenTelemetry beans are not available.
         if (capabilities.isPresent(Capability.OPENTELEMETRY_TRACER)) {
             // Use the recorder to create the wrapper at runtime
             // This uses the local MultiBuildItem, not the external SimpleBuildItem

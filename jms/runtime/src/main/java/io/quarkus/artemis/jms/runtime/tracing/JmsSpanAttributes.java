@@ -22,6 +22,8 @@ class JmsSpanAttributes {
     private static final AttributeKey<String> MESSAGING_SYSTEM_KEY = AttributeKey.stringKey("messaging.system");
     private static final AttributeKey<String> MESSAGING_DESTINATION_NAME_KEY = AttributeKey
             .stringKey("messaging.destination.name");
+    // Note: messaging.destination.kind is not officially defined in the OpenTelemetry semantic conventions yet.
+    // This attribute may be subject to change if/when it's officially standardized.
     private static final AttributeKey<String> MESSAGING_DESTINATION_KIND_KEY = AttributeKey
             .stringKey("messaging.destination.kind");
     private static final AttributeKey<String> MESSAGING_MESSAGE_ID_KEY = AttributeKey.stringKey("messaging.message.id");

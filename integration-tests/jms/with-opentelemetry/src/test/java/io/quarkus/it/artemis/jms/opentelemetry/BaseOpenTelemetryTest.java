@@ -41,8 +41,8 @@ abstract public class BaseOpenTelemetryTest {
                 .then()
                 .statusCode(204);
 
-        // Wait for spans to be exported
-        await().atMost(10, TimeUnit.SECONDS).until(() -> getSpans().size() > 0);
+        // Wait for spans to be exported (1 POST HTTP span + 1 JMS producer span = 2 total)
+        await().atMost(10, TimeUnit.SECONDS).until(() -> getSpans().size() >= 2);
 
         List<ArtemisEndpoint.SpanInfo> spans = getSpans();
 
@@ -51,7 +51,7 @@ abstract public class BaseOpenTelemetryTest {
                 .filter(span -> "PRODUCER".equals(span.kind))
                 .toList();
 
-        assertThat("Should have at least one JMS producer span", producerSpans, hasSize(greaterThan(0)));
+        assertThat("Should have exactly one JMS producer span", producerSpans, hasSize(1));
 
         ArtemisEndpoint.SpanInfo producerSpan = producerSpans.get(0);
         assertThat("Producer span name should contain 'publish'", producerSpan.name.contains("publish"), is(true));
@@ -87,8 +87,8 @@ abstract public class BaseOpenTelemetryTest {
                 .statusCode(200)
                 .body(equalTo(body));
 
-        // Wait for spans to be exported
-        await().atMost(10, TimeUnit.SECONDS).until(() -> getSpans().size() > 0);
+        // Wait for spans to be exported (1 GET HTTP span + 1 JMS consumer span = 2 total)
+        await().atMost(10, TimeUnit.SECONDS).until(() -> getSpans().size() >= 2);
 
         List<ArtemisEndpoint.SpanInfo> spans = getSpans();
 
@@ -97,7 +97,7 @@ abstract public class BaseOpenTelemetryTest {
                 .filter(span -> "CONSUMER".equals(span.kind))
                 .toList();
 
-        assertThat("Should have at least one JMS consumer span", consumerSpans, hasSize(greaterThan(0)));
+        assertThat("Should have exactly one JMS consumer span", consumerSpans, hasSize(1));
 
         ArtemisEndpoint.SpanInfo consumerSpan = consumerSpans.get(0);
         assertThat("Consumer span name should contain 'receive'", consumerSpan.name.contains("receive"), is(true));
@@ -130,8 +130,8 @@ abstract public class BaseOpenTelemetryTest {
                 .statusCode(200)
                 .body(equalTo(body));
 
-        // Wait for all spans to be exported
-        await().atMost(10, TimeUnit.SECONDS).until(() -> getSpans().size() >= 2);
+        // Wait for all spans to be exported (1 POST HTTP + 1 JMS producer + 1 GET HTTP + 1 JMS consumer = 4 total)
+        await().atMost(10, TimeUnit.SECONDS).until(() -> getSpans().size() >= 4);
 
         List<ArtemisEndpoint.SpanInfo> spans = getSpans();
 
@@ -143,8 +143,8 @@ abstract public class BaseOpenTelemetryTest {
                 .filter(span -> "CONSUMER".equals(span.kind))
                 .count();
 
-        assertThat("Should have at least one producer span", producerSpans, is(greaterThan(0L)));
-        assertThat("Should have at least one consumer span", consumerSpans, is(greaterThan(0L)));
+        assertThat("Should have exactly one producer span", producerSpans, is(equalTo(1L)));
+        assertThat("Should have exactly one consumer span", consumerSpans, is(equalTo(1L)));
     }
 
     private List<ArtemisEndpoint.SpanInfo> getSpans() {
