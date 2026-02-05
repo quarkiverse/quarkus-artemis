@@ -15,13 +15,6 @@
         <dependency>
             <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-integration-test-artemis-jms-common</artifactId>
-            <exclusions>
-                <!-- Exclude RESTEasy since we're using quarkus-rest-jackson -->
-                <exclusion>
-                    <groupId>io.quarkus</groupId>
-                    <artifactId>quarkus-resteasy</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.quarkiverse.artemis</groupId>
@@ -36,9 +29,11 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-opentelemetry</artifactId>
         </dependency>
+
+        <!-- JSON support for REST endpoints -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-rest-jackson</artifactId>
+            <artifactId>quarkus-resteasy-jackson</artifactId>
         </dependency>
 
         <!-- Test dependencies for OpenTelemetry -->

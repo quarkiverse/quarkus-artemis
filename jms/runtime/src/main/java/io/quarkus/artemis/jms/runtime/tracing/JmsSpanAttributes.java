@@ -106,7 +106,9 @@ class JmsSpanAttributes {
     }
 
     /**
-     * Generates a span name for a JMS operation.
+     * Generates a span name for a JMS operation following OpenTelemetry semantic conventions.
+     * Format: {messaging.operation.name} {destination}
+     * See: https://opentelemetry.io/docs/specs/semconv/messaging/messaging-spans/#span-name
      *
      * @param destination the JMS destination
      * @param operation the operation name (e.g., "publish", "receive")
@@ -115,8 +117,8 @@ class JmsSpanAttributes {
     static String generateSpanName(Destination destination, String operation) {
         String destinationName = getDestinationName(destination);
         if (destinationName != null) {
-            return destinationName + " " + operation;
+            return operation + " " + destinationName;
         }
-        return "jms " + operation;
+        return operation;
     }
 }

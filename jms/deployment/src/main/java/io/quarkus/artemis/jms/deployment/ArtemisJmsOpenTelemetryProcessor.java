@@ -1,13 +1,16 @@
 package io.quarkus.artemis.jms.deployment;
 
-import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
+import java.util.Optional;
+
+import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.deployment.OpenTelemetrySdkBuildItem;
+import io.quarkus.artemis.jms.runtime.ArtemisJmsOpenTelemetryWrapper;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsRecorder;
-import io.quarkus.deployment.Capabilities;
-import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
+import io.quarkus.runtime.RuntimeValue;
 
 /**
  * Processor for adding OpenTelemetry tracing to Artemis JMS.
@@ -17,20 +20,38 @@ import io.quarkus.deployment.annotations.Record;
 public class ArtemisJmsOpenTelemetryProcessor {
 
     @BuildStep
+    void registerOpenTelemetryWrapper(
+            Optional<OpenTelemetrySdkBuildItem> openTelemetrySdkBuildItem,
+            BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
+
+        // Only register the wrapper bean if OpenTelemetry SDK is present and tracing is enabled
+        // OpenTelemetrySdkBuildItem is only produced when OpenTelemetry is enabled (not just present)
+        // This properly handles the case when OpenTelemetry is disabled via config (e.g., quarkus.otel.sdk.disabled=true)
+        if (openTelemetrySdkBuildItem.isPresent() && openTelemetrySdkBuildItem.get().isTracingBuildTimeEnabled()) {
+            // Register the OpenTelemetry wrapper as a CDI bean
+            additionalBeans.produce(AdditionalBeanBuildItem.builder()
+                    .addBeanClass(ArtemisJmsOpenTelemetryWrapper.class)
+                    .setUnremovable()
+                    .build());
+        }
+    }
+
+    @BuildStep
     @Record(ExecutionTime.RUNTIME_INIT)
     void registerTracingWrapper(
             ArtemisJmsRecorder recorder,
-            Capabilities capabilities,
-            BuildProducer<ConnectionFactoryWrapperBuildItem> wrapperProducer,
-            BuildProducer<SyntheticBeanBuildItem> syntheticBeans) {
+            Optional<OpenTelemetrySdkBuildItem> openTelemetrySdkBuildItem,
+            BuildProducer<ConnectionFactoryWrapperBuildItem> wrapperProducer) {
 
-        // Only enable if OpenTelemetry capability is present
-        // Note: This checks for presence but not if OpenTelemetry is explicitly disabled.
-        // The runtime code will gracefully handle the case when OpenTelemetry beans are not available.
-        if (capabilities.isPresent(Capability.OPENTELEMETRY_TRACER)) {
+        // Only enable if OpenTelemetry SDK is present and tracing is enabled
+        if (openTelemetrySdkBuildItem.isPresent() && openTelemetrySdkBuildItem.get().isTracingBuildTimeEnabled()) {
+            // Get the runtime enabled flag to check at runtime if OpenTelemetry is active
+            Optional<RuntimeValue<Boolean>> runtimeEnabled = OpenTelemetrySdkBuildItem
+                    .isOtelSdkEnabled(openTelemetrySdkBuildItem);
+
             // Use the recorder to create the wrapper at runtime
             // This uses the local MultiBuildItem, not the external SimpleBuildItem
-            wrapperProducer.produce(new ConnectionFactoryWrapperBuildItem(recorder.getOpenTelemetryWrapper()));
+            wrapperProducer.produce(new ConnectionFactoryWrapperBuildItem(recorder.getOpenTelemetryWrapper(runtimeEnabled)));
         }
     }
 }
