@@ -41,8 +41,12 @@ abstract public class BaseOpenTelemetryTest {
                 .then()
                 .statusCode(204);
 
-        // Wait for spans to be exported (1 POST HTTP span + 1 JMS producer span = 2 total)
-        await().atMost(10, TimeUnit.SECONDS).until(() -> getSpans().size() >= 2);
+        // Wait for JMS producer span to be exported
+        await().atMost(10, TimeUnit.SECONDS).until(() -> {
+            List<ArtemisEndpoint.SpanInfo> allSpans = getSpans();
+            long jmsProducerCount = allSpans.stream().filter(span -> "PRODUCER".equals(span.kind)).count();
+            return jmsProducerCount == 1;
+        });
 
         List<ArtemisEndpoint.SpanInfo> spans = getSpans();
 
@@ -87,8 +91,12 @@ abstract public class BaseOpenTelemetryTest {
                 .statusCode(200)
                 .body(equalTo(body));
 
-        // Wait for spans to be exported (1 GET HTTP span + 1 JMS consumer span = 2 total)
-        await().atMost(10, TimeUnit.SECONDS).until(() -> getSpans().size() >= 2);
+        // Wait for JMS consumer span to be exported
+        await().atMost(10, TimeUnit.SECONDS).until(() -> {
+            List<ArtemisEndpoint.SpanInfo> allSpans = getSpans();
+            long jmsConsumerCount = allSpans.stream().filter(span -> "CONSUMER".equals(span.kind)).count();
+            return jmsConsumerCount == 1;
+        });
 
         List<ArtemisEndpoint.SpanInfo> spans = getSpans();
 
@@ -130,8 +138,13 @@ abstract public class BaseOpenTelemetryTest {
                 .statusCode(200)
                 .body(equalTo(body));
 
-        // Wait for all spans to be exported (1 POST HTTP + 1 JMS producer + 1 GET HTTP + 1 JMS consumer = 4 total)
-        await().atMost(10, TimeUnit.SECONDS).until(() -> getSpans().size() >= 4);
+        // Wait for both JMS producer and consumer spans to be exported
+        await().atMost(10, TimeUnit.SECONDS).until(() -> {
+            List<ArtemisEndpoint.SpanInfo> allSpans = getSpans();
+            long jmsProducerCount = allSpans.stream().filter(span -> "PRODUCER".equals(span.kind)).count();
+            long jmsConsumerCount = allSpans.stream().filter(span -> "CONSUMER".equals(span.kind)).count();
+            return jmsProducerCount == 1 && jmsConsumerCount == 1;
+        });
 
         List<ArtemisEndpoint.SpanInfo> spans = getSpans();
 
