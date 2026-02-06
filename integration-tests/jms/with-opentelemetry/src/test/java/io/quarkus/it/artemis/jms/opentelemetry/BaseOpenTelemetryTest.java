@@ -120,19 +120,20 @@ abstract public class BaseOpenTelemetryTest {
         // Reset spans
         given().delete("/artemis/spans").then().statusCode(204);
 
-        // Use the classic API which sends a Message object, allowing trace context injection
+        // Use the JMS 2.0 convenience API (JMSContext/JMSProducer.send(Destination, String))
+        // This verifies context propagation via JMSProducer properties
         String body = "test-message-propagation-" + System.currentTimeMillis();
         given()
                 .body(body)
                 .when()
-                .post("/artemis/classic")
+                .post("/artemis")
                 .then()
                 .statusCode(204);
 
-        // Receive via classic API
+        // Receive via JMS 2.0 API
         given()
                 .when()
-                .get("/artemis/classic")
+                .get("/artemis")
                 .then()
                 .statusCode(200)
                 .body(equalTo(body));
@@ -231,6 +232,97 @@ abstract public class BaseOpenTelemetryTest {
                 .anyMatch(link -> link.traceId.equals(producerSpan.traceId)
                         && link.spanId.equals(producerSpan.spanId));
         assertThat("Consumer span should link to the producer span", hasLinkToProducer, is(true));
+    }
+
+    @Test
+    void testJmsTracingProducerErrorClassicApi() {
+        // Reset spans
+        given().delete("/artemis/spans").then().statusCode(204);
+
+        // Trigger a send error via the classic API (sends on a closed session)
+        given()
+                .body("test-error-classic")
+                .when()
+                .post("/artemis/error/classic")
+                .then()
+                .statusCode(500);
+
+        // Wait for a producer span to be exported
+        await().atMost(10, TimeUnit.SECONDS).until(() -> {
+            long producerCount = getSpans().stream().filter(span -> "PRODUCER".equals(span.kind)).count();
+            return producerCount >= 1;
+        });
+
+        List<ArtemisEndpoint.SpanInfo> spans = getSpans();
+
+        ArtemisEndpoint.SpanInfo errorSpan = spans.stream()
+                .filter(span -> "PRODUCER".equals(span.kind))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("No producer span found for error case"));
+
+        // Verify the span is marked as ERROR
+        assertThat("Error span should have ERROR status", errorSpan.statusCode, is(equalTo("ERROR")));
+        assertThat("Error span status should have a description",
+                errorSpan.statusDescription, is(not(emptyOrNullString())));
+
+        // Verify the exception event was recorded
+        assertThat("Error span should have events", errorSpan.events, is(not(empty())));
+        boolean hasExceptionEvent = errorSpan.events.stream()
+                .anyMatch(event -> "exception".equals(event.name));
+        assertThat("Error span should have an 'exception' event", hasExceptionEvent, is(true));
+
+        // Verify exception event attributes contain the exception type and message
+        ArtemisEndpoint.EventInfo exceptionEvent = errorSpan.events.stream()
+                .filter(event -> "exception".equals(event.name))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("No exception event found"));
+        assertThat("Exception event should have exception.type",
+                exceptionEvent.attributes.get("exception.type"), is(notNullValue()));
+        assertThat("Exception event should have exception.message",
+                exceptionEvent.attributes.get("exception.message"), is(notNullValue()));
+    }
+
+    @Test
+    void testJmsTracingProducerErrorJms2Api() {
+        // Reset spans
+        given().delete("/artemis/spans").then().statusCode(204);
+
+        // Trigger a send error via JMS 2.0 API (sends a null message)
+        given()
+                .when()
+                .post("/artemis/error/jms2")
+                .then()
+                .statusCode(500);
+
+        // Wait for a producer span to be exported
+        await().atMost(10, TimeUnit.SECONDS).until(() -> {
+            long producerCount = getSpans().stream().filter(span -> "PRODUCER".equals(span.kind)).count();
+            return producerCount >= 1;
+        });
+
+        List<ArtemisEndpoint.SpanInfo> spans = getSpans();
+
+        ArtemisEndpoint.SpanInfo errorSpan = spans.stream()
+                .filter(span -> "PRODUCER".equals(span.kind))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("No producer span found for JMS 2.0 error case"));
+
+        // Verify the span is marked as ERROR
+        assertThat("Error span should have ERROR status", errorSpan.statusCode, is(equalTo("ERROR")));
+
+        // Verify the exception event was recorded
+        boolean hasExceptionEvent = errorSpan.events.stream()
+                .anyMatch(event -> "exception".equals(event.name));
+        assertThat("Error span should have an 'exception' event", hasExceptionEvent, is(true));
+
+        // Verify the original exception propagated (endpoint returned 500)
+        // and the span captured the exception details
+        ArtemisEndpoint.EventInfo exceptionEvent = errorSpan.events.stream()
+                .filter(event -> "exception".equals(event.name))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("No exception event found"));
+        assertThat("Exception event should have exception.type",
+                exceptionEvent.attributes.get("exception.type"), is(notNullValue()));
     }
 
     private List<ArtemisEndpoint.SpanInfo> getSpans() {

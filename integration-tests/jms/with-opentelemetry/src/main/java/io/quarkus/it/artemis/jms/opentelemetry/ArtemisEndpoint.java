@@ -88,6 +88,48 @@ public class ArtemisEndpoint {
         }
     }
 
+    /**
+     * Send a message to a closed connection to trigger an error span.
+     * Uses send(Destination, Message) to ensure the error occurs inside the tracing wrapper.
+     */
+    @POST
+    @Path("/error/classic")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public jakarta.ws.rs.core.Response postErrorClassic(String message) {
+        try {
+            Connection connection = connectionFactory.createConnection();
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Queue queue = session.createQueue("test-jms-otel");
+            // Create a producer without a default destination
+            MessageProducer messageProducer = session.createProducer(null);
+            TextMessage textMessage = session.createTextMessage(message);
+            // Close the connection so delegate.send() fails inside the tracing wrapper
+            connection.close();
+            messageProducer.send(queue, textMessage);
+            return jakarta.ws.rs.core.Response.noContent().build();
+        } catch (Exception e) {
+            return jakarta.ws.rs.core.Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+
+    /**
+     * Send a null message using JMS 2.0 API to trigger an error span.
+     */
+    @POST
+    @Path("/error/jms2")
+    public jakarta.ws.rs.core.Response postErrorJms2() {
+        try (jakarta.jms.JMSContext context = connectionFactory.createContext(
+                jakarta.jms.JMSContext.AUTO_ACKNOWLEDGE)) {
+            jakarta.jms.JMSProducer jmsProducer = context.createProducer();
+            Queue queue = context.createQueue("test-jms-otel");
+            // Send a null Message to trigger an error
+            jmsProducer.send(queue, (jakarta.jms.Message) null);
+            return jakarta.ws.rs.core.Response.noContent().build();
+        } catch (Exception e) {
+            return jakarta.ws.rs.core.Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+
     @GET
     @Path("/spans")
     @Produces(MediaType.APPLICATION_JSON)
@@ -103,13 +145,27 @@ public class ArtemisEndpoint {
                                     link.getSpanContext().getTraceId(),
                                     link.getSpanContext().getSpanId()))
                             .collect(Collectors.toList());
+                    String statusCode = span.getStatus().getStatusCode().name();
+                    String statusDescription = span.getStatus().getDescription();
+                    List<EventInfo> events = span.getEvents().stream()
+                            .map(event -> {
+                                Map<String, String> eventAttrs = event.getAttributes().asMap().entrySet().stream()
+                                        .collect(Collectors.toMap(
+                                                e -> ((AttributeKey<?>) e.getKey()).getKey(),
+                                                e -> String.valueOf(e.getValue())));
+                                return new EventInfo(event.getName(), eventAttrs);
+                            })
+                            .collect(Collectors.toList());
                     return new SpanInfo(
                             span.getName(),
                             span.getKind().name(),
                             span.getSpanContext().getTraceId(),
                             span.getSpanContext().getSpanId(),
+                            statusCode,
+                            statusDescription,
                             attrs,
-                            links);
+                            links,
+                            events);
                 })
                 .collect(Collectors.toList());
     }
@@ -125,20 +181,27 @@ public class ArtemisEndpoint {
         public String kind;
         public String traceId;
         public String spanId;
+        public String statusCode;
+        public String statusDescription;
         public Map<String, String> attributes;
         public List<LinkInfo> links;
+        public List<EventInfo> events;
 
         public SpanInfo() {
         }
 
         public SpanInfo(String name, String kind, String traceId, String spanId,
-                Map<String, String> attributes, List<LinkInfo> links) {
+                String statusCode, String statusDescription,
+                Map<String, String> attributes, List<LinkInfo> links, List<EventInfo> events) {
             this.name = name;
             this.kind = kind;
             this.traceId = traceId;
             this.spanId = spanId;
+            this.statusCode = statusCode;
+            this.statusDescription = statusDescription;
             this.attributes = attributes;
             this.links = links;
+            this.events = events;
         }
     }
 
@@ -152,6 +215,19 @@ public class ArtemisEndpoint {
         public LinkInfo(String traceId, String spanId) {
             this.traceId = traceId;
             this.spanId = spanId;
+        }
+    }
+
+    public static class EventInfo {
+        public String name;
+        public Map<String, String> attributes;
+
+        public EventInfo() {
+        }
+
+        public EventInfo(String name, Map<String, String> attributes) {
+            this.name = name;
+            this.attributes = attributes;
         }
     }
 }
