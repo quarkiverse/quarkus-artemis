@@ -40,68 +40,34 @@ class TracingJMSProducer implements JMSProducer {
 
     @Override
     public JMSProducer send(Destination destination, String body) {
-        // Note: These convenience methods create messages internally, so we can only trace
-        // the send operation but cannot inject trace context into the message
-        String spanName = JmsSpanAttributes.generateSpanName(destination, "publish");
-        SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
-                .setSpanKind(SpanKind.PRODUCER);
-
-        Span span = spanBuilder.startSpan();
-        try (Scope scope = span.makeCurrent()) {
-            JmsSpanAttributes.setSpanAttributes(span, destination, null);
-            delegate.send(destination, body);
-        } catch (Exception e) {
-            span.recordException(e);
-            span.setStatus(StatusCode.ERROR, e.getMessage());
-            throw e;
-        } finally {
-            span.end();
-        }
+        sendConvenienceWithTracing(destination, () -> delegate.send(destination, body));
         return this;
     }
 
     @Override
     public JMSProducer send(Destination destination, Map<String, Object> body) {
-        String spanName = JmsSpanAttributes.generateSpanName(destination, "publish");
-        SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
-                .setSpanKind(SpanKind.PRODUCER);
-
-        Span span = spanBuilder.startSpan();
-        try (Scope scope = span.makeCurrent()) {
-            JmsSpanAttributes.setSpanAttributes(span, destination, null);
-            delegate.send(destination, body);
-        } catch (Exception e) {
-            span.recordException(e);
-            span.setStatus(StatusCode.ERROR, e.getMessage());
-            throw e;
-        } finally {
-            span.end();
-        }
+        sendConvenienceWithTracing(destination, () -> delegate.send(destination, body));
         return this;
     }
 
     @Override
     public JMSProducer send(Destination destination, byte[] body) {
-        String spanName = JmsSpanAttributes.generateSpanName(destination, "publish");
-        SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
-                .setSpanKind(SpanKind.PRODUCER);
-
-        Span span = spanBuilder.startSpan();
-        try (Scope scope = span.makeCurrent()) {
-            JmsSpanAttributes.setSpanAttributes(span, destination, null);
-            delegate.send(destination, body);
-        } catch (Exception e) {
-            span.recordException(e);
-            span.setStatus(StatusCode.ERROR, e.getMessage());
-            throw e;
-        } finally {
-            span.end();
-        }
+        sendConvenienceWithTracing(destination, () -> delegate.send(destination, body));
         return this;
     }
 
     @Override
     public JMSProducer send(Destination destination, Serializable body) {
+        sendConvenienceWithTracing(destination, () -> delegate.send(destination, body));
+        return this;
+    }
+
+    /**
+     * Traces a convenience send operation (String, Map, byte[], Serializable).
+     * These methods don't provide a Message object, so trace context is injected
+     * via JMSProducer properties which are applied to the internally-created message.
+     */
+    private void sendConvenienceWithTracing(Destination destination, Runnable sendOperation) {
         String spanName = JmsSpanAttributes.generateSpanName(destination, "publish");
         SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
                 .setSpanKind(SpanKind.PRODUCER);
@@ -109,7 +75,8 @@ class TracingJMSProducer implements JMSProducer {
         Span span = spanBuilder.startSpan();
         try (Scope scope = span.makeCurrent()) {
             JmsSpanAttributes.setSpanAttributes(span, destination, null);
-            delegate.send(destination, body);
+            contextPropagator.injectContext(Context.current(), delegate);
+            sendOperation.run();
         } catch (Exception e) {
             span.recordException(e);
             span.setStatus(StatusCode.ERROR, e.getMessage());
@@ -117,7 +84,6 @@ class TracingJMSProducer implements JMSProducer {
         } finally {
             span.end();
         }
-        return this;
     }
 
     private void sendWithTracing(Destination destination, Message message) {
