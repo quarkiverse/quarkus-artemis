@@ -1,6 +1,7 @@
 package io.quarkus.artemis.jms.runtime;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import jakarta.jms.ConnectionFactory;
 
@@ -13,14 +14,15 @@ import io.quarkus.artemis.jms.runtime.tracing.TracingConnectionFactory;
  */
 public class ArtemisJmsOpenTelemetryWrapper implements Function<ConnectionFactory, ConnectionFactory> {
 
-    private final OpenTelemetry openTelemetry;
+    private final Supplier<OpenTelemetry> openTelemetrySupplier;
 
     public ArtemisJmsOpenTelemetryWrapper(OpenTelemetry openTelemetry) {
-        this.openTelemetry = openTelemetry;
+        // Capture as a supplier so TracingConnectionFactory can resolve lazily
+        this.openTelemetrySupplier = () -> openTelemetry;
     }
 
     @Override
     public ConnectionFactory apply(ConnectionFactory connectionFactory) {
-        return new TracingConnectionFactory(connectionFactory, openTelemetry);
+        return new TracingConnectionFactory(connectionFactory, openTelemetrySupplier);
     }
 }

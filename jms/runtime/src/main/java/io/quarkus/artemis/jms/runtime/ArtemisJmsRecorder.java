@@ -146,61 +146,20 @@ public class ArtemisJmsRecorder {
 
     /**
      * Creates a wrapper function that adds OpenTelemetry tracing to ConnectionFactory.
-     * The wrapping is done lazily via a proxy to ensure OpenTelemetry beans are initialized.
+     * OpenTelemetry is resolved lazily inside TracingConnectionFactory to ensure CDI beans
+     * are fully initialized before first use.
      *
      * @param otelEnabled Runtime flag indicating if OpenTelemetry SDK is enabled
      * @return a wrapper function
      */
     public Function<ConnectionFactory, Object> getOpenTelemetryWrapper(java.util.Optional<RuntimeValue<Boolean>> otelEnabled) {
         return cf -> {
-            // Check if OpenTelemetry is enabled at runtime
-            // If not enabled, return unwrapped ConnectionFactory to avoid proxy overhead
             if (otelEnabled.isEmpty() || !otelEnabled.get().getValue()) {
                 return cf;
             }
 
-            // Create a lazy proxy that defers OpenTelemetry lookup until first use
-            // Use a holder to cache the wrapped instance after first invocation
-            return java.lang.reflect.Proxy.newProxyInstance(
-                    cf.getClass().getClassLoader(),
-                    new Class<?>[] { ConnectionFactory.class },
-                    new java.lang.reflect.InvocationHandler() {
-                        private volatile ConnectionFactory wrapped;
-
-                        @Override
-                        public Object invoke(Object proxy, java.lang.reflect.Method method, Object[] args)
-                                throws Throwable {
-                            // Lazily wrap on first method invocation and cache the result
-                            if (wrapped == null) {
-                                synchronized (this) {
-                                    if (wrapped == null) {
-                                        wrapped = getTracingConnectionFactory(cf);
-                                    }
-                                }
-                            }
-                            return method.invoke(wrapped, args);
-                        }
-                    });
+            return new io.quarkus.artemis.jms.runtime.tracing.TracingConnectionFactory(cf,
+                    () -> io.quarkus.arc.Arc.container().instance(io.opentelemetry.api.OpenTelemetry.class).get());
         };
-    }
-
-    /**
-     * Creates a TracingConnectionFactory wrapper using the CDI wrapper bean.
-     * This method is only called when OpenTelemetry is confirmed to be enabled at both build time and runtime.
-     *
-     * @param cf the ConnectionFactory to wrap
-     * @return the wrapped ConnectionFactory with tracing support
-     */
-    private ConnectionFactory getTracingConnectionFactory(ConnectionFactory cf) {
-        var container = io.quarkus.arc.Arc.container();
-        var wrapperInstance = container.instance(ArtemisJmsOpenTelemetryWrapper.class);
-
-        if (wrapperInstance.isAvailable()) {
-            return wrapperInstance.get().apply(cf);
-        }
-
-        // This should not happen since we already verified OpenTelemetry is enabled
-        // Return unwrapped ConnectionFactory as fallback
-        return cf;
     }
 }
