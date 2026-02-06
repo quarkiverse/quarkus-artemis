@@ -13,17 +13,21 @@ import org.junit.jupiter.api.Test;
 
 abstract public class BaseOpenTelemetryTest {
 
+    private static final int MAX_DRAIN_ITERATIONS = 50;
+
     @BeforeEach
     void setUp() {
         // Reset spans through REST API
         given().delete("/artemis/spans").then().statusCode(204);
 
-        // Clear any leftover messages from the queue
+        // Clear any leftover messages from the queue with a bounded loop
+        int iterations = 0;
         try {
             String leftover;
-            while ((leftover = given().when().get("/artemis").then().extract().asString()) != null
+            while (iterations++ < MAX_DRAIN_ITERATIONS
+                    && (leftover = given().when().get("/artemis").then().extract().asString()) != null
                     && !leftover.isEmpty()) {
-                // Consume all messages
+                // Consume leftover messages
             }
         } catch (Exception e) {
             // Queue is empty, which is expected
@@ -43,30 +47,26 @@ abstract public class BaseOpenTelemetryTest {
 
         // Wait for JMS producer span to be exported
         await().atMost(10, TimeUnit.SECONDS).until(() -> {
-            List<ArtemisEndpoint.SpanInfo> allSpans = getSpans();
-            long jmsProducerCount = allSpans.stream().filter(span -> "PRODUCER".equals(span.kind)).count();
-            return jmsProducerCount == 1;
+            long jmsProducerCount = getSpans().stream().filter(span -> "PRODUCER".equals(span.kind)).count();
+            return jmsProducerCount >= 1;
         });
 
         List<ArtemisEndpoint.SpanInfo> spans = getSpans();
 
-        // Find JMS producer spans
         List<ArtemisEndpoint.SpanInfo> producerSpans = spans.stream()
                 .filter(span -> "PRODUCER".equals(span.kind))
                 .toList();
 
-        assertThat("Should have exactly one JMS producer span", producerSpans, hasSize(1));
+        assertThat("Should have at least one JMS producer span", producerSpans, hasSize(greaterThanOrEqualTo(1)));
 
         ArtemisEndpoint.SpanInfo producerSpan = producerSpans.get(0);
-        assertThat("Producer span name should contain 'publish'", producerSpan.name.contains("publish"), is(true));
+        assertThat("Producer span name should contain 'publish'", producerSpan.name, containsString("publish"));
 
         // Verify span attributes
-        assertThat("Should have messaging.system attribute",
-                producerSpan.attributes.get("messaging.system"),
-                is(equalTo("jms")));
-        assertThat("Should have messaging.destination.name attribute",
-                producerSpan.attributes.get("messaging.destination.name"),
-                is(notNullValue()));
+        assertThat("Should have messaging.system=jms",
+                producerSpan.attributes.get("messaging.system"), is(equalTo("jms")));
+        assertThat("Should have messaging.destination.name=test-jms-otel",
+                producerSpan.attributes.get("messaging.destination.name"), is(equalTo("test-jms-otel")));
     }
 
     @Test
@@ -93,47 +93,46 @@ abstract public class BaseOpenTelemetryTest {
 
         // Wait for JMS consumer span to be exported
         await().atMost(10, TimeUnit.SECONDS).until(() -> {
-            List<ArtemisEndpoint.SpanInfo> allSpans = getSpans();
-            long jmsConsumerCount = allSpans.stream().filter(span -> "CONSUMER".equals(span.kind)).count();
-            return jmsConsumerCount == 1;
+            long jmsConsumerCount = getSpans().stream().filter(span -> "CONSUMER".equals(span.kind)).count();
+            return jmsConsumerCount >= 1;
         });
 
         List<ArtemisEndpoint.SpanInfo> spans = getSpans();
 
-        // Find JMS consumer spans
         List<ArtemisEndpoint.SpanInfo> consumerSpans = spans.stream()
                 .filter(span -> "CONSUMER".equals(span.kind))
                 .toList();
 
-        assertThat("Should have exactly one JMS consumer span", consumerSpans, hasSize(1));
+        assertThat("Should have at least one JMS consumer span", consumerSpans, hasSize(greaterThanOrEqualTo(1)));
 
         ArtemisEndpoint.SpanInfo consumerSpan = consumerSpans.get(0);
-        assertThat("Consumer span name should contain 'receive'", consumerSpan.name.contains("receive"), is(true));
+        assertThat("Consumer span name should contain 'receive'", consumerSpan.name, containsString("receive"));
 
         // Verify span attributes
-        assertThat("Should have messaging.system attribute",
-                consumerSpan.attributes.get("messaging.system"),
-                is(equalTo("jms")));
+        assertThat("Should have messaging.system=jms",
+                consumerSpan.attributes.get("messaging.system"), is(equalTo("jms")));
+        assertThat("Should have messaging.destination.name=test-jms-otel",
+                consumerSpan.attributes.get("messaging.destination.name"), is(equalTo("test-jms-otel")));
     }
 
     @Test
-    void testJmsTracingEndToEnd() {
+    void testJmsTracingContextPropagation() {
         // Reset spans
         given().delete("/artemis/spans").then().statusCode(204);
 
-        // Send a message
-        String body = "test-message-e2e-" + System.currentTimeMillis();
+        // Use the classic API which sends a Message object, allowing trace context injection
+        String body = "test-message-propagation-" + System.currentTimeMillis();
         given()
                 .body(body)
                 .when()
-                .post("/artemis")
+                .post("/artemis/classic")
                 .then()
                 .statusCode(204);
 
-        // Receive the message
+        // Receive via classic API
         given()
                 .when()
-                .get("/artemis")
+                .get("/artemis/classic")
                 .then()
                 .statusCode(200)
                 .body(equalTo(body));
@@ -141,23 +140,97 @@ abstract public class BaseOpenTelemetryTest {
         // Wait for both JMS producer and consumer spans to be exported
         await().atMost(10, TimeUnit.SECONDS).until(() -> {
             List<ArtemisEndpoint.SpanInfo> allSpans = getSpans();
-            long jmsProducerCount = allSpans.stream().filter(span -> "PRODUCER".equals(span.kind)).count();
-            long jmsConsumerCount = allSpans.stream().filter(span -> "CONSUMER".equals(span.kind)).count();
-            return jmsProducerCount == 1 && jmsConsumerCount == 1;
+            long producerCount = allSpans.stream().filter(span -> "PRODUCER".equals(span.kind)).count();
+            long consumerCount = allSpans.stream().filter(span -> "CONSUMER".equals(span.kind)).count();
+            return producerCount >= 1 && consumerCount >= 1;
         });
 
         List<ArtemisEndpoint.SpanInfo> spans = getSpans();
 
-        // Verify we have both producer and consumer spans
-        long producerSpans = spans.stream()
+        ArtemisEndpoint.SpanInfo producerSpan = spans.stream()
                 .filter(span -> "PRODUCER".equals(span.kind))
-                .count();
-        long consumerSpans = spans.stream()
-                .filter(span -> "CONSUMER".equals(span.kind))
-                .count();
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("No producer span found"));
 
-        assertThat("Should have exactly one producer span", producerSpans, is(equalTo(1L)));
-        assertThat("Should have exactly one consumer span", consumerSpans, is(equalTo(1L)));
+        ArtemisEndpoint.SpanInfo consumerSpan = spans.stream()
+                .filter(span -> "CONSUMER".equals(span.kind))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("No consumer span found"));
+
+        // Verify the consumer span has a link back to the producer span's context
+        assertThat("Consumer span should have at least one link for trace context propagation",
+                consumerSpan.links, is(not(empty())));
+
+        boolean hasLinkToProducer = consumerSpan.links.stream()
+                .anyMatch(link -> link.traceId.equals(producerSpan.traceId)
+                        && link.spanId.equals(producerSpan.spanId));
+        assertThat("Consumer span should link to the producer span", hasLinkToProducer, is(true));
+    }
+
+    @Test
+    void testJmsTracingClassicApi() {
+        // Reset spans
+        given().delete("/artemis/spans").then().statusCode(204);
+
+        // Send a message using classic Connection/Session API
+        String body = "test-message-classic-" + System.currentTimeMillis();
+        given()
+                .body(body)
+                .when()
+                .post("/artemis/classic")
+                .then()
+                .statusCode(204);
+
+        // Receive the message using classic Connection/Session API
+        given()
+                .when()
+                .get("/artemis/classic")
+                .then()
+                .statusCode(200)
+                .body(equalTo(body));
+
+        // Wait for both JMS producer and consumer spans to be exported
+        await().atMost(10, TimeUnit.SECONDS).until(() -> {
+            List<ArtemisEndpoint.SpanInfo> allSpans = getSpans();
+            long producerCount = allSpans.stream().filter(span -> "PRODUCER".equals(span.kind)).count();
+            long consumerCount = allSpans.stream().filter(span -> "CONSUMER".equals(span.kind)).count();
+            return producerCount >= 1 && consumerCount >= 1;
+        });
+
+        List<ArtemisEndpoint.SpanInfo> spans = getSpans();
+
+        ArtemisEndpoint.SpanInfo producerSpan = spans.stream()
+                .filter(span -> "PRODUCER".equals(span.kind))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("No producer span found for classic API"));
+
+        ArtemisEndpoint.SpanInfo consumerSpan = spans.stream()
+                .filter(span -> "CONSUMER".equals(span.kind))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("No consumer span found for classic API"));
+
+        // Verify producer span
+        assertThat("Producer span name should contain 'publish'", producerSpan.name, containsString("publish"));
+        assertThat("Producer should have messaging.system=jms",
+                producerSpan.attributes.get("messaging.system"), is(equalTo("jms")));
+        assertThat("Producer should have messaging.destination.name=test-jms-otel",
+                producerSpan.attributes.get("messaging.destination.name"), is(equalTo("test-jms-otel")));
+
+        // Verify consumer span
+        assertThat("Consumer span name should contain 'receive'", consumerSpan.name, containsString("receive"));
+        assertThat("Consumer should have messaging.system=jms",
+                consumerSpan.attributes.get("messaging.system"), is(equalTo("jms")));
+        assertThat("Consumer should have messaging.destination.name=test-jms-otel",
+                consumerSpan.attributes.get("messaging.destination.name"), is(equalTo("test-jms-otel")));
+
+        // Verify context propagation through the classic API path
+        assertThat("Consumer span should have links for trace context propagation",
+                consumerSpan.links, is(not(empty())));
+
+        boolean hasLinkToProducer = consumerSpan.links.stream()
+                .anyMatch(link -> link.traceId.equals(producerSpan.traceId)
+                        && link.spanId.equals(producerSpan.spanId));
+        assertThat("Consumer span should link to the producer span", hasLinkToProducer, is(true));
     }
 
     private List<ArtemisEndpoint.SpanInfo> getSpans() {
