@@ -1,5 +1,6 @@
 package io.quarkus.artemis.jms.deployment;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -24,7 +25,6 @@ import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.jms.spi.deployment.ConnectionFactoryWrapperBuildItem;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ArtemisJmsProcessor {
@@ -51,13 +51,14 @@ public class ArtemisJmsProcessor {
             ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             ArtemisBootstrappedBuildItem bootstrap,
-            Optional<ConnectionFactoryWrapperBuildItem> wrapperItem,
+            Optional<io.quarkus.jms.spi.deployment.ConnectionFactoryWrapperBuildItem> externalWrapper,
+            List<ConnectionFactoryWrapperBuildItem> localWrappers,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer) {
         if (shadowRunTimeConfigs.isEmpty() && buildTimeConfigs.isEmpty()) {
             return new ArtemisJmsConfiguredBuildItem();
         }
 
-        Function<ConnectionFactory, Object> wrapper = getWrapper(recorder, wrapperItem);
+        Function<ConnectionFactory, Object> wrapper = getWrapper(recorder, externalWrapper, localWrappers);
         Set<String> configurationNames = bootstrap.getConfigurationNames();
         boolean isSoleConnectionFactory = configurationNames.size() == 1;
         for (String name : configurationNames) {
@@ -76,13 +77,21 @@ public class ArtemisJmsProcessor {
 
     private static Function<ConnectionFactory, Object> getWrapper(
             ArtemisJmsRecorder recorder,
-            Optional<ConnectionFactoryWrapperBuildItem> wrapperItem) {
-        Function<ConnectionFactory, Object> wrapper;
-        if (wrapperItem.isPresent()) {
-            wrapper = wrapperItem.get().getWrapper();
-        } else {
-            wrapper = recorder.getDefaultWrapper();
+            Optional<io.quarkus.jms.spi.deployment.ConnectionFactoryWrapperBuildItem> externalWrapper,
+            List<ConnectionFactoryWrapperBuildItem> localWrappers) {
+        Function<ConnectionFactory, Object> wrapper = recorder.getDefaultWrapper();
+
+        // First apply the external wrapper (e.g., from quarkus-pooled-jms) if present
+        if (externalWrapper.isPresent()) {
+            wrapper = externalWrapper.get().getWrapper();
         }
+
+        // Then compose all local wrappers (e.g., OpenTelemetry) on top
+        // Use the recorder's composeWrappers method to avoid lambda serialization issues
+        for (ConnectionFactoryWrapperBuildItem localWrapper : localWrappers) {
+            wrapper = recorder.composeWrappers(wrapper, localWrapper.getWrapper());
+        }
+
         return wrapper;
     }
 
