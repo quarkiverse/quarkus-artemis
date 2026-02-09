@@ -49,5 +49,11 @@
             <groupId>org.apache.artemis</groupId>
             <artifactId>artemis-jakarta-client</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-opentelemetry</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 </project>

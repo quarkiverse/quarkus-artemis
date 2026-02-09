@@ -31,6 +31,26 @@ public class ArtemisJmsRecorder {
         return cf -> cf;
     }
 
+    /**
+     * Composes multiple ConnectionFactory wrappers into a single wrapper.
+     * Wrappers are applied in order: wrapper2(wrapper1(cf))
+     *
+     * @param wrapper1 the first wrapper to apply
+     * @param wrapper2 the second wrapper to apply on top of the first
+     * @return a composed wrapper function
+     */
+    public Function<ConnectionFactory, Object> composeWrappers(
+            Function<ConnectionFactory, Object> wrapper1,
+            Function<ConnectionFactory, Object> wrapper2) {
+        return cf -> {
+            Object wrapped = wrapper1.apply(cf);
+            if (wrapped instanceof ConnectionFactory) {
+                return wrapper2.apply((ConnectionFactory) wrapped);
+            }
+            return wrapped;
+        };
+    }
+
     public Supplier<ConnectionFactory> getConnectionFactoryProducer(String name, Function<ConnectionFactory, Object> wrapper) {
         ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.getValue().configs().get(name);
         ArtemisBuildTimeConfig buildTimeConfig = buildTimeConfigs.configs().get(name);
@@ -122,5 +142,29 @@ public class ArtemisJmsRecorder {
         runtimeConfig.useTopologyForLoadBalancing().ifPresent(connectionFactory::setUseTopologyForLoadBalancing);
         runtimeConfig.initialMessagePacketSize().ifPresent(connectionFactory::setInitialMessagePacketSize);
         return connectionFactory;
+    }
+
+    /**
+     * Creates a wrapper function that adds OpenTelemetry tracing to ConnectionFactory.
+     * The wrapping is delegated to ArtemisJmsOpenTelemetryWrapper (which is only registered
+     * as a CDI bean when OpenTelemetry is on the classpath) to avoid loading OTel classes
+     * in the recorder when OTel is not present.
+     *
+     * @param otelEnabled Runtime flag indicating if OpenTelemetry SDK is enabled
+     * @return a wrapper function
+     */
+    public Function<ConnectionFactory, Object> getOpenTelemetryWrapper(java.util.Optional<RuntimeValue<Boolean>> otelEnabled) {
+        return cf -> {
+            if (otelEnabled.isEmpty() || !otelEnabled.get().getValue()) {
+                return cf;
+            }
+
+            var container = io.quarkus.arc.Arc.container();
+            var wrapperInstance = container.instance(ArtemisJmsOpenTelemetryWrapper.class);
+            if (wrapperInstance.isAvailable()) {
+                return wrapperInstance.get().apply(cf);
+            }
+            return cf;
+        };
     }
 }
