@@ -86,6 +86,13 @@ public interface ArtemisDevServicesBuildTimeConfig {
      */
     Optional<String> defaultExtraArgs();
 
+    /**
+     * Value to pass into the {@code JAVA_ARGS_APPEND} environment variable in the container.
+     * <p>
+     * Defaults to {@code -Dbrokerconfig.maxDiskUsage=-1} when not set.
+     */
+    Optional<String> javaArgs();
+
     default boolean isEnabled() {
         return enabled().orElse(true);
     }
@@ -126,6 +133,10 @@ public interface ArtemisDevServicesBuildTimeConfig {
         return defaultExtraArgs().orElse("--no-autotune --mapped --no-fsync --relax-jolokia");
     }
 
+    default String getJavaArgs() {
+        return javaArgs().orElse("-Dbrokerconfig.maxDiskUsage=-1");
+    }
+
     default boolean isEmpty() {
         return enabled().isEmpty()
                 && port().isEmpty()
@@ -135,6 +146,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
                 && user().isEmpty()
                 && password().isEmpty()
                 && extraArgs().isEmpty()
-                && defaultExtraArgs().isEmpty();
+                && defaultExtraArgs().isEmpty()
+                && getJavaArgs().isEmpty();
     }
 }

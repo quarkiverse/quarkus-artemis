@@ -406,6 +406,34 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-devservices-java-args]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-devservices-java-args[`quarkus.artemis.devservices.java-args`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis.devservices.java-args+++[]
+endif::add-copy-button-to-config-props[]
+
+
+`quarkus.artemis."configuration-name".devservices.java-args`
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.artemis."configuration-name".devservices.java-args+++[]
+endif::add-copy-button-to-config-props[]
+
+[.description]
+--
+Value to pass into the `JAVA_ARGS_APPEND` environment variable in the container.
+
+Defaults to `-Dbrokerconfig.maxDiskUsage=-1` when not set.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ARTEMIS_DEVSERVICES_JAVA_ARGS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ARTEMIS_DEVSERVICES_JAVA_ARGS+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-core_quarkus-artemis-xa-enabled]] [.property-path]##link:#quarkus-artemis-core_quarkus-artemis-xa-enabled[`quarkus.artemis.xa-enabled`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.artemis.xa-enabled+++[]

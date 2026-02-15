@@ -141,6 +141,7 @@ services:
       AMQ_USER: admin
       AMQ_PASSWORD: admin
       AMQ_EXTRA_ARGS: --no-autotune --mapped --no-fsync
+      JAVA_ARGS_APPEND: -Dbrokerconfig.maxDiskUsage=-1
 ----
 
 

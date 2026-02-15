@@ -263,7 +263,8 @@ public class DevServicesArtemisProcessor {
                     config.webUiPort,
                     config.user,
                     config.password,
-                    mergeExtraArgs(config.defaultExtraArgs, config.extraArgs));
+                    mergeExtraArgs(config.defaultExtraArgs, config.extraArgs),
+                    config.javaArgs);
 
             ConfigureUtil.configureSharedNetwork(container, "artemis");
 
@@ -323,6 +324,7 @@ public class DevServicesArtemisProcessor {
         private final String password;
         private final String extraArgs;
         private final String defaultExtraArgs;
+        private final String javaArgs;
 
         public ArtemisDevServiceCfg(ArtemisBuildTimeConfig config, String name, boolean isUrlEmpty) {
             ArtemisDevServicesBuildTimeConfig devServicesConfig = config.getDevservices();
@@ -336,6 +338,7 @@ public class DevServicesArtemisProcessor {
             this.password = devServicesConfig.getPassword();
             this.extraArgs = devServicesConfig.getExtraArgs();
             this.defaultExtraArgs = devServicesConfig.getDefaultExtraArgs();
+            this.javaArgs = devServicesConfig.getJavaArgs();
         }
 
         @Override
@@ -366,7 +369,7 @@ public class DevServicesArtemisProcessor {
         private final int webUiPort;
 
         private ArtemisContainer(DockerImageName dockerImageName, int fixedExposedPort, int webUiPort, String user,
-                String password, String extra) {
+                String password, String extra, String javaArgs) {
             super(dockerImageName);
             this.port = fixedExposedPort;
             this.webUiPort = webUiPort;
@@ -376,6 +379,7 @@ public class DevServicesArtemisProcessor {
                     .withEnv("AMQ_USER", user)
                     .withEnv("AMQ_PASSWORD", password)
                     .withEnv("AMQ_EXTRA_ARGS", extra)
+                    .withEnv("JAVA_ARGS_APPEND", javaArgs)
                     .waitingFor(Wait.forLogMessage(".*AMQ241004.*", 1)); // Artemis console available.
         }
 

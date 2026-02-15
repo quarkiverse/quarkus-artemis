@@ -243,7 +243,8 @@ public class DevServicesArtemisProcessor {
                             config.fixedExposedPort,
                             config.user,
                             config.password,
-                            config.extraArgs);
+                            config.extraArgs,
+                            config.javaArgs);
                     container.withReuse(config.reuse);
 
                     ConfigureUtil.configureSharedNetwork(container, "artemis");
@@ -295,6 +296,8 @@ public class DevServicesArtemisProcessor {
 
         private final String extraArgs;
 
+        private final String javaArgs;
+
         private final boolean reuse;
 
         public ArtemisDevServiceCfg(ArtemisDevServicesBuildTimeConfig devServicesConfig,
@@ -307,6 +310,7 @@ public class DevServicesArtemisProcessor {
             this.user = devServicesConfig.getUser();
             this.password = devServicesConfig.getPassword();
             this.extraArgs = devServicesConfig.getExtraArgs();
+            this.javaArgs = devServicesConfig.getJavaArgs();
             this.reuse = devServicesConfig.reuse();
         }
 
@@ -337,7 +341,7 @@ public class DevServicesArtemisProcessor {
         private final int port;
 
         private ArtemisContainer(DockerImageName dockerImageName, int fixedExposedPort, String user, String password,
-                String extra) {
+                String extra, String javaArgs) {
             super(dockerImageName);
             this.port = fixedExposedPort;
             withNetwork(Network.SHARED)
@@ -345,6 +349,7 @@ public class DevServicesArtemisProcessor {
                     .withEnv("AMQ_USER", user)
                     .withEnv("AMQ_PASSWORD", password)
                     .withEnv("AMQ_EXTRA_ARGS", extra)
+                    .withEnv("JAVA_ARGS_APPEND", javaArgs)
                     .waitingFor(Wait.forLogMessage(".*AMQ241004.*", 1)); // Artemis console available.
         }
 
