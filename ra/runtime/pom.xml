@@ -52,6 +52,10 @@
             <artifactId>quarkus-artemis-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-devservices</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkiverse.ironjacamar</groupId>
             <artifactId>quarkus-ironjacamar</artifactId>
         </dependency>

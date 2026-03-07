@@ -33,6 +33,10 @@
             <artifactId>quarkus-artemis-core-deployment</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-devservices-deployment</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkiverse.ironjacamar</groupId>
             <artifactId>quarkus-ironjacamar-deployment</artifactId>
         </dependency>
