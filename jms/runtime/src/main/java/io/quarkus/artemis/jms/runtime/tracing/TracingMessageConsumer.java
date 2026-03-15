@@ -58,19 +58,15 @@ class TracingMessageConsumer implements MessageConsumer {
     private void createReceiveSpan(Message message) {
         String spanName = JmsSpanAttributes.generateSpanName(destination, "receive");
 
-        // Extract context from message to create a link
+        // Extract context from message to establish parent-child relationship
         Context extractedContext = contextPropagator.extractContext(message);
 
         SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
                 .setSpanKind(SpanKind.CONSUMER);
 
-        // Use link instead of parent-child relationship as per OTel messaging spec
-        // This is because we cannot guarantee there's no ambiguity on parent spans
+        // Set extracted context as parent so the consumer span shares the same traceId
         if (extractedContext != null) {
-            Span parentSpan = Span.fromContext(extractedContext);
-            if (parentSpan != null && parentSpan.getSpanContext().isValid()) {
-                spanBuilder.addLink(parentSpan.getSpanContext());
-            }
+            spanBuilder.setParent(extractedContext);
         }
 
         Span span = spanBuilder.startSpan();
@@ -137,18 +133,15 @@ class TracingMessageConsumer implements MessageConsumer {
         public void onMessage(Message message) {
             String spanName = JmsSpanAttributes.generateSpanName(destination, "receive");
 
-            // Extract context from message to create a link
+            // Extract context from message to establish parent-child relationship
             Context extractedContext = contextPropagator.extractContext(message);
 
             SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
                     .setSpanKind(SpanKind.CONSUMER);
 
-            // Use link instead of parent-child relationship
+            // Set extracted context as parent so the consumer span shares the same traceId
             if (extractedContext != null) {
-                Span parentSpan = Span.fromContext(extractedContext);
-                if (parentSpan != null && parentSpan.getSpanContext().isValid()) {
-                    spanBuilder.addLink(parentSpan.getSpanContext());
-                }
+                spanBuilder.setParent(extractedContext);
             }
 
             Span span = spanBuilder.startSpan();
