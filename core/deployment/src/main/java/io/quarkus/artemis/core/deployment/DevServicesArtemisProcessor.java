@@ -16,7 +16,9 @@ import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisConstants;
 import io.quarkus.artemis.core.runtime.ArtemisDevServicesBuildTimeConfig;
+import io.quarkus.deployment.IsLocalDevelopment;
 import io.quarkus.deployment.IsNormal;
+import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.*;
 import io.quarkus.deployment.builditem.DevServicesResultBuildItem.RunningDevService;
@@ -27,6 +29,9 @@ import io.quarkus.deployment.logging.LoggingSetupBuildItem;
 import io.quarkus.devservices.common.ConfigureUtil;
 import io.quarkus.devservices.common.ContainerAddress;
 import io.quarkus.devservices.common.ContainerLocator;
+import io.quarkus.devui.spi.page.CardPageBuildItem;
+import io.quarkus.devui.spi.page.Page;
+import io.quarkus.devui.spi.page.PageBuilder;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import io.smallrye.config.NameIterator;
 
@@ -53,9 +58,18 @@ public class DevServicesArtemisProcessor {
     static final ConcurrentHashMap<String, ArtemisDevServiceCfg> cfgs = new ConcurrentHashMap<>();
     static volatile boolean first = true;
 
+    @BuildStep(onlyIf = IsLocalDevelopment.class)
+    void createLinksToArtemis(
+            DevservicesCardBuildItem cardsBuildItem,
+            BuildProducer<CardPageBuildItem> cardsProducer) {
+        CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
+        cardsBuildItem.getPagesToAdd().forEach(cardPageBuildItem::addPage);
+        cardsProducer.produce(cardPageBuildItem);
+    }
+
     @SuppressWarnings("unused")
     @BuildStep(onlyIfNot = IsNormal.class, onlyIf = DevServicesConfig.Enabled.class)
-    public List<DevServicesResultBuildItem> startArtemisDevService(
+    List<DevServicesResultBuildItem> startArtemisDevService(
             DockerStatusBuildItem dockerStatusBuildItem,
             LaunchModeBuildItem launchMode,
             ArtemisBootstrappedBuildItem bootstrap,
@@ -65,13 +79,14 @@ public class DevServicesArtemisProcessor {
             Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
             CuratedApplicationShutdownBuildItem closeBuildItem,
             LoggingSetupBuildItem loggingSetupBuildItem,
-            DevServicesConfig devServicesConfig) {
+            DevServicesConfig devServicesConfig,
+            BuildProducer<DevservicesCardBuildItem> devservicesStarteBuildItemBuildProducer) {
         ArrayList<DevServicesResultBuildItem> results = new ArrayList<>();
         for (String name : bootstrap.getConfigurationNames()) {
             String propertyName = name;
             for (String rawName : ConfigProvider.getConfig().getPropertyNames()) {
                 if (rawName.contains(name)) {
-                    rawName = rawName.substring("quarkus.artemis.".length());
+                    rawName = rawName.substring(QUARKUS_ARTEMIS_BASE.length());
                     NameIterator nameIterator = new NameIterator(rawName);
                     if (nameIterator.nextSegmentEquals(name)) {
                         int end = nameIterator.getNextEnd();
@@ -108,6 +123,7 @@ public class DevServicesArtemisProcessor {
             }
         }
 
+        devservicesStarteBuildItemBuildProducer.produce(new DevservicesCardBuildItem(createLinksToArtemis()));
         return results;
     }
 
@@ -393,5 +409,24 @@ public class DevServicesArtemisProcessor {
         public int getPort() {
             return getMappedPort(ARTEMIS_PORT);
         }
+    }
+
+    private static List<PageBuilder<?>> createLinksToArtemis() {
+        List<PageBuilder<?>> result = new ArrayList<>();
+        for (var name : devServices.keySet()) {
+            String artemisWebUiUrl = getArtemisWebUiUrl(name);
+            result.add(Page.externalPageBuilder(name + " web UI")
+                    .url(artemisWebUiUrl, artemisWebUiUrl)
+                    .doNotEmbed()
+                    .isHtmlContent()
+                    .icon("font-awesome-solid:binoculars"));
+            result.add(Page.externalPageBuilder(name + " broker URL")
+                    .url(artemisWebUiUrl)
+                    .doNotEmbed()
+                    .isHtmlContent()
+                    .staticLabel(getArtemisUrl(name))
+                    .icon("font-awesome-solid:plug"));
+        }
+        return Collections.unmodifiableList(result);
     }
 }
