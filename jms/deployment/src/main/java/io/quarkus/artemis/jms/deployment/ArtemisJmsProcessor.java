@@ -16,15 +16,18 @@ import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisCoreProcessor;
 import io.quarkus.artemis.core.deployment.ArtemisJmsBuildItem;
+import io.quarkus.artemis.core.deployment.DevservicesCardBuildItem;
 import io.quarkus.artemis.core.deployment.ShadowRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.jms.runtime.ArtemisJmsRecorder;
+import io.quarkus.deployment.IsLocalDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.devui.spi.page.CardPageBuildItem;
 import io.quarkus.jms.spi.deployment.ConnectionFactoryWrapperBuildItem;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -38,13 +41,20 @@ public class ArtemisJmsProcessor {
         return new FeatureBuildItem(FEATURE);
     }
 
-    @SuppressWarnings("unused")
     @BuildStep
     void load(BuildProducer<ArtemisJmsBuildItem> artemisJms) {
         artemisJms.produce(new ArtemisJmsBuildItem());
     }
 
-    @SuppressWarnings("unused")
+    @BuildStep(onlyIf = IsLocalDevelopment.class)
+    void createLinksToArtemis(
+            DevservicesCardBuildItem cardsBuildItem,
+            BuildProducer<CardPageBuildItem> cardsProducer) {
+        CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
+        cardsBuildItem.getPagesToAdd().forEach(cardPageBuildItem::addPage);
+        cardsProducer.produce(cardPageBuildItem);
+    }
+
     @Record(ExecutionTime.RUNTIME_INIT)
     @BuildStep
     ArtemisJmsConfiguredBuildItem configure(
