@@ -117,7 +117,7 @@ class JmsSpanAttributes {
     static String generateSpanName(Destination destination, String operation) {
         String destinationName = getDestinationName(destination);
         if (destinationName != null) {
-            return operation + " " + destinationName;
+            return destinationName + " " + operation;
         }
         return operation;
     }
