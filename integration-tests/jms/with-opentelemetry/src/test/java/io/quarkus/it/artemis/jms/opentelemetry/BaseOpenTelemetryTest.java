@@ -60,7 +60,8 @@ abstract public class BaseOpenTelemetryTest {
         assertThat("Should have at least one JMS producer span", producerSpans, hasSize(greaterThanOrEqualTo(1)));
 
         ArtemisEndpoint.SpanInfo producerSpan = producerSpans.get(0);
-        assertThat("Producer span name should contain 'publish'", producerSpan.name, containsString("publish"));
+        assertThat("Producer span name should follow OTel convention",
+                producerSpan.name, is(equalTo("test-jms-otel publish")));
 
         // Verify span attributes
         assertThat("Should have messaging.system=jms",
@@ -106,7 +107,8 @@ abstract public class BaseOpenTelemetryTest {
         assertThat("Should have at least one JMS consumer span", consumerSpans, hasSize(greaterThanOrEqualTo(1)));
 
         ArtemisEndpoint.SpanInfo consumerSpan = consumerSpans.get(0);
-        assertThat("Consumer span name should contain 'receive'", consumerSpan.name, containsString("receive"));
+        assertThat("Consumer span name should follow OTel convention",
+                consumerSpan.name, is(equalTo("test-jms-otel receive")));
 
         // Verify span attributes
         assertThat("Should have messaging.system=jms",
@@ -211,14 +213,16 @@ abstract public class BaseOpenTelemetryTest {
                 .orElseThrow(() -> new AssertionError("No consumer span found for classic API"));
 
         // Verify producer span
-        assertThat("Producer span name should contain 'publish'", producerSpan.name, containsString("publish"));
+        assertThat("Producer span name should follow OTel convention",
+                producerSpan.name, is(equalTo("test-jms-otel publish")));
         assertThat("Producer should have messaging.system=jms",
                 producerSpan.attributes.get("messaging.system"), is(equalTo("jms")));
         assertThat("Producer should have messaging.destination.name=test-jms-otel",
                 producerSpan.attributes.get("messaging.destination.name"), is(equalTo("test-jms-otel")));
 
         // Verify consumer span
-        assertThat("Consumer span name should contain 'receive'", consumerSpan.name, containsString("receive"));
+        assertThat("Consumer span name should follow OTel convention",
+                consumerSpan.name, is(equalTo("test-jms-otel receive")));
         assertThat("Consumer should have messaging.system=jms",
                 consumerSpan.attributes.get("messaging.system"), is(equalTo("jms")));
         assertThat("Consumer should have messaging.destination.name=test-jms-otel",
