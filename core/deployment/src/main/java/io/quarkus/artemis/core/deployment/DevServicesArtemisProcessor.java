@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.logging.Logger;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
@@ -71,6 +70,7 @@ public class DevServicesArtemisProcessor {
     @BuildStep(onlyIfNot = IsNormal.class, onlyIf = DevServicesConfig.Enabled.class)
     List<DevServicesResultBuildItem> startArtemisDevService(
             DockerStatusBuildItem dockerStatusBuildItem,
+            DevServicesComposeProjectBuildItem composeProjectBuildItem,
             LaunchModeBuildItem launchMode,
             ArtemisBootstrappedBuildItem bootstrap,
             ShadowRuntimeConfigs shadowRunTimeConfigs,
@@ -113,7 +113,9 @@ public class DevServicesArtemisProcessor {
                     configuration,
                     propertyName,
                     dockerStatusBuildItem,
+                    composeProjectBuildItem,
                     launchMode,
+                    devServicesSharedNetworkBuildItem,
                     consoleInstalledBuildItem,
                     closeBuildItem,
                     loggingSetupBuildItem,
@@ -131,7 +133,9 @@ public class DevServicesArtemisProcessor {
             ArtemisDevServiceCfg configuration,
             String name,
             DockerStatusBuildItem dockerStatusBuildItem,
+            DevServicesComposeProjectBuildItem composeProjectBuildItem,
             LaunchModeBuildItem launchMode,
+            List<DevServicesSharedNetworkBuildItem> devServicesSharedNetworkBuildItem,
             Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
             CuratedApplicationShutdownBuildItem closeBuildItem,
             LoggingSetupBuildItem loggingSetupBuildItem,
@@ -150,12 +154,16 @@ public class DevServicesArtemisProcessor {
                     (launchMode.isTest() ? "(test) " : "") + "ActiveMQ Artemis Dev Services Starting:",
                     consoleInstalledBuildItem, loggingSetupBuildItem)) {
                 try {
+                    boolean useSharedNetwork = DevServicesSharedNetworkBuildItem.isSharedNetworkRequired(devServicesConfig,
+                            devServicesSharedNetworkBuildItem);
                     // devServices
                     RunningDevService service = startArtemis(
                             name,
                             dockerStatusBuildItem,
+                            composeProjectBuildItem,
                             configuration,
                             launchMode,
+                            useSharedNetwork,
                             devServicesConfig.timeout());
                     if (service != null) {
                         devServices.put(name, service);
@@ -240,8 +248,10 @@ public class DevServicesArtemisProcessor {
     private static RunningDevService startArtemis(
             String name,
             DockerStatusBuildItem dockerStatusBuildItem,
+            DevServicesComposeProjectBuildItem composeProjectBuildItem,
             ArtemisDevServiceCfg config,
             LaunchModeBuildItem launchMode,
+            boolean useSharedNetwork,
             Optional<Duration> timeout) {
         if (!config.devServicesEnabled) {
             // explicitly disabled
@@ -281,7 +291,9 @@ public class DevServicesArtemisProcessor {
                     config.password,
                     mergeExtraArgs(config.defaultExtraArgs, config.extraArgs));
 
-            ConfigureUtil.configureSharedNetwork(container, "artemis");
+            String hostname = ConfigureUtil.configureNetwork(container,
+                    composeProjectBuildItem.getDefaultNetworkId(), useSharedNetwork, "artemis");
+            boolean useNetworkAlias = useSharedNetwork || composeProjectBuildItem.getDefaultNetworkId() != null;
 
             if (config.serviceName != null) {
                 container.withLabel(DevServicesArtemisProcessor.DEV_SERVICE_LABEL, config.serviceName);
@@ -289,14 +301,18 @@ public class DevServicesArtemisProcessor {
 
             timeout.ifPresent(container::withStartupTimeout);
 
+            String host = useNetworkAlias ? hostname : container.getHost();
+
             container.start();
             return new RunningDevService(
                     containerName,
                     container.getContainerId(),
                     container::close,
                     Map.of(
-                            urlPropertyName, String.format("tcp://%s:%d", container.getHost(), container.getPort()),
-                            getWebUiUrlPropertyName(name), String.format("http://%s:%d", container.getHost(),
+                            urlPropertyName, String.format("tcp://%s:%d",
+                                    host,
+                                    useNetworkAlias ? ARTEMIS_PORT : container.getPort()),
+                            getWebUiUrlPropertyName(name), String.format("http://%s:%d", host,
                                     container.getMappedPort(ARTEMIS_WEB_UI_PORT))));
         };
 
@@ -387,8 +403,7 @@ public class DevServicesArtemisProcessor {
             this.port = fixedExposedPort;
             this.webUiPort = webUiPort;
 
-            withNetwork(Network.SHARED)
-                    .withExposedPorts(ARTEMIS_PORT, ARTEMIS_WEB_UI_PORT)
+            withExposedPorts(ARTEMIS_PORT, ARTEMIS_WEB_UI_PORT)
                     .withEnv("AMQ_USER", user)
                     .withEnv("AMQ_PASSWORD", password)
                     .withEnv("AMQ_EXTRA_ARGS", extra)

@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.logging.Logger;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
@@ -246,7 +245,10 @@ public class DevServicesArtemisProcessor {
                             config.extraArgs);
                     container.withReuse(config.reuse);
 
-                    ConfigureUtil.configureSharedNetwork(container, "artemis");
+                    String hostname = ConfigureUtil.configureNetwork(container,
+                            composeProjectBuildItem.getDefaultNetworkId(), useSharedNetwork, "artemis");
+                    boolean useNetworkAlias = useSharedNetwork
+                            || composeProjectBuildItem.getDefaultNetworkId() != null;
 
                     String serviceName = launchMode.getLaunchMode() == LaunchMode.DEVELOPMENT ? config.serviceName : null;
                     if (serviceName != null) {
@@ -257,7 +259,9 @@ public class DevServicesArtemisProcessor {
                     timeout.ifPresent(container::withStartupTimeout);
 
                     container.start();
-                    var configuration = createConnectionParameters(urlPropertyName, container.getHost(), container.getPort());
+                    var configuration = createConnectionParameters(urlPropertyName,
+                            useNetworkAlias ? hostname : container.getHost(),
+                            useNetworkAlias ? ARTEMIS_PORT : container.getPort());
                     return new RunningDevService(
                             containerName,
                             container.getContainerId(),
@@ -340,8 +344,7 @@ public class DevServicesArtemisProcessor {
                 String extra) {
             super(dockerImageName);
             this.port = fixedExposedPort;
-            withNetwork(Network.SHARED)
-                    .withExposedPorts(ARTEMIS_PORT, 8161)
+            withExposedPorts(ARTEMIS_PORT, 8161)
                     .withEnv("AMQ_USER", user)
                     .withEnv("AMQ_PASSWORD", password)
                     .withEnv("AMQ_EXTRA_ARGS", extra)
