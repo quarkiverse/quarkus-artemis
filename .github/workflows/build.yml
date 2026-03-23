@@ -5,9 +5,9 @@ on:
   push:
     branches:
       - "main"
+      - "3.13.x"
       - "3.9.x"
       - "3.7.x"
-      - "3.5.x"
     paths-ignore:
       - '.gitignore'
       - 'CODEOWNERS'
