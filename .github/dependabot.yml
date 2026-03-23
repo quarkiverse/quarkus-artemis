@@ -23,7 +23,7 @@ updates:
       - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
         versions:
           - "[3.34,)"
-      - dependency-name: "org.apache.activemq:*"
+      - dependency-name: "org.apache.artemis:*"
         versions:
           - "[2.53.0,)"
     target-branch: "3.13.x"
