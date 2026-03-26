@@ -106,8 +106,12 @@ jobs:
           ./mvnw \
             --batch-mode \
             --define maven.buildNumber.skip \
-            quarkus:go-offline \
             de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
+          ./mvnw \
+            --batch-mode \
+            --define maven.buildNumber.skip \
+            --projects integration-tests \
+            quarkus:go-offline
 
   build-and-test-jvm:
     runs-on: ubuntu-latest
