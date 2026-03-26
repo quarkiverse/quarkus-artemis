@@ -59,11 +59,14 @@ public class DevServicesArtemisProcessor {
 
     @BuildStep(onlyIf = IsLocalDevelopment.class)
     void createLinksToArtemis(
-            DevservicesCardBuildItem cardsBuildItem,
+            Optional<DevservicesCardBuildItem> maybeCardsBuildItem,
             BuildProducer<CardPageBuildItem> cardsProducer) {
-        CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
-        cardsBuildItem.getPagesToAdd().forEach(cardPageBuildItem::addPage);
-        cardsProducer.produce(cardPageBuildItem);
+        maybeCardsBuildItem.ifPresent(cardsBuildItem -> {
+            ;
+            CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
+            cardsBuildItem.getPagesToAdd().forEach(cardPageBuildItem::addPage);
+            cardsProducer.produce(cardPageBuildItem);
+        });
     }
 
     @SuppressWarnings("unused")
