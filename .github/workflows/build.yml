@@ -111,6 +111,7 @@ jobs:
             --batch-mode \
             --define maven.buildNumber.skip \
             --projects integration-tests \
+            --also-make-dependents \
             quarkus:go-offline
 
   build-and-test-jvm:
