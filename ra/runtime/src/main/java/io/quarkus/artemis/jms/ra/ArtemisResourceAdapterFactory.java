@@ -95,6 +95,9 @@ public class ArtemisResourceAdapterFactory implements ResourceAdapterFactory {
     }
 
     private static int count(String text, String find) {
+        if (text == null) {
+            return 0;
+        }
         int count = 0;
         final int length = find.length();
         for (int index = 0; (index = text.indexOf(find, index)) != -1; index += length) {
