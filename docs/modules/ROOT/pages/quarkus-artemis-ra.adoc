@@ -40,13 +40,13 @@ it is recommended to add the following BOM to your project, *below the Quarkus B
 </dependencyManagement>
 ----
 
-Once the BOM is added, simply add the `io.quarkiverse.artemis:quarkus-artemis-ra` extension:
+Once the BOM is added, simply add the `io.quarkiverse.artemis:quarkus-artemis-jms-ra` extension:
 
 [source,xml,subs=attributes+]
 ----
 <dependency>
     <groupId>io.quarkiverse.artemis</groupId>
-    <artifactId>quarkus-artemis-ra</artifactId>
+    <artifactId>quarkus-artemis-jms-ra</artifactId>
 </dependency>
 ----
 
@@ -140,7 +140,7 @@ services:
     environment:
       AMQ_USER: admin
       AMQ_PASSWORD: admin
-      AMQ_EXTRA_ARGS: --no-autotune --mapped --no-fsync
+      AMQ_EXTRA_ARGS: --no-autotune --mapped --no-fsync --relax-jolokia
 ----
 
 
