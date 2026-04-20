@@ -1,5 +1,6 @@
 package io.quarkus.artemis.jms.ra.deployment;
 
+import static io.quarkus.artemis.core.deployment.DevServicesArtemisProcessor.*;
 import static io.quarkus.devservices.common.ConfigureUtil.configureSharedServiceLabel;
 import static io.quarkus.devservices.common.ContainerLocator.locateContainerWithLabels;
 
@@ -22,6 +23,8 @@ import io.quarkus.deployment.dev.devservices.DevServicesConfig;
 import io.quarkus.devservices.common.ComposeLocator;
 import io.quarkus.devservices.common.ConfigureUtil;
 import io.quarkus.devservices.common.ContainerLocator;
+import io.quarkus.devui.spi.page.CardPageBuildItem;
+import io.quarkus.devui.spi.page.Page;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.configuration.ConfigUtils;
 
@@ -58,12 +61,16 @@ public class DevServicesArtemisProcessor {
             ShadowIronJacamarRuntimeConfig runtimeConfig,
             ArtemisDevServicesBuildTimeConfig devServicesBuildTimeConfig,
             BuildProducer<DevServicesResultBuildItem> devServicesResult,
-            DevServicesConfig devServicesConfig) {
+            DevServicesConfig devServicesConfig,
+            BuildProducer<CardPageBuildItem> cardPageProducer) {
+
+        CardPageBuildItem cardPage = new CardPageBuildItem();
 
         for (String name : buildConfig.resourceAdapters().keySet()) {
             boolean isUrlEmpty = runtimeConfig.resourceAdapters().get(name).ra().config().connectionParameters().isEmpty();
             boolean useSharedNetwork = DevServicesSharedNetworkBuildItem.isSharedNetworkRequired(devServicesConfig,
                     devServicesSharedNetworkBuildItem);
+            String feature = "ActiveMQ-Artemis " + name;
 
             ArtemisDevServiceCfg configuration = getConfiguration(devServicesBuildTimeConfig, name, isUrlEmpty);
             if (configuration == null || !configuration.devServicesEnabled) {
@@ -76,6 +83,8 @@ public class DevServicesArtemisProcessor {
             }
 
             String urlPropertyName = getUrlPropertyName(name);
+            String webUiUrlPropertyName = getWebUiUrlPropertyName(name);
+
             if (ConfigUtils.isPropertyPresent(urlPropertyName)) {
                 LOGGER.debugf(
                         "Not starting dev services for ActiveMQ Artemis and configuration %s, the quarkus.ironjacamar.ra.config.connection-parameters is configured.",
@@ -89,7 +98,7 @@ public class DevServicesArtemisProcessor {
                 continue;
             }
 
-            DevServicesResultBuildItem discovered = discoverRunningService(composeProjectBuildItem, name, configuration,
+            DevServicesResultBuildItem discovered = discoverRunningService(composeProjectBuildItem, feature, configuration,
                     urlPropertyName, launchMode.getLaunchMode(), useSharedNetwork);
             if (discovered != null) {
                 devServicesResult.produce(discovered);
@@ -98,7 +107,7 @@ public class DevServicesArtemisProcessor {
 
             Optional<Duration> timeout = devServicesConfig.timeout();
             devServicesResult.produce(DevServicesResultBuildItem.<ArtemisContainer> owned()
-                    .name("ActiveMQ-Artemis " + name)
+                    .feature(feature)
                     .serviceName(configuration.serviceName)
                     .serviceConfig(configuration)
                     .startable(() -> {
@@ -107,6 +116,7 @@ public class DevServicesArtemisProcessor {
                                 configuration.fixedExposedPort,
                                 composeProjectBuildItem.getDefaultNetworkId(),
                                 useSharedNetwork,
+                                configuration.webUiPort,
                                 configuration.user,
                                 configuration.password,
                                 configuration.extraArgs);
@@ -114,16 +124,28 @@ public class DevServicesArtemisProcessor {
                         return container.withReuse(configuration.reuse)
                                 .withSharedServiceLabel(launchMode.getLaunchMode(), configuration.serviceName);
                     })
-                    .configProvider(Map.of(urlPropertyName,
-                            container -> String.format("host=%s;port=%d;protocols=CORE",
-                                    container.getHost(), container.getPort())))
+                    .configProvider(Map.of(
+                            urlPropertyName,
+                            container -> String.format("host=%s;port=%d;protocols=CORE", container.getHost(),
+                                    container.getPort()),
+                            webUiUrlPropertyName,
+                            container -> String.format("http://%s:%d", container.getHost(),
+                                    container.getMappedPort(ARTEMIS_WEB_UI_PORT))))
                     .build());
+
+            cardPage.addPage(Page.externalPageBuilder(name + " web UI")
+                    .dynamicUrlJsonRPCMethodName("devui-dev-services:devServicesConfig",
+                            Map.of("name", feature, "configKey", webUiUrlPropertyName))
+                    .doNotEmbed()
+                    .isHtmlContent()
+                    .icon("font-awesome-solid:binoculars"));
         }
+        cardPageProducer.produce(cardPage);
     }
 
     private DevServicesResultBuildItem discoverRunningService(
             DevServicesComposeProjectBuildItem composeProjectBuildItem,
-            String name,
+            String feature,
             ArtemisDevServiceCfg config,
             String urlPropertyName,
             LaunchMode launchMode,
@@ -133,7 +155,7 @@ public class DevServicesArtemisProcessor {
                         List.of(config.imageName, "artemis"),
                         ARTEMIS_PORT, launchMode, useSharedNetwork))
                 .map(containerAddress -> DevServicesResultBuildItem.discovered()
-                        .name("ActiveMQ-Artemis " + name)
+                        .feature(feature)
                         .containerId(containerAddress.getId())
                         .config(Map.of(urlPropertyName,
                                 String.format("host=%s;port=%d;protocols=CORE",
@@ -162,6 +184,7 @@ public class DevServicesArtemisProcessor {
         private final boolean devServicesEnabled;
         private final String imageName;
         private final Integer fixedExposedPort;
+        private final Integer webUiPort;
         private final boolean shared;
         private final String serviceName;
         private final String user;
@@ -174,6 +197,7 @@ public class DevServicesArtemisProcessor {
             this.devServicesEnabled = devServicesConfig.enabled().orElse(isUrlEmpty);
             this.imageName = devServicesConfig.getImageName();
             this.fixedExposedPort = devServicesConfig.getPort();
+            this.webUiPort = devServicesConfig.getWebUiPort();
             this.shared = devServicesConfig.isShared();
             this.serviceName = devServicesConfig.getServiceName() + "-" + name;
             this.user = devServicesConfig.getUser();
@@ -210,14 +234,18 @@ public class DevServicesArtemisProcessor {
         private final int fixedExposedPort;
         private final boolean useSharedNetwork;
         private final String hostName;
+        private final int webUiPort;
 
         private ArtemisContainer(DockerImageName dockerImageName, int fixedExposedPort, String defaultNetworkId,
-                boolean useSharedNetwork, String user, String password, String extra) {
+                boolean useSharedNetwork, int webUiPort, String user, String password, String extra) {
             super(dockerImageName);
             this.fixedExposedPort = fixedExposedPort;
             this.useSharedNetwork = useSharedNetwork;
             this.hostName = ConfigureUtil.configureNetwork(this, defaultNetworkId, useSharedNetwork, "artemis");
-            withEnv("AMQ_USER", user)
+            this.webUiPort = webUiPort;
+
+            withExposedPorts(ARTEMIS_PORT, ARTEMIS_WEB_UI_PORT)
+                    .withEnv("AMQ_USER", user)
                     .withEnv("AMQ_PASSWORD", password)
                     .withEnv("AMQ_EXTRA_ARGS", extra)
                     .waitingFor(Wait.forLogMessage(".*AMQ241004.*", 1)); // Artemis console available.
@@ -237,6 +265,9 @@ public class DevServicesArtemisProcessor {
                 addFixedExposedPort(fixedExposedPort, ARTEMIS_PORT);
             } else {
                 addExposedPort(ARTEMIS_PORT);
+            }
+            if (webUiPort > 0) {
+                addFixedExposedPort(webUiPort, ARTEMIS_WEB_UI_PORT);
             }
         }
 

@@ -47,7 +47,7 @@ public class DevServicesArtemisProcessor {
      */
     static final String DEV_SERVICE_LABEL = "quarkus-dev-service-artemis";
     static final int ARTEMIS_PORT = 61616;
-    static final int ARTEMIS_WEB_UI_PORT = 8161;
+    public static final int ARTEMIS_WEB_UI_PORT = 8161;
 
     private static final ContainerLocator artemisContainerLocator = locateContainerWithLabels(ARTEMIS_PORT,
             DEV_SERVICE_LABEL);
@@ -196,7 +196,7 @@ public class DevServicesArtemisProcessor {
         return getArtemisPropertyBase(name) + "url";
     }
 
-    private static String getWebUiUrlPropertyName(String name) {
+    public static String getWebUiUrlPropertyName(String name) {
         return getArtemisPropertyBase(name) + "web-ui-url";
     }
 

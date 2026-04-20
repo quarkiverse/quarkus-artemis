@@ -30,6 +30,13 @@ public interface ArtemisDevServicesBuildTimeConfig {
     Optional<Integer> port();
 
     /**
+     * Optional fixed port the Artemis Web-Ui will be exposed at.
+     * <p>
+     * If not defined, the Artemis Web-Ui port will be chosen randomly.
+     */
+    Optional<Integer> webUiPort();
+
+    /**
      * The ActiveMQ Artemis container image to use.
      * <p>
      * Defaults to {@code quay.io/arkmq-org/activemq-artemis-broker:artemis.2.52.0}
@@ -74,12 +81,16 @@ public interface ArtemisDevServicesBuildTimeConfig {
 
     /**
      * The value of the {@code AMQ_EXTRA_ARGS} environment variable to pass to the container. Defaults to
-     * {@code --no-autotune --mapped --no-fsync} when not set.
+     * {@code --no-autotune --mapped --no-fsync --relax-jolokia} when not set.
      */
     Optional<String> extraArgs();
 
     default int getPort() {
         return port().orElse(0);
+    }
+
+    default int getWebUiPort() {
+        return webUiPort().orElse(0);
     }
 
     default String getImageName() {
@@ -103,7 +114,7 @@ public interface ArtemisDevServicesBuildTimeConfig {
     }
 
     default String getExtraArgs() {
-        return extraArgs().orElse("--no-autotune --mapped --no-fsync");
+        return extraArgs().orElse("--no-autotune --mapped --no-fsync --relax-jolokia");
     }
 
 }
