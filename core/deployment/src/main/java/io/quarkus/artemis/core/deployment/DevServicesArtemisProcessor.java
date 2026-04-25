@@ -34,7 +34,6 @@ import io.smallrye.config.NameIterator;
 /**
  * Start a ActiveMQ Artemis broker if needed
  */
-@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @BuildSteps(onlyIf = { IsDevServicesSupportedByLaunchMode.class, DevServicesConfig.Enabled.class })
 public class DevServicesArtemisProcessor {
     private static final Logger LOGGER = Logger.getLogger(DevServicesArtemisProcessor.class);
@@ -123,7 +122,7 @@ public class DevServicesArtemisProcessor {
             boolean useSharedNetwork = DevServicesSharedNetworkBuildItem.isSharedNetworkRequired(devServicesConfig,
                     devServicesSharedNetworkBuildItem);
 
-            DevServicesResultBuildItem discovered = discoverRunningService(composeProjectBuildItem, name, configuration,
+            DevServicesResultBuildItem discovered = discoverRunningService(composeProjectBuildItem, configuration,
                     urlPropertyName, launchMode.getLaunchMode(), useSharedNetwork, feature);
             if (discovered != null) {
                 devServicesResult.produce(discovered);
@@ -173,7 +172,6 @@ public class DevServicesArtemisProcessor {
 
     private DevServicesResultBuildItem discoverRunningService(
             DevServicesComposeProjectBuildItem composeProjectBuildItem,
-            String name,
             ArtemisDevServiceCfg config,
             String urlPropertyName,
             LaunchMode launchMode,

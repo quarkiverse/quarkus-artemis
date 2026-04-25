@@ -9,10 +9,12 @@ import com.oracle.svm.core.annotate.Alias;
 import com.oracle.svm.core.annotate.RecomputeFieldValue;
 import com.oracle.svm.core.annotate.TargetClass;
 
+@SuppressWarnings("unused")
 public class JGroupSubstitutions {
 }
 
 @TargetClass(org.jgroups.util.Util.class)
+@SuppressWarnings("unused")
 final class Target_Util {
     @Alias
     @RecomputeFieldValue(kind = RecomputeFieldValue.Kind.Reset)

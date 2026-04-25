@@ -17,6 +17,7 @@ import io.quarkus.runtime.RuntimeValue;
  * Uses the local ConnectionFactoryWrapperBuildItem (MultiBuildItem) to allow
  * composition with other wrappers like quarkus-pooled-jms.
  */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ArtemisJmsOpenTelemetryProcessor {
 
     @BuildStep
