@@ -72,6 +72,29 @@ endif::add-copy-button-to-env-var[]
 |int
 |
 
+a|icon:lock[title=Fixed at build time] [[quarkus-artemis-jms-ra_quarkus-ironjacamar-devservices-web-ui-port]] [.property-path]##link:#quarkus-artemis-jms-ra_quarkus-ironjacamar-devservices-web-ui-port[`+++quarkus.ironjacamar.devservices.web-ui-port+++`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.ironjacamar.devservices.web-ui-port+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Optional fixed port the Artemis Web-Ui will be exposed at.
+
+If not defined, the Artemis Web-Ui port will be chosen randomly.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_IRONJACAMAR_DEVSERVICES_WEB_UI_PORT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_IRONJACAMAR_DEVSERVICES_WEB_UI_PORT+++`
+endif::add-copy-button-to-env-var[]
+--
+|int
+|
+
 a|icon:lock[title=Fixed at build time] [[quarkus-artemis-jms-ra_quarkus-ironjacamar-devservices-image-name]] [.property-path]##link:#quarkus-artemis-jms-ra_quarkus-ironjacamar-devservices-image-name[`+++quarkus.ironjacamar.devservices.image-name+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.ironjacamar.devservices.image-name+++[]
@@ -82,7 +105,7 @@ endif::add-copy-button-to-config-props[]
 --
 The ActiveMQ Artemis container image to use.
 
-Defaults to `quay.io/arkmq-org/activemq-artemis-broker:artemis.2.52.0`
+Defaults to `quay.io/arkmq-org/activemq-artemis-broker:artemis.2.53.0`
 
 
 ifdef::add-copy-button-to-env-var[]
@@ -193,7 +216,7 @@ endif::add-copy-button-to-config-props[]
 
 [.description]
 --
-The value of the `AMQ_EXTRA_ARGS` environment variable to pass to the container. Defaults to `--no-autotune --mapped --no-fsync` when not set.
+The value of the `AMQ_EXTRA_ARGS` environment variable to pass to the container. Defaults to `--no-autotune --mapped --no-fsync --relax-jolokia` when not set.
 
 
 ifdef::add-copy-button-to-env-var[]
