@@ -206,7 +206,7 @@ it is recommended to add the following BOM to your project, *below the Quarkus B
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>artemis-bom</artifactId>
-            <version>${artemis-version}</version>
+            <version>$\{artemis-version}</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
