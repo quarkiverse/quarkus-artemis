@@ -30,6 +30,10 @@ public class TracingConnectionFactory implements ConnectionFactory, XAConnection
         this.openTelemetrySupplier = openTelemetrySupplier;
     }
 
+    public ConnectionFactory getDelegate() {
+        return delegate;
+    }
+
     private void ensureInitialized() {
         if (tracer == null) {
             synchronized (this) {
