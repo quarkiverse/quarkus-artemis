@@ -86,8 +86,8 @@ If the log level is not enabled, the health check will only report `"DOWN"`.
 
 If the log level is enabled,
 
- - the health check will report `"DOWN, see error-id <id>"` and
- - the stack trace is logged on the defined log level. The log will contain the `error-id <id>` in the log message and in the MDC.
+ * the health check will report `"DOWN, see error-id <id>"` and
+ * the stack trace is logged on the defined log level. The log will contain the `error-id <id>` in the log message and in the MDC.
 
 
 ifdef::add-copy-button-to-env-var[]
