@@ -79,15 +79,17 @@ public class ArtemisJmsProcessor {
             List<ConnectionFactoryWrapperBuildItem> localWrappers) {
         Function<ConnectionFactory, Object> wrapper = recorder.getDefaultWrapper();
 
-        // First apply the external wrapper (e.g., from quarkus-pooled-jms) if present
-        if (externalWrapper.isPresent()) {
-            wrapper = externalWrapper.get().getWrapper();
-        }
-
-        // Then compose all local wrappers (e.g., OpenTelemetry) on top
+        // First compose all local wrappers (e.g., OpenTelemetry) so they wrap the raw ConnectionFactory
         // Use the recorder's composeWrappers method to avoid lambda serialization issues
         for (ConnectionFactoryWrapperBuildItem localWrapper : localWrappers) {
             wrapper = recorder.composeWrappers(wrapper, localWrapper.getWrapper());
+        }
+
+        // Then apply the external wrapper (e.g., from quarkus-pooled-jms) on top.
+        // This ensures the CDI bean type is preserved (e.g., DelegatingJmsPoolConnectionFactory)
+        // so that downstream initializers can detect it via instanceof checks.
+        if (externalWrapper.isPresent()) {
+            wrapper = recorder.composeWrappers(wrapper, externalWrapper.get().getWrapper());
         }
 
         return wrapper;
