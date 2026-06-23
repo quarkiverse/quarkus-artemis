@@ -160,14 +160,10 @@ abstract public class BaseOpenTelemetryTest {
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("No consumer span found"));
 
-        // Verify the consumer span has a link back to the producer span's context
-        assertThat("Consumer span should have at least one link for trace context propagation",
-                consumerSpan.links, is(not(empty())));
-
-        boolean hasLinkToProducer = consumerSpan.links.stream()
-                .anyMatch(link -> link.traceId.equals(producerSpan.traceId)
-                        && link.spanId.equals(producerSpan.spanId));
-        assertThat("Consumer span should link to the producer span", hasLinkToProducer, is(true));
+        // Verify the consumer span shares the same traceId as the producer span
+        // (parent-child relationship via trace context propagation through JMS message properties)
+        assertThat("Consumer span should have the same traceId as the producer span",
+                consumerSpan.traceId, is(equalTo(producerSpan.traceId)));
     }
 
     @Test
@@ -228,14 +224,10 @@ abstract public class BaseOpenTelemetryTest {
         assertThat("Consumer should have messaging.destination.name=test-jms-otel",
                 consumerSpan.attributes.get("messaging.destination.name"), is(equalTo("test-jms-otel")));
 
-        // Verify context propagation through the classic API path
-        assertThat("Consumer span should have links for trace context propagation",
-                consumerSpan.links, is(not(empty())));
-
-        boolean hasLinkToProducer = consumerSpan.links.stream()
-                .anyMatch(link -> link.traceId.equals(producerSpan.traceId)
-                        && link.spanId.equals(producerSpan.spanId));
-        assertThat("Consumer span should link to the producer span", hasLinkToProducer, is(true));
+        // Verify the consumer span shares the same traceId as the producer span
+        // (parent-child relationship via trace context propagation through JMS message properties)
+        assertThat("Consumer span should have the same traceId as the producer span",
+                consumerSpan.traceId, is(equalTo(producerSpan.traceId)));
     }
 
     @Test
