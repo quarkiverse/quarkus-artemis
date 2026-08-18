@@ -42,20 +42,21 @@ public class ArtemisCoreHelper {
 
         // @formatter:off
         RestAssured
-                .when().get(endpoint)
-                .then()
-                    .statusCode(Response.Status.OK.getStatusCode())
-                    .body(is(body));
+            .when().get(endpoint)
+            .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body(is(body));
         // @formatter:on
     }
 
     public void receiveAndVerify(String endpoint, ClientSession session, String queueName) throws ActiveMQException {
         String body = createBody();
+        // @formatter:off
         RestAssured
-                .given().body(body)
-                .when().post(endpoint)
-                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
-
+            .given().body(body)
+            .when().post(endpoint)
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
+        // @formatter:on
         try (ClientSession autoClosedSession = session) {
             session.start();
             ClientMessage message = autoClosedSession.createConsumer(queueName).receive(1000L);

@@ -14,9 +14,9 @@ public interface BaseSendAndReceiveTest {
         String body = "body";
         // @formatter:off
         RestAssured
-                .given().body(body)
-                .when().post()
-                .then().statusCode(is(Response.Status.OK.getStatusCode())).body(is(body));
+            .given().body(body)
+            .when().post()
+            .then().statusCode(is(Response.Status.OK.getStatusCode())).body(is(body));
         // @formatter:on
     }
 }

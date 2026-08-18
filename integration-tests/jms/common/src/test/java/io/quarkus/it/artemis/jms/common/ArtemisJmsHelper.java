@@ -46,20 +46,21 @@ public class ArtemisJmsHelper {
 
         // @formatter:off
         RestAssured
-                .when().get(endpoint)
-                .then()
-                    .statusCode(Response.Status.OK.getStatusCode())
-                    .body(is(body));
+            .when().get(endpoint)
+            .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body(is(body));
         // @formatter:on
     }
 
     public void receiveAndVerify(String endpoint, JMSContext context, String queueName) throws JMSException {
         String body = createBody();
+        // @formatter:off
         RestAssured
-                .given().body(body)
-                .when().post(endpoint)
-                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
-
+            .given().body(body)
+            .when().post(endpoint)
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
+        // @formatter:on
         try (JMSContext autoClosedContext = context) {
             JMSConsumer consumer = autoClosedContext.createConsumer(autoClosedContext.createQueue(queueName));
             Message message = consumer.receive(1000L);
@@ -68,11 +69,12 @@ public class ArtemisJmsHelper {
     }
 
     public void testRollback(String endpoint, JMSContext context, String queueName) {
+        // @formatter:off
         RestAssured
-                .given().body("fail")
-                .when().post(endpoint)
-                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
-
+            .given().body("fail")
+            .when().post(endpoint)
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
+        // @formatter:on
         try (JMSContext autoClosedContext = context) {
             JMSConsumer consumer = autoClosedContext.createConsumer(autoClosedContext.createQueue(queueName));
             Message message = consumer.receive(1000L);
@@ -86,19 +88,19 @@ public class ArtemisJmsHelper {
             autoClosedContext.createProducer().send(context.createQueue(queueName), body);
         }
 
-        // Consume the message in xa transaction
         // @formatter:off
+        // Consume the message in xa transaction
         RestAssured
-                .when().get(xaEndpoint)
-                .then()
-                    .statusCode(Response.Status.OK.getStatusCode())
-                    .body(is(body));
-        // @formatter:on
+            .when().get(xaEndpoint)
+            .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body(is(body));
         // Receive from queue again to confirm nothing is received i.e. message was consumed
         // and now there is no message in the queue
         RestAssured
-                .when().get(endpoint)
-                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
+            .when().get(endpoint)
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
+        // @formatter:on
     }
 
     public void sendAndVerifyXARollback(JMSContext context, String queueName, String xaEndpoint, String endpoint) {
@@ -107,18 +109,18 @@ public class ArtemisJmsHelper {
             autoClosedContext.createProducer().send(context.createQueue(queueName), body);
         }
 
-        // Consume the message but in rollback transaction
         // @formatter:off
+        // Consume the message but in rollback transaction
         RestAssured
-                .when().get(xaEndpoint)
-                .then()
-                    .statusCode(Response.Status.OK.getStatusCode())
-                    .body(is(body));
-        // @formatter:on
+            .when().get(xaEndpoint)
+            .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body(is(body));
         // Receive from queue again to confirm message is received i.e. message wasn't consumed
         // and rollback occurred
         RestAssured
-                .when().get(endpoint)
-                .then().statusCode(Response.Status.OK.getStatusCode());
+            .when().get(endpoint)
+            .then().statusCode(Response.Status.OK.getStatusCode());
+        // @formatter:on
     }
 }
