@@ -154,19 +154,10 @@ class TracingJMSConsumer implements JMSConsumer {
     /**
      * Wrapper for MessageListener that adds tracing.
      */
-    private static class TracingMessageListener implements MessageListener {
-        private final MessageListener delegate;
-        private final Destination destination;
-        private final Tracer tracer;
-        private final JmsContextPropagator contextPropagator;
-
-        TracingMessageListener(MessageListener delegate, Destination destination, Tracer tracer,
-                JmsContextPropagator contextPropagator) {
-            this.delegate = delegate;
-            this.destination = destination;
-            this.tracer = tracer;
-            this.contextPropagator = contextPropagator;
-        }
+    private record TracingMessageListener(MessageListener delegate, Destination destination,
+            Tracer tracer, JmsContextPropagator contextPropagator)
+            implements
+                MessageListener {
 
         @Override
         public void onMessage(Message message) {
@@ -175,8 +166,7 @@ class TracingJMSConsumer implements JMSConsumer {
             // Extract context from message to create a link
             Context extractedContext = contextPropagator.extractContext(message);
 
-            SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
-                    .setSpanKind(SpanKind.CONSUMER);
+            SpanBuilder spanBuilder = tracer.spanBuilder(spanName).setSpanKind(SpanKind.CONSUMER);
 
             // Use link instead of parent-child relationship
             if (extractedContext != null) {

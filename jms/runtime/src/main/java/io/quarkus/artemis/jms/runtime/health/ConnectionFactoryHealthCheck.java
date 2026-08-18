@@ -36,7 +36,7 @@ public class ConnectionFactoryHealthCheck implements HealthCheck {
             @Any Instance<ConnectionFactory> connectionFactories) {
         this.runtimeConfigs = runtimeConfigs;
         this.connectionFactories = connectionFactories;
-        connectionFactoryNames = support.getConfiguredNames().stream()
+        connectionFactoryNames = support.configuredNames().stream()
                 .filter(name -> runtimeConfigs.configs().get(name).isHealthInclude())
                 .collect(Collectors.toCollection(HashSet::new));
         connectionFactoryNames.addAll(ArtemisUtil.getExternalNames(ConnectionFactory.class, runtimeConfigs, buildTimeConfigs));

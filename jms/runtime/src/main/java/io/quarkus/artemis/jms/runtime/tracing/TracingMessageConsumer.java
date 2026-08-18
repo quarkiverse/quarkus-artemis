@@ -34,7 +34,7 @@ class TracingMessageConsumer implements MessageConsumer {
 
     @Override
     public Message receive() throws JMSException {
-        return receiveWithTracing(() -> delegate.receive());
+        return receiveWithTracing(delegate::receive);
     }
 
     @Override
@@ -44,7 +44,7 @@ class TracingMessageConsumer implements MessageConsumer {
 
     @Override
     public Message receiveNoWait() throws JMSException {
-        return receiveWithTracing(() -> delegate.receiveNoWait());
+        return receiveWithTracing(delegate::receiveNoWait);
     }
 
     private Message receiveWithTracing(JmsReceiveOperation operation) throws JMSException {
@@ -119,19 +119,10 @@ class TracingMessageConsumer implements MessageConsumer {
     /**
      * Wrapper for MessageListener that adds tracing to onMessage calls.
      */
-    private static class TracingMessageListener implements MessageListener {
-        private final MessageListener delegate;
-        private final Destination destination;
-        private final Tracer tracer;
-        private final JmsContextPropagator contextPropagator;
-
-        TracingMessageListener(MessageListener delegate, Destination destination, Tracer tracer,
-                JmsContextPropagator contextPropagator) {
-            this.delegate = delegate;
-            this.destination = destination;
-            this.tracer = tracer;
-            this.contextPropagator = contextPropagator;
-        }
+    private record TracingMessageListener(MessageListener delegate, Destination destination,
+            Tracer tracer, JmsContextPropagator contextPropagator)
+            implements
+                MessageListener {
 
         @Override
         public void onMessage(Message message) {
@@ -140,8 +131,7 @@ class TracingMessageConsumer implements MessageConsumer {
             // Extract context from message to create a link
             Context extractedContext = contextPropagator.extractContext(message);
 
-            SpanBuilder spanBuilder = tracer.spanBuilder(spanName)
-                    .setSpanKind(SpanKind.CONSUMER);
+            SpanBuilder spanBuilder = tracer.spanBuilder(spanName).setSpanKind(SpanKind.CONSUMER);
 
             // Use link instead of parent-child relationship
             if (extractedContext != null) {

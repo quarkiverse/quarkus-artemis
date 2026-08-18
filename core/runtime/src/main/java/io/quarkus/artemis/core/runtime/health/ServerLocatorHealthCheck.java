@@ -35,7 +35,7 @@ public class ServerLocatorHealthCheck implements HealthCheck {
             @Any Instance<ServerLocator> serverLocators) {
         this.runtimeConfigs = runtimeConfigs;
         this.serverLocators = serverLocators;
-        serverLocatorNames = support.getConfiguredNames().stream()
+        serverLocatorNames = support.configuredNames().stream()
                 .filter(name -> runtimeConfigs.configs().get(name).isHealthInclude())
                 .collect(Collectors.toCollection(HashSet::new));
         serverLocatorNames.addAll(ArtemisUtil.getExternalNames(ServerLocator.class, runtimeConfigs, buildTimeConfigs));
