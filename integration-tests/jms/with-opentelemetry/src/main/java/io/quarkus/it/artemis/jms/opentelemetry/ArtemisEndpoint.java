@@ -19,7 +19,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
-import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.sdk.testing.exporter.InMemorySpanExporter;
 import io.quarkus.it.artemis.jms.common.ArtemisJmsConsumerManager;
 import io.quarkus.it.artemis.jms.common.ArtemisJmsProducerManager;
@@ -138,24 +137,24 @@ public class ArtemisEndpoint {
                 .map(span -> {
                     Map<String, String> attrs = span.getAttributes().asMap().entrySet().stream()
                             .collect(Collectors.toMap(
-                                    e -> ((AttributeKey<?>) e.getKey()).getKey(),
+                                    e -> e.getKey().getKey(),
                                     e -> String.valueOf(e.getValue())));
                     List<LinkInfo> links = span.getLinks().stream()
                             .map(link -> new LinkInfo(
                                     link.getSpanContext().getTraceId(),
                                     link.getSpanContext().getSpanId()))
-                            .collect(Collectors.toList());
+                            .toList();
                     String statusCode = span.getStatus().getStatusCode().name();
                     String statusDescription = span.getStatus().getDescription();
                     List<EventInfo> events = span.getEvents().stream()
                             .map(event -> {
                                 Map<String, String> eventAttrs = event.getAttributes().asMap().entrySet().stream()
                                         .collect(Collectors.toMap(
-                                                e -> ((AttributeKey<?>) e.getKey()).getKey(),
+                                                e -> e.getKey().getKey(),
                                                 e -> String.valueOf(e.getValue())));
                                 return new EventInfo(event.getName(), eventAttrs);
                             })
-                            .collect(Collectors.toList());
+                            .toList();
                     return new SpanInfo(
                             span.getName(),
                             span.getKind().name(),
@@ -167,7 +166,7 @@ public class ArtemisEndpoint {
                             links,
                             events);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @DELETE

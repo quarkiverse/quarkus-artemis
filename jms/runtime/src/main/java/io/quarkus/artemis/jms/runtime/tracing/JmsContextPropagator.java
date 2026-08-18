@@ -19,7 +19,7 @@ import io.opentelemetry.context.propagation.TextMapSetter;
  */
 class JmsContextPropagator {
 
-    private static final TextMapGetter<Message> GETTER = new TextMapGetter<Message>() {
+    private static final TextMapGetter<Message> GETTER = new TextMapGetter<>() {
         @Override
         public Iterable<String> keys(Message carrier) {
             Map<String, String> properties = new HashMap<>();
@@ -48,17 +48,14 @@ class JmsContextPropagator {
         }
     };
 
-    private static final TextMapSetter<Message> MESSAGE_SETTER = new TextMapSetter<Message>() {
-        @Override
-        public void set(Message carrier, String key, String value) {
-            if (carrier == null || key == null || value == null) {
-                return;
-            }
-            try {
-                carrier.setStringProperty(key, value);
-            } catch (JMSException e) {
-                // Ignore - best effort
-            }
+    private static final TextMapSetter<Message> MESSAGE_SETTER = (carrier, key, value) -> {
+        if (carrier == null || key == null || value == null) {
+            return;
+        }
+        try {
+            carrier.setStringProperty(key, value);
+        } catch (JMSException e) {
+            // Ignore - best effort
         }
     };
 
@@ -68,14 +65,11 @@ class JmsContextPropagator {
      * convenience send methods (String, Map, byte[], Serializable) where the Message
      * object is created internally by the JMS provider.
      */
-    private static final TextMapSetter<JMSProducer> PRODUCER_SETTER = new TextMapSetter<JMSProducer>() {
-        @Override
-        public void set(JMSProducer carrier, String key, String value) {
-            if (carrier == null || key == null || value == null) {
-                return;
-            }
-            carrier.setProperty(key, value);
+    private static final TextMapSetter<JMSProducer> PRODUCER_SETTER = (carrier, key, value) -> {
+        if (carrier == null || key == null || value == null) {
+            return;
         }
+        carrier.setProperty(key, value);
     };
 
     private final ContextPropagators propagators;

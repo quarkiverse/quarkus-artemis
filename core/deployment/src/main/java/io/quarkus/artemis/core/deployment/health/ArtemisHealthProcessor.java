@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Singleton;
 
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.deployment.ArtemisBootstrappedBuildItem;
@@ -47,7 +47,7 @@ public class ArtemisHealthProcessor {
         syntheticBeanProducer.produce(SyntheticBeanBuildItem
                 .configure(ArtemisHealthSupport.class)
                 .supplier(recorder.getArtemisHealthSupportBuilder(names))
-                .scope(ApplicationScoped.class)
+                .scope(Singleton.class)
                 .defaultBean()
                 .done());
         return new ArtemisHealthSupportBuildItem();
