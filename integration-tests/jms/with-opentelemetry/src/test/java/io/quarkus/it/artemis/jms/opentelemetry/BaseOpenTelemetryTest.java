@@ -1,6 +1,5 @@
 package io.quarkus.it.artemis.jms.opentelemetry;
 
-import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -8,24 +7,31 @@ import static org.hamcrest.Matchers.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.ws.rs.core.Response;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-abstract public class BaseOpenTelemetryTest {
+import io.restassured.RestAssured;
+
+public abstract class BaseOpenTelemetryTest {
 
     private static final int MAX_DRAIN_ITERATIONS = 50;
 
     @BeforeEach
     void setUp() {
+        // @formatter:off
         // Reset spans through REST API
-        given().delete("/artemis/spans").then().statusCode(204);
-
+        RestAssured
+            .when().delete("/artemis/spans")
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
+        // @formatter:on
         // Clear any leftover messages from the queue with a bounded loop
         int iterations = 0;
         try {
             String leftover;
             while (iterations++ < MAX_DRAIN_ITERATIONS
-                    && (leftover = given().when().get("/artemis").then().extract().asString()) != null
+                    && (leftover = RestAssured.when().get("/artemis").then().extract().asString()) != null
                     && !leftover.isEmpty()) {
                 // Consume leftover messages
             }
@@ -38,13 +44,12 @@ abstract public class BaseOpenTelemetryTest {
     void testJmsTracingProducer() {
         // Send a message
         String body = "test-message-producer-" + System.currentTimeMillis();
-        given()
-                .body(body)
-                .when()
-                .post("/artemis")
-                .then()
-                .statusCode(204);
-
+        // @formatter:off
+        RestAssured
+            .given().body(body)
+            .when().post("/artemis")
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
+        // @formatter:on
         // Wait for JMS producer span to be exported
         await().atMost(10, TimeUnit.SECONDS).until(() -> {
             long jmsProducerCount = getSpans().stream().filter(span -> "PRODUCER".equals(span.kind)).count();
@@ -74,24 +79,22 @@ abstract public class BaseOpenTelemetryTest {
     void testJmsTracingConsumer() {
         // Send a message first
         String body = "test-message-consumer-" + System.currentTimeMillis();
-        given()
-                .body(body)
-                .when()
-                .post("/artemis")
-                .then()
-                .statusCode(204);
-
+        // @formatter:off
+        RestAssured
+            .given().body(body)
+            .when().post("/artemis")
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         // Reset spans to focus on consumer
-        given().delete("/artemis/spans").then().statusCode(204);
-
+        RestAssured
+            .when().delete("/artemis/spans")
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         // Receive the message
-        given()
-                .when()
-                .get("/artemis")
-                .then()
-                .statusCode(200)
+        RestAssured
+            .when().get("/artemis")
+            .then()
+                .statusCode(Response.Status.OK.getStatusCode())
                 .body(equalTo(body));
-
+        // @formatter:on
         // Wait for JMS consumer span to be exported
         await().atMost(10, TimeUnit.SECONDS).until(() -> {
             long jmsConsumerCount = getSpans().stream().filter(span -> "CONSUMER".equals(span.kind)).count();
@@ -119,27 +122,25 @@ abstract public class BaseOpenTelemetryTest {
 
     @Test
     void testJmsTracingContextPropagation() {
+        // @formatter:off
         // Reset spans
-        given().delete("/artemis/spans").then().statusCode(204);
-
+        RestAssured
+            .when().delete("/artemis/spans")
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         // Use the JMS 2.0 convenience API (JMSContext/JMSProducer.send(Destination, String))
         // This verifies context propagation via JMSProducer properties
         String body = "test-message-propagation-" + System.currentTimeMillis();
-        given()
-                .body(body)
-                .when()
-                .post("/artemis")
-                .then()
-                .statusCode(204);
-
+        RestAssured
+            .given().body(body)
+            .when().post("/artemis")
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         // Receive via JMS 2.0 API
-        given()
-                .when()
-                .get("/artemis")
-                .then()
-                .statusCode(200)
+        RestAssured
+            .when().get("/artemis")
+            .then()
+                .statusCode(Response.Status.OK.getStatusCode())
                 .body(equalTo(body));
-
+        // @formatter:on
         // Wait for both JMS producer and consumer spans to be exported
         await().atMost(10, TimeUnit.SECONDS).until(() -> {
             List<ArtemisEndpoint.SpanInfo> allSpans = getSpans();
@@ -172,26 +173,24 @@ abstract public class BaseOpenTelemetryTest {
 
     @Test
     void testJmsTracingClassicApi() {
+        // @formatter:off
         // Reset spans
-        given().delete("/artemis/spans").then().statusCode(204);
-
+        RestAssured
+            .when().delete("/artemis/spans")
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         // Send a message using classic Connection/Session API
         String body = "test-message-classic-" + System.currentTimeMillis();
-        given()
-                .body(body)
-                .when()
-                .post("/artemis/classic")
-                .then()
-                .statusCode(204);
-
+        RestAssured
+            .given().body(body)
+            .when().post("/artemis/classic")
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         // Receive the message using classic Connection/Session API
-        given()
-                .when()
-                .get("/artemis/classic")
-                .then()
-                .statusCode(200)
+        RestAssured
+            .when().get("/artemis/classic")
+            .then()
+                .statusCode(Response.Status.OK.getStatusCode())
                 .body(equalTo(body));
-
+        // @formatter:on
         // Wait for both JMS producer and consumer spans to be exported
         await().atMost(10, TimeUnit.SECONDS).until(() -> {
             List<ArtemisEndpoint.SpanInfo> allSpans = getSpans();
@@ -240,17 +239,17 @@ abstract public class BaseOpenTelemetryTest {
 
     @Test
     void testJmsTracingProducerErrorClassicApi() {
+        // @formatter:off
         // Reset spans
-        given().delete("/artemis/spans").then().statusCode(204);
-
+        RestAssured
+            .when().delete("/artemis/spans")
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         // Trigger a send error via the classic API (sends on a closed session)
-        given()
-                .body("test-error-classic")
-                .when()
-                .post("/artemis/error/classic")
-                .then()
-                .statusCode(500);
-
+        RestAssured
+            .given().body("test-error-classic")
+            .when().post("/artemis/error/classic")
+            .then().statusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        // @formatter:on
         // Wait for a producer span to be exported
         await().atMost(10, TimeUnit.SECONDS).until(() -> {
             long producerCount = getSpans().stream().filter(span -> "PRODUCER".equals(span.kind)).count();
@@ -288,16 +287,16 @@ abstract public class BaseOpenTelemetryTest {
 
     @Test
     void testJmsTracingProducerErrorJms2Api() {
+        // @formatter:off
         // Reset spans
-        given().delete("/artemis/spans").then().statusCode(204);
-
+        RestAssured
+            .when().delete("/artemis/spans")
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         // Trigger a send error via JMS 2.0 API (sends a null message)
-        given()
-                .when()
-                .post("/artemis/error/jms2")
-                .then()
-                .statusCode(500);
-
+        RestAssured
+            .when().post("/artemis/error/jms2")
+            .then().statusCode(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        // @formatter:on
         // Wait for a producer span to be exported
         await().atMost(10, TimeUnit.SECONDS).until(() -> {
             long producerCount = getSpans().stream().filter(span -> "PRODUCER".equals(span.kind)).count();
@@ -330,14 +329,15 @@ abstract public class BaseOpenTelemetryTest {
     }
 
     private List<ArtemisEndpoint.SpanInfo> getSpans() {
-        return given()
-                .when()
-                .get("/artemis/spans")
-                .then()
-                .statusCode(200)
+        // @formatter:off
+        return RestAssured
+            .when().get("/artemis/spans")
+            .then()
+                .statusCode(Response.Status.OK.getStatusCode())
                 .extract()
-                .body()
-                .jsonPath()
-                .getList(".", ArtemisEndpoint.SpanInfo.class);
+                    .body()
+                    .jsonPath()
+                    .getList(".", ArtemisEndpoint.SpanInfo.class);
+        // @formatter:on
     }
 }

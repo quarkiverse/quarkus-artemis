@@ -30,11 +30,11 @@ public class ArtemisHealthCheckHelper {
     private static void test(String endpoint, Set<String> expectedConfigurations, String healthCheckMessage) {
         // @formatter:off
         Response response = RestAssured
-                .when().get(endpoint)
-                .then()
-                    .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
-                    .body("status", is("UP"))
-                    .extract().response();
+            .when().get(endpoint)
+            .then()
+                .statusCode(jakarta.ws.rs.core.Response.Status.OK.getStatusCode())
+                .body("status", is("UP"))
+                .extract().response();
         // @formatter:on
         Map<String, Object> body = response.as(new TypeRef<>() {
         });

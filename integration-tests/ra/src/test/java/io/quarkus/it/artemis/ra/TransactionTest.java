@@ -29,9 +29,9 @@ class TransactionTest {
     void retryMessagesOnRollback() {
         // @formatter:off
         RestAssured
-                .given().formParam("name", "George")
-                .when().post("/jca/sales")
-                .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
+            .given().formParam("name", "George")
+            .when().post("/jca/sales")
+            .then().statusCode(Response.Status.NO_CONTENT.getStatusCode());
         // @formatter:on
 
         try (JMSContext context = factory.createContext()) {

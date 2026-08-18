@@ -18,11 +18,11 @@ class MetricsTest {
     void shouldHaveMetrics() {
         // @formatter:off
         RestAssured
-                .when().get("/q/metrics")
-                .then()
-                    .log().ifValidationFails()
-                    .statusCode(Response.Status.OK.getStatusCode())
-                    .body(containsString("ironjacamar_pool_in_use_count_total{resourceAdapter=\"<default>\"}"));
+            .when().get("/q/metrics")
+            .then()
+                .log().ifValidationFails()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .body(containsString("ironjacamar_pool_in_use_count_total{resourceAdapter=\"<default>\"}"));
         // @formatter:on
     }
 }
