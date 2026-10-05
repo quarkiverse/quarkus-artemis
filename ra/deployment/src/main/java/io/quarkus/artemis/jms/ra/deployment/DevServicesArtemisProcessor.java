@@ -124,13 +124,11 @@ public class DevServicesArtemisProcessor {
                         return container.withReuse(configuration.reuse)
                                 .withSharedServiceLabel(launchMode.getLaunchMode(), configuration.serviceName);
                     })
-                    .configProvider(Map.of(
+                    .configProvider(container -> Map.of(
                             urlPropertyName,
-                            container -> String.format("host=%s;port=%d;protocols=CORE", container.getHost(),
-                                    container.getPort()),
+                            String.format("host=%s;port=%d;protocols=CORE", container.getHost(), container.getPort()),
                             webUiUrlPropertyName,
-                            container -> String.format("http://%s:%d", container.getHost(),
-                                    container.getMappedPort(ARTEMIS_WEB_UI_PORT))))
+                            String.format("http://%s:%d", container.getHost(), container.getMappedPort(ARTEMIS_WEB_UI_PORT))))
                     .build());
 
             cardPage.addPage(Page.externalPageBuilder(name + " web UI")

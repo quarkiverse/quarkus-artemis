@@ -145,11 +145,11 @@ public class DevServicesArtemisProcessor {
                             timeout.ifPresent(container::withStartupTimeout);
                             return container.withSharedServiceLabel(launchMode.getLaunchMode(), configuration.serviceName);
                         })
-                        .configProvider(Map.of(
+                        .configProvider(container -> Map.of(
                                 urlPropertyName,
-                                container -> String.format("tcp://%s:%d", container.getHost(), container.getPort()),
+                                String.format("tcp://%s:%d", container.getHost(), container.getPort()),
                                 webUiUrlPropertyName,
-                                container -> String.format("http://%s:%d", container.getHost(), container.getWebUiPort())))
+                                String.format("http://%s:%d", container.getHost(), container.getWebUiPort())))
                         .build());
             }
 

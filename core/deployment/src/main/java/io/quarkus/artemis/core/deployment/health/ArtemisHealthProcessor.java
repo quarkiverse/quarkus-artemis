@@ -48,7 +48,7 @@ public class ArtemisHealthProcessor {
                 .configure(ArtemisHealthSupport.class)
                 .supplier(recorder.getArtemisHealthSupportBuilder(names))
                 .scope(Singleton.class)
-                .defaultBean()
+                .reserve(true)
                 .done());
         return new ArtemisHealthSupportBuildItem();
     }
