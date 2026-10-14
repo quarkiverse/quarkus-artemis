@@ -19,6 +19,22 @@ updates:
       - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
       - dependency-name: "io.quarkus:*"
         versions:
+          - "[3.41,)"
+      - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
+        versions:
+          - "[3.41,)"
+      - dependency-name: "org.apache.artemis:*"
+        versions:
+          - "[2.58.0,)"
+    target-branch: "3.15.x"
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "org.apache.maven.plugins:maven-compiler-plugin"
+      - dependency-name: "io.quarkus:*"
+        versions:
           - "[3.34,)"
       - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
         versions:

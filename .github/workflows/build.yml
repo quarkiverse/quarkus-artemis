@@ -6,6 +6,7 @@ on:
     branches:
       - "main"
       - "3.13.x"
+      - "3.15.x"
     paths-ignore:
       - '.gitignore'
       - 'CODEOWNERS'
