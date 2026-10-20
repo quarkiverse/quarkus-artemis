@@ -49,7 +49,7 @@ public class ArtemisJmsProcessor {
             ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             ArtemisBootstrappedBuildItem bootstrap,
-            Optional<io.quarkus.jms.spi.deployment.ConnectionFactoryWrapperBuildItem> externalWrapper,
+            Optional<io.quarkiverse.jms.spi.deployment.ConnectionFactoryWrapperBuildItem> externalWrapper,
             List<ConnectionFactoryWrapperBuildItem> localWrappers,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer) {
         if (shadowRunTimeConfigs.isEmpty() && buildTimeConfigs.isEmpty()) {
@@ -75,7 +75,7 @@ public class ArtemisJmsProcessor {
 
     private static Function<ConnectionFactory, Object> getWrapper(
             ArtemisJmsRecorder recorder,
-            Optional<io.quarkus.jms.spi.deployment.ConnectionFactoryWrapperBuildItem> externalWrapper,
+            Optional<io.quarkiverse.jms.spi.deployment.ConnectionFactoryWrapperBuildItem> externalWrapper,
             List<ConnectionFactoryWrapperBuildItem> localWrappers) {
         Function<ConnectionFactory, Object> wrapper = recorder.getDefaultWrapper();
 
