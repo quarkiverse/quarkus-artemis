@@ -38,7 +38,7 @@
         <camel-quarkus.platform.version>3.40.1.1</camel-quarkus.platform.version>
         <quarkus.version>4.0.0.Beta1</quarkus.version>
         <quarkus-ironjacamar.version>2.0.0.Beta2</quarkus-ironjacamar.version>
-        <quarkus-jms.version>0.2.0</quarkus-jms.version>
+        <quarkus-jms.version>0.3.0</quarkus-jms.version>
 
         <!-- Project setup -->
         <maven.compiler.proc>full</maven.compiler.proc>
