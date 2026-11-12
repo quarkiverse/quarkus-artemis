@@ -1,30 +1,23 @@
 package io.quarkus.artemis.core.runtime;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import org.apache.activemq.artemis.api.core.client.ActiveMQClient;
 import org.apache.activemq.artemis.api.core.client.ServerLocator;
 
-import io.quarkus.runtime.RuntimeValue;
-import io.quarkus.runtime.annotations.Recorder;
-
-@Recorder
+/**
+ * Builds the Artemis core runtime objects.
+ * <p>
+ * The static methods of this class run from the services that the deployment module registers.
+ */
 public class ArtemisCoreRecorder {
-    private final ArtemisBuildTimeConfigs buildTimeConfigs;
-    private final RuntimeValue<ArtemisRuntimeConfigs> runtimeConfigs;
 
-    public ArtemisCoreRecorder(ArtemisBuildTimeConfigs buildTimeConfigs, RuntimeValue<ArtemisRuntimeConfigs> runtimeConfigs) {
-        this.buildTimeConfigs = buildTimeConfigs;
-        this.runtimeConfigs = runtimeConfigs;
-    }
-
-    public Supplier<ServerLocator> getServerLocatorSupplier(String name) {
-        ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.getValue().configs().get(name);
+    public static ServerLocator createServerLocator(String name, ArtemisRuntimeConfigs runtimeConfigs,
+            ArtemisBuildTimeConfigs buildTimeConfigs) {
+        ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.configs().get(name);
         ArtemisBuildTimeConfig buildTimeConfig = buildTimeConfigs.configs().get(name);
         ArtemisUtil.validateIntegrity(name, runtimeConfig, buildTimeConfig);
-        ServerLocator serverLocator = Objects.requireNonNull(getServerLocator(runtimeConfig));
-        return () -> serverLocator;
+        return Objects.requireNonNull(getServerLocator(runtimeConfig));
     }
 
     protected static ServerLocator getServerLocator(ArtemisRuntimeConfig runtimeConfig) {

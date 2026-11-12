@@ -15,19 +15,17 @@ import io.quarkus.artemis.core.deployment.ArtemisJmsRABuildItem;
 import io.quarkus.artemis.core.deployment.ShadowRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupport;
-import io.quarkus.artemis.core.runtime.health.ArtemisHealthSupportRecorder;
 import io.quarkus.artemis.core.runtime.health.ServerLocatorHealthCheck;
+import io.quarkus.core.Phase;
+import io.quarkus.core.deployment.service.ServiceRegistrar;
 import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.annotations.ExecutionTime;
-import io.quarkus.deployment.annotations.Record;
 import io.quarkus.smallrye.health.deployment.spi.HealthBuildItem;
 
 public class ArtemisHealthProcessor {
     @SuppressWarnings("unused")
-    @Record(ExecutionTime.STATIC_INIT)
     @BuildStep
     ArtemisHealthSupportBuildItem healthSupport(
             ArtemisBootstrappedBuildItem bootstrap,
@@ -35,18 +33,21 @@ public class ArtemisHealthProcessor {
             ArtemisBuildTimeConfigs buildTimeConfigs,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanProducer,
             List<ExtraArtemisHealthCheckBuildItem> extras,
-            ArtemisHealthSupportRecorder recorder) {
+            ServiceRegistrar serviceRegistrar) {
         if (!buildTimeConfigs.isHealthEnabled()) {
             return null;
         }
-        Set<String> names = Stream
+        Set<String> names = Set.copyOf(Stream
                 .concat(
                         bootstrap.getConfigurationNames().stream(),
                         extras.stream().map(ExtraArtemisHealthCheckBuildItem::getName))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
+        serviceRegistrar.forService(ArtemisHealthSupport.class)
+                .atPhase(Phase.STATIC_INIT)
+                .onStart(ctx -> new ArtemisHealthSupport(names));
         syntheticBeanProducer.produce(SyntheticBeanBuildItem
                 .configure(ArtemisHealthSupport.class)
-                .supplier(recorder.getArtemisHealthSupportBuilder(names))
+                .serviceValue(ArtemisHealthSupport.class)
                 .scope(Singleton.class)
                 .reserve(true)
                 .done());
