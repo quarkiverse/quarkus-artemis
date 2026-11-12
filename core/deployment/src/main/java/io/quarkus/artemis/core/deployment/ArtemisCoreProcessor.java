@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Default;
@@ -28,11 +27,12 @@ import org.jboss.logging.Logger;
 import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisCoreRecorder;
+import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
+import io.quarkus.core.Phase;
+import io.quarkus.core.deployment.service.ServiceRegistrar;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.annotations.ExecutionTime;
-import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageConfigBuildItem;
@@ -132,10 +132,9 @@ public class ArtemisCoreProcessor {
     }
 
     @SuppressWarnings("unused")
-    @Record(ExecutionTime.RUNTIME_INIT)
     @BuildStep
     ArtemisCoreConfiguredBuildItem configure(
-            ArtemisCoreRecorder recorder,
+            ServiceRegistrar serviceRegistrar,
             ShadowRuntimeConfigs shadowRunTimeConfigs,
             ArtemisBuildTimeConfigs buildTimeConfigs,
             ArtemisBootstrappedBuildItem bootstrap,
@@ -155,8 +154,12 @@ public class ArtemisCoreProcessor {
                     && buildTimeConfigs.configs().get(name).isEmpty()) {
                 continue;
             }
-            Supplier<ServerLocator> supplier = recorder.getServerLocatorSupplier(name);
-            SyntheticBeanBuildItem serverLocator = toSyntheticBeanBuildItem(supplier, name, isSoleServerLocator);
+            serviceRegistrar.forService(ServerLocator.class, name)
+                    .atPhase(Phase.DATA)
+                    .require(ArtemisRuntimeConfigs.class)
+                    .onStart((ctx, runtimeConfigs) -> ArtemisCoreRecorder
+                            .createServerLocator(name, runtimeConfigs, buildTimeConfigs));
+            SyntheticBeanBuildItem serverLocator = toSyntheticBeanBuildItem(name, isSoleServerLocator);
             syntheticBeanProducer.produce(serverLocator);
         }
         return new ArtemisCoreConfiguredBuildItem();
@@ -176,12 +179,11 @@ public class ArtemisCoreProcessor {
     }
 
     private SyntheticBeanBuildItem toSyntheticBeanBuildItem(
-            Supplier<ServerLocator> supplier,
             String name,
             boolean isSoleServerLocator) {
         SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator = SyntheticBeanBuildItem
                 .configure(ServerLocator.class)
-                .supplier(supplier)
+                .serviceValue(ServerLocator.class, name)
                 .scope(ApplicationScoped.class);
         return addQualifiers(name, isSoleServerLocator, configurator)
                 .setRuntimeInit()
