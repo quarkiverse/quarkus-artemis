@@ -23,6 +23,9 @@ updates:
       - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
         versions:
           - "[3.41,)"
+      - dependency-name: "io.quarkiverse.ironjacamar:*"
+        versions:
+          - "[2.0,)"
       - dependency-name: "org.apache.artemis:*"
         versions:
           - "[2.58.0,)"
@@ -39,6 +42,9 @@ updates:
       - dependency-name: "io.quarkus.platform:quarkus-camel-bom"
         versions:
           - "[3.34,)"
+      - dependency-name: "io.quarkiverse.ironjacamar:*"
+        versions:
+          - "[2.0,)"
       - dependency-name: "org.apache.artemis:*"
         versions:
           - "[2.53.0,)"
