@@ -1,8 +1,6 @@
 package io.quarkus.artemis.jms.runtime;
 
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import jakarta.jms.ConnectionFactory;
 
@@ -14,20 +12,15 @@ import io.quarkus.artemis.core.runtime.ArtemisBuildTimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfig;
 import io.quarkus.artemis.core.runtime.ArtemisRuntimeConfigs;
 import io.quarkus.artemis.core.runtime.ArtemisUtil;
-import io.quarkus.runtime.RuntimeValue;
-import io.quarkus.runtime.annotations.Recorder;
 
-@Recorder
+/**
+ * Builds the Artemis JMS runtime objects.
+ * <p>
+ * The static methods of this class run from the services that the deployment module registers.
+ */
 public class ArtemisJmsRecorder {
-    private final ArtemisBuildTimeConfigs buildTimeConfigs;
-    private final RuntimeValue<ArtemisRuntimeConfigs> runtimeConfigs;
 
-    public ArtemisJmsRecorder(ArtemisBuildTimeConfigs buildTimeConfigs, RuntimeValue<ArtemisRuntimeConfigs> runtimeConfigs) {
-        this.buildTimeConfigs = buildTimeConfigs;
-        this.runtimeConfigs = runtimeConfigs;
-    }
-
-    public Function<ConnectionFactory, Object> getDefaultWrapper() {
+    public static ConnectionFactoryWrapper getDefaultWrapper() {
         return cf -> cf;
     }
 
@@ -39,29 +32,28 @@ public class ArtemisJmsRecorder {
      * @param wrapper2 the second wrapper to apply on top of the first
      * @return a composed wrapper function
      */
-    public Function<ConnectionFactory, Object> composeWrappers(
-            Function<ConnectionFactory, Object> wrapper1,
-            Function<ConnectionFactory, Object> wrapper2) {
+    public static ConnectionFactoryWrapper composeWrappers(
+            ConnectionFactoryWrapper wrapper1,
+            ConnectionFactoryWrapper wrapper2) {
         return cf -> {
             Object wrapped = wrapper1.apply(cf);
-            if (wrapped instanceof ConnectionFactory) {
-                return wrapper2.apply((ConnectionFactory) wrapped);
+            if (wrapped instanceof ConnectionFactory connectionFactory) {
+                return wrapper2.apply(connectionFactory);
             }
             return wrapped;
         };
     }
 
-    public Supplier<ConnectionFactory> getConnectionFactoryProducer(String name, Function<ConnectionFactory, Object> wrapper) {
-        ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.getValue().configs().get(name);
+    public static ConnectionFactory createConnectionFactory(String name, ArtemisRuntimeConfigs runtimeConfigs,
+            ArtemisBuildTimeConfigs buildTimeConfigs, ConnectionFactoryWrapper wrapper) {
+        ArtemisRuntimeConfig runtimeConfig = runtimeConfigs.configs().get(name);
         ArtemisBuildTimeConfig buildTimeConfig = buildTimeConfigs.configs().get(name);
         ArtemisUtil.validateIntegrity(name, runtimeConfig, buildTimeConfig);
-        final ConnectionFactory connectionFactory = Objects
-                .requireNonNull(extractConnectionFactory(buildTimeConfig.isXaEnabled(), runtimeConfig, wrapper));
-        return () -> connectionFactory;
+        return Objects.requireNonNull(extractConnectionFactory(buildTimeConfig.isXaEnabled(), runtimeConfig, wrapper));
     }
 
-    private ConnectionFactory extractConnectionFactory(boolean isXaEnabled, ArtemisRuntimeConfig runtimeConfig,
-            Function<ConnectionFactory, Object> wrapper) {
+    private static ConnectionFactory extractConnectionFactory(boolean isXaEnabled, ArtemisRuntimeConfig runtimeConfig,
+            ConnectionFactoryWrapper wrapper) {
         String url = runtimeConfig.getUrl();
         if (url != null) {
             if (isXaEnabled) {
@@ -144,27 +136,4 @@ public class ArtemisJmsRecorder {
         return connectionFactory;
     }
 
-    /**
-     * Creates a wrapper function that adds OpenTelemetry tracing to ConnectionFactory.
-     * The wrapping is delegated to ArtemisJmsOpenTelemetryWrapper (which is only registered
-     * as a CDI bean when OpenTelemetry is on the classpath) to avoid loading OTel classes
-     * in the recorder when OTel is not present.
-     *
-     * @param otelEnabled Runtime flag indicating if OpenTelemetry SDK is enabled
-     * @return a wrapper function
-     */
-    public Function<ConnectionFactory, Object> getOpenTelemetryWrapper(java.util.Optional<RuntimeValue<Boolean>> otelEnabled) {
-        return cf -> {
-            if (otelEnabled.isEmpty() || !otelEnabled.get().getValue()) {
-                return cf;
-            }
-
-            var container = io.quarkus.arc.Arc.container();
-            var wrapperInstance = container.instance(ArtemisJmsOpenTelemetryWrapper.class);
-            if (wrapperInstance.isAvailable()) {
-                return wrapperInstance.get().apply(cf);
-            }
-            return cf;
-        };
-    }
 }
